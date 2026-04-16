@@ -1,0 +1,1410 @@
+{% load static %}
+<!doctype html>
+<html lang="en" class="dark">
+
+<!-- Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+
+<head>
+    <script>
+        if (localStorage.getItem("theme") === "light") document.documentElement.classList.remove("dark");
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Sridixitha - Dashboard</title>
+
+    <link href="{% static 'assets/css/index.css' %}" rel="stylesheet">
+</head>
+
+<body id="dashboard">
+    <!-- Page Loader -->
+
+    <!-- ======================================
+         Start Sidebar Area
+         ====================================== -->
+    <div id="sidebarOverlay"
+        class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden transition-opacity duration-300 opacity-0"
+        aria-hidden="true"></div>
+    <aside class="sidebar" id="sidebar">
+        <!-- ======================================
+       Start Logo Section
+       ====================================== -->
+        <div class="logo-section flex items-center gap-3 p-5 border-b border-border">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
+
+            </div>
+            <div class="logo-text flex-1">
+                <img src="{% static 'assets/images/logos/sridixitha-logo.gif' %}">
+            </div>
+            <button class="btn-icon w-8 h-8 lg:hidden! js-mobile-menu-toggle" aria-label="Close sidebar">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- ======================================
+       Start Navigation
+       ====================================== -->
+
+        <nav class="py-4">
+            <!-- MAIN -->
+
+            <div class="nav-section-title">Main</div>
+
+
+            <!-- {% if request.user.is_authenticated %}
+<a href="
+{% if request.user.role == 'superadmin' %}
+{% url 'superadmin_dashboard' %}
+{% elif request.user.role == 'admin' %}
+{% url 'admin_dashboard' %}
+{% elif request.user.role == 'vendor' %}
+{% url 'vendor_dashboard' %}
+{% else %}
+{% url 'customer_dashboard' %}
+{% endif %}
+" class="nav-item" data-tooltip="My Assets">
+
+    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+    <span class="nav-text">Dashboard</span>
+
+</a>
+{% endif %} -->
+
+            <!-- <div class="submenu" id="dashboard-submenu">
+      <a href="index.html" class="submenu-item js-submenu-item" data-route="dashboard">
+        <i data-lucide="circle" class="w-3 h-3"></i>
+        <span>Dashboard</span>
+      </a>
+    </div> -->
+
+            {% if user.is_authenticated %}
+
+            {% if user.role == "superadmin" %}
+            <a href="{% url 'superadmin_dashboard' %}" class="nav-link">
+                <i data-lucide="layout-dashboard"></i> Dashboard
+            </a>
+            <a href="{% url 'create_admin' %}" class="nav-link">
+                <i data-lucide="user-plus"></i> Create Admin
+            </a>
+            <a href="{% url 'all_users' %}" class="nav-link">
+                <i data-lucide="user-plus"></i> All Users
+            </a>
+
+            <a href="{% url 'create_service' %}" class="nav-link">
+                <i data-lucide="user-plus"></i> services
+            </a>
+
+
+            {% elif user.role == "admin" %}
+            <a href="{% url 'admin_dashboard' %}" class="nav-link">
+                <i data-lucide="shield"></i> Dashboard
+            </a>
+            <a href="{% url 'create_vendor' %}" class="nav-link">
+                <i data-lucide="user-plus"></i> Create Vendor
+            </a>
+
+            {% elif user.role == "vendor" %}
+            <a href="{% url 'vendor_dashboard' %}" class="nav-link">
+                <i data-lucide="briefcase"></i> Dashboard
+            </a>
+
+            {% else %}
+            <a href="{% url 'customer_dashboard' %}" class="nav-link">
+                <i data-lucide="user"></i> Dashboard
+            </a>
+            {% endif %}
+
+            {% endif %}
+
+
+            <!-- <a href="#" class="nav-item" data-tooltip="My Analytics">
+                <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+                <span class="nav-text">My Analytics</span>
+            </a> -->
+
+            <!-- TRADING & BOTS -->
+            <!-- <div class="nav-section-title">Trading & Bots</div>
+
+    <a href="#" class="nav-item" data-tooltip="Trading">
+      <i data-lucide="trending-up" class="w-5 h-5"></i>
+      <span class="nav-text">Trading</span>
+    </a>
+
+    <div class="nav-item has-submenu js-submenu-toggle" data-tooltip="Control Panel" data-submenu-id="control-panel-submenu">
+      <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+      <span class="nav-text">Control Panel</span>
+      <i data-lucide="chevron-down" class="w-4 h-4 nav-arrow"></i>
+    </div>
+    <div class="submenu" id="control-panel-submenu">
+      <a href="overview.html" class="submenu-item js-submenu-item" data-route="control-overview">
+        <i data-lucide="circle" class="w-3 h-3"></i>
+        <span>Overview</span>
+      </a>
+      <a href="bot-settings.html" class="submenu-item js-submenu-item" data-route="bot-settings">
+        <i data-lucide="circle" class="w-3 h-3"></i>
+        <span>Bot Settings</span>
+      </a>
+      <a href="execution-logs.html" class="submenu-item js-submenu-item" data-route="execution-logs">
+        <i data-lucide="circle" class="w-3 h-3"></i>
+        <span>Execution Logs</span>
+      </a>
+    </div>
+
+    <div class="nav-item has-submenu js-submenu-toggle" data-tooltip="AI Bot" data-submenu-id="ai-bot-submenu">
+      <i data-lucide="cpu" class="w-5 h-5"></i>
+      <span class="nav-text">AI Bot</span>
+      <i data-lucide="chevron-down" class="w-4 h-4 nav-arrow"></i>
+    </div>
+    <div class="submenu" id="ai-bot-submenu">
+      <a href="signal-bot.html" class="submenu-item js-submenu-item" data-route="signal-bot">
+        <i data-lucide="circle" class="w-3 h-3"></i>
+        <span>Signal Bot</span>
+      </a>
+      <a href="dca-bot.html" class="submenu-item js-submenu-item" data-route="dca-bot">
+        <i data-lucide="circle" class="w-3 h-3"></i>
+        <span>DCA Bot</span>
+      </a>
+      <a href="arbitrage-bot.html" class="submenu-item js-submenu-item" data-route="arbitrage-bot">
+        <i data-lucide="circle" class="w-3 h-3"></i>
+        <span>Arbitrage Bot</span>
+      </a>
+      <a href="pump-screener.html" class="submenu-item js-submenu-item" data-route="pump-screener">
+        <i data-lucide="circle" class="w-3 h-3"></i>
+        <span>Pump Screener</span>
+      </a>
+    </div> -->
+
+            <!-- DEFI & PORTFOLIO -->
+            <!-- <div class="nav-section-title">DeFi & Portfolio</div>
+
+    <a href="defi-center.html" class="nav-item" data-tooltip="DeFi Center">
+      <i data-lucide="hexagon" class="w-5 h-5"></i>
+      <span class="nav-text">DeFi Center</span>
+    </a>
+
+    <a href="yield-farming.html" class="nav-item" data-tooltip="Yield Farming">
+      <i data-lucide="sprout" class="w-5 h-5"></i>
+      <span class="nav-text">Yield Farming</span>
+    </a>
+
+    <a href="staking-pools.html" class="nav-item" data-tooltip="Staking Pools">
+      <i data-lucide="layers" class="w-5 h-5"></i>
+      <span class="nav-text">Staking Pools</span>
+    </a>
+
+    <a href="liquidity-tracker.html" class="nav-item" data-tooltip="Liquidity Tracker">
+      <i data-lucide="droplets" class="w-5 h-5"></i>
+      <span class="nav-text">Liquidity Tracker</span>
+    </a>
+
+    <a href="portfolio-tracker.html" class="nav-item" data-tooltip="Portfolio Tracker">
+      <i data-lucide="pie-chart" class="w-5 h-5"></i>
+      <span class="nav-text">Portfolio Tracker</span>
+    </a>
+
+    <a href="wallets.html" class="nav-item" data-tooltip="Wallets">
+      <i data-lucide="credit-card" class="w-5 h-5"></i>
+      <span class="nav-text">Wallets</span>
+    </a>
+
+    <a href="defi-protocols.html" class="nav-item" data-tooltip="DeFi Protocols">
+      <i data-lucide="git-branch" class="w-5 h-5"></i>
+      <span class="nav-text">DeFi Protocols</span>
+    </a> -->
+
+            <!-- MARKETPLACE -->
+            <!-- <div class="nav-section-title">Marketplace</div>
+
+    <a href="strategies-marketplace.html" class="nav-item" data-tooltip="Strategies Marketplace">
+      <i data-lucide="store" class="w-5 h-5"></i>
+      <span class="nav-text">Strategies Marketplace</span>
+    </a>
+
+    <a href="bot-templates.html" class="nav-item" data-tooltip="Bot Templates">
+      <i data-lucide="layout-template" class="w-5 h-5"></i>
+      <span class="nav-text">Bot Templates</span>
+    </a> -->
+
+            <!-- ======================================
+         Account Section
+         ====================================== -->
+            <!-- <div class="nav-section-title">Account</div>
+
+    <a href="preferences.html" class="nav-item" data-tooltip="Preferences">
+      <i data-lucide="settings" class="w-5 h-5"></i>
+      <span class="nav-text">Preferences</span>
+    </a>
+
+    <a href="notifications.html" class="nav-item" data-tooltip="Notifications">
+      <i data-lucide="bell" class="w-5 h-5"></i>
+      <span class="nav-text">Notifications</span>
+      <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full nav-text">5</span>
+    </a>
+
+    <a href="security-api-keys.html" class="nav-item" data-tooltip="Security & API Keys">
+      <i data-lucide="shield" class="w-5 h-5"></i>
+      <span class="nav-text">Security & API Keys</span>
+    </a>
+
+    <a href="invite-friends.html" class="nav-item" data-tooltip="Invite Friends">
+      <i data-lucide="user-plus" class="w-5 h-5"></i>
+      <span class="nav-text">Invite Friends</span>
+    </a>
+
+    <a href="subscription.html" class="nav-item" data-tooltip="Subscription">
+      <i data-lucide="crown" class="w-5 h-5"></i>
+      <span class="nav-text">Subscription</span>
+      <span class="ml-auto badge bg-accent! text-white! badge-info nav-text">PRO</span>
+    </a>
+
+    <a href="help-center.html" class="nav-item" data-tooltip="Help Center">
+      <i data-lucide="help-circle" class="w-5 h-5"></i>
+      <span class="nav-text">Help Center</span>
+    </a>  -->
+        </nav>
+
+        <!-- ======================================
+       Start User Section
+       ====================================== -->
+        <div class="user-section mt-auto p-4 border-t border-border">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full gradient-secondary flex items-center justify-center shrink-0">
+                    <span class="text-white font-semibold text-sm">JD</span>
+                </div>
+                <div class="user-info flex-1 min-w-0">
+                    <p class="font-semibold text-sm text-text truncate">{{ request.user.first_name }}</p>
+                    <p class="text-xs text-muted truncate">{{ request.user.email}}</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ======================================
+         End Sidebar Area
+         ====================================== -->
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- ======================================
+           Start Header Area
+           ====================================== -->
+        <header class="sticky top-0 z-50 glass @container">
+            <div class="flex items-center justify-between px-2 sm:px-6 py-2 sm:py-4">
+                <div class="flex items-center gap-4">
+                    <!-- Mobile Menu Button -->
+                    <button class="mobile-menu-btn js-mobile-menu-toggle" id="mobileMenuBtn"
+                        aria-label="Toggle Mobile Menu">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+
+                    <!-- Sidebar Toggle (Desktop) -->
+                    <button class="sidebar-toggle-btn js-sidebar-toggle" aria-label="Toggle Sidebar">
+                        <i data-lucide="panel-left" class="w-5 h-5"></i>
+                    </button>
+
+                    <!-- Search -->
+                    <div class="flex items-center justify-between h-14">
+
+                        <!-- TITLE -->
+                        <h3 class="text-lg sm:text-xl md:text-2xl 
+           font-semibold text-gray-800 
+           truncate max-w-[100px] capitalize 
+           leading-none m-0 mt-1">
+                            {{ page_title|default:"Dashboard" }}
+                        </h3>
+
+                        <!-- RIGHT SIDE (search etc) -->
+                        <div class="flex items-center gap-4">
+                            <!-- your search bar -->
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <!-- Live Status -->
+                    <div class="live-indicator hidden! md:flex">LIVE</div>
+
+                    <!-- Quick Actions -->
+
+
+                    <div class="relative hidden md:block">
+                        <i data-lucide="search" class="w-5 h-5 absolute left-2 top-1/2 -translate-y-1/2 text-muted"></i>
+                        <input type="text" id="globalSearch" placeholder="Search bots, assets, strategies... (⌘K)"
+                            class="form-control pl-8! w-80" />
+                    </div>
+                    <!-- Notifications -->
+                    <div class="dropdown">
+
+                        <button class="btn-icon relative js-dropdown-toggle" aria-label="Toggle Notifications">
+                            <i data-lucide="bell" class="w-5 h-5"></i>
+                            <span
+                                class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">5</span>
+                        </button>
+                        <div class="dropdown-menu notifications-menu w-75 min-[400px]:w-80">
+                            <div class="p-4 border-b border-border">
+                                <h2 class="text-base font-semibold text-text">Notifications</h2>
+                            </div>
+                            <div class="max-h-64 overflow-y-auto">
+                                <div class="dropdown-item">
+                                    <div
+                                        class="w-8 h-8 rounded-full gradient-success flex items-center justify-center shrink-0">
+                                        <i data-lucide="check" class="w-4 h-4 text-white"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium truncate">BTC/USDT trade executed</p>
+                                        <p class="text-xs text-muted">2 min ago</p>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item">
+                                    <div
+                                        class="w-8 h-8 rounded-full gradient-warning flex items-center justify-center shrink-0">
+                                        <i data-lucide="alert-triangle" class="w-4 h-4 text-white"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium truncate">Signal Bot paused - volatility high</p>
+                                        <p class="text-xs text-muted">15 min ago</p>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item">
+                                    <div
+                                        class="w-8 h-8 rounded-full gradient-info flex items-center justify-center shrink-0">
+                                        <i data-lucide="info" class="w-4 h-4 text-white"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium truncate">New strategy available</p>
+                                        <p class="text-xs text-muted">1 hour ago</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-3 border-t border-border">
+                                <button
+                                    class="w-full text-center text-sm font-medium text-indigo-500 hover:text-indigo-600">View
+                                    all notifications</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button class="btn-icon" id="themeToggle" aria-label="Toggle Theme" onclick="
+          document.documentElement.classList.toggle('dark');
+          localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        ">
+                        <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+                        <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                    </button>
+
+                    <!-- Profile Dropdown -->
+                    <div class="dropdown">
+                        <button
+                            class="flex items-center gap-2 p-1 rounded-xl hover:bg-border/50 transition js-dropdown-toggle">
+                            <span class="w-9 h-9 rounded-full gradient-primary flex items-center justify-center">
+                                <span class="text-white font-semibold text-sm">JD</span>
+                            </span>
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-muted hidden sm:block"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <div class="p-4 border-b border-border">
+                                <p class="font-semibold text-text">{{ request.user.first_name }} </p>
+                                <p class="text-xs text-muted">Pro Trader</p>
+                            </div>
+                            <a href="#" class="dropdown-item">
+                                <i data-lucide="user" class="w-4 h-4"></i>
+                                <span>My Profile</span>
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i data-lucide="settings" class="w-4 h-4"></i>
+                                <span>Settings</span>
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i data-lucide="help-circle" class="w-4 h-4"></i>
+                                <span>Help & Support</span>
+                            </a>
+
+                            <div class="p-2 border-t border-border">
+                                <form method="POST" action="{% url 'logout' %}">
+                                    {% csrf_token %}
+
+                                    <button type="submit"
+                                        class="dropdown-item text-red-500 hover:bg-red-500/10 hover:text-red-500 w-full text-left flex items-center gap-2">
+
+                                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                                        <span>Logout</span>
+
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ======================================
+           End Header Area
+           ====================================== -->
+
+        <!-- ======================================
+           Start Page Content
+           ====================================== -->
+        <!-- <div class="inner-content"> -->
+        <!-- ======================================
+             Start Page Header
+             ====================================== -->
+        <!-- <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold text-text mb-2">Dashboard</h1>
+                    <p class="text-muted">Welcome back, John! Here's your trading overview.</p>
+                </div> -->
+
+
+
+        {% block content %}{% endblock %}
+
+
+        <!-- <div class="flex items-center gap-3 flex-wrap"> -->
+
+
+        </div>
+        </div>
+
+        <!-- ======================================
+             Start Quick Stats Area
+             ====================================== -->
+        <!-- <div class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-6 mb-8">
+
+          <div class="card-elevated stats-card p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 rounded-2xl gradient-primary flex items-center justify-center">
+                <i data-lucide="wallet" class="w-6 h-6 text-white"></i>
+              </div>
+              <span class="badge badge-success">
+                <i data-lucide="trending-up" class="w-3 h-3"></i>
+                +12.5%
+              </span>
+            </div>
+            <p class="text-muted text-sm mb-1">Total Portfolio</p>
+            <p class="text-2xl font-bold text-text">$248,562.80</p>
+            <div class="mt-4 pt-4 border-t border-border">
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-muted">24h Change</span>
+                <span class="text-green-500 font-medium">+$28,450.32</span>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="card-elevated stats-card p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 rounded-2xl gradient-secondary flex items-center justify-center">
+                <i data-lucide="bot" class="w-6 h-6 text-white"></i>
+              </div>
+              <div class="bot-status">
+                <span class="bot-status-dot active"></span>
+                <span class="text-xs text-green-500 font-medium">Running</span>
+              </div>
+            </div>
+            <p class="text-muted text-sm mb-1">Active Bots</p>
+            <p class="text-2xl font-bold text-text">12 / 15</p>
+            <div class="mt-4 pt-4 border-t border-border">
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-muted">Trades Today</span>
+                <span class="text-text font-medium">847</span>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="card-elevated stats-card p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 rounded-2xl gradient-success flex items-center justify-center">
+                <i data-lucide="trending-up" class="w-6 h-6 text-white"></i>
+              </div>
+              <span class="badge badge-success">
+                <i data-lucide="arrow-up" class="w-3 h-3"></i>
+                Profit
+              </span>
+            </div>
+            <p class="text-muted text-sm mb-1">Today's PnL</p>
+            <p class="text-2xl font-bold text-green-500">+$3,847.92</p>
+            <div class="mt-4 pt-4 border-t border-border">
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-muted">Win Rate</span>
+                <span class="text-text font-medium">68.4%</span>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="card-elevated stats-card p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 rounded-2xl gradient-defi flex items-center justify-center">
+                <i data-lucide="percent" class="w-6 h-6 text-white"></i>
+              </div>
+              <span class="badge badge-info">APY</span>
+            </div>
+            <p class="text-muted text-sm mb-1">DeFi Yield</p>
+            <p class="text-2xl font-bold text-text">18.4%</p>
+            <div class="mt-4 pt-4 border-t border-border">
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-muted">TVL Staked</span>
+                <span class="text-text font-medium">$42,580</span>
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- ======================================
+             Start Tabs Section Area
+             ====================================== -->
+        <!-- <div class="mb-6">
+          <div class="flex items-center gap-2 overflow-x-auto pb-2 hide-scrollbar tab-container">
+            <button class="tab-button active js-tab-button" data-tab-id="overview">Overview</button>
+            <button class="tab-button js-tab-button" data-tab-id="bots">Bot Performance</button>
+            <button class="tab-button js-tab-button" data-tab-id="portfolio">Portfolio</button>
+            <button class="tab-button js-tab-button" data-tab-id="defi">DeFi Analytics</button>
+            <button class="tab-button js-tab-button" data-tab-id="trades">Recent Trades</button>
+          </div>
+        </div> -->
+
+        <!-- ======================================
+             Start Tab Content: Overview
+             ====================================== -->
+        <!-- <div id="tab-overview" class="tab-content active">
+       
+          <div class="card-elevated relative p-4 mb-6 z-30">
+            <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4">
+              <div class="overflow-x-auto">
+                <div class="flex items-center gap-2 min-w-[350px]">
+                  <span class="text-sm font-medium text-muted whitespace-nowrap">Time Range:</span>
+                  <div>
+                    <div class="flex gap-2">
+                      <button class="filter-chip active js-time-filter" data-period="24h">24H</button>
+                      <button class="filter-chip js-time-filter" data-period="7d">7D</button>
+                      <button class="filter-chip js-time-filter" data-period="30d">30D</button>
+                      <button class="filter-chip js-time-filter" data-period="90d">90D</button>
+                      <button class="filter-chip js-time-filter" data-period="all">All Time</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 xl:ml-auto">
+                <div class="dropdown">
+                  <button class="btn btn-secondary js-dropdown-toggle">
+                    <i data-lucide="filter" class="w-4 h-4"></i>
+                    <span>Filter</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                  </button>
+                  <div class="dropdown-menu max-2xl:left-0 xxl:right-0">
+                    <div class="dropdown-item js-filter-option" data-filter="all">
+                      <i data-lucide="check" class="w-4 h-4 text-green-500"></i>
+                      <span>All Assets</span>
+                    </div>
+                    <div class="dropdown-item js-filter-option" data-filter="btc">
+                      <i data-lucide="bitcoin" class="w-4 h-4 text-orange-500"></i>
+                      <span>BTC Only</span>
+                    </div>
+                    <div class="dropdown-item js-filter-option" data-filter="eth">
+                      <i data-lucide="circle-dollar-sign" class="w-4 h-4 text-blue-500"></i>
+                      <span>ETH Only</span>
+                    </div>
+                    <div class="dropdown-item js-filter-option" data-filter="altcoins">
+                      <i data-lucide="coins" class="w-4 h-4 text-purple-500"></i>
+                      <span>Altcoins</span>
+                    </div>
+                  </div>
+                </div>
+                <button class="btn btn-secondary js-refresh-data">
+                  <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                  <span class="hidden sm:inline">Refresh</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+       
+            <div class="xl:col-span-2 card-elevated">
+              <div class="flex items-center justify-between flex-wrap gap-2 mb-6">
+                <div>
+                  <h2 class="text-lg font-semibold text-text">Portfolio Performance</h2>
+                  <p class="text-sm text-muted">Cumulative returns over time</p>
+                </div>
+                <div class="flex items-center gap-4">
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-indigo-500"></div>
+                    <span class="text-sm text-muted">Portfolio</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-gray-400"></div>
+                    <span class="text-sm text-muted">Benchmark</span>
+                  </div>
+                </div>
+              </div>
+              <div class="h-80">
+                <canvas id="portfolioChart"></canvas>
+              </div>
+            </div>
+
+     
+            <div class="card-elevated">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg font-semibold text-text">Asset Allocation</h2>
+                <button class="btn-icon w-8 h-8 js-open-drawer" data-drawer-type="allocation" aria-label="Maximize Allocation Chart">
+                  <i data-lucide="maximize-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+              <div class="h-56">
+                <canvas id="allocationChart"></canvas>
+              </div>
+              <div class="mt-4 space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-orange-500"></div>
+                    <span class="text-sm text-text">BTC</span>
+                  </div>
+                  <span class="text-sm font-medium text-text">42%</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-indigo-500"></div>
+                    <span class="text-sm text-text">ETH</span>
+                  </div>
+                  <span class="text-sm font-medium text-text">28%</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-purple-500"></div>
+                    <span class="text-sm text-text">SOL</span>
+                  </div>
+                  <span class="text-sm font-medium text-text">15%</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-teal-500"></div>
+                    <span class="text-sm text-text">Others</span>
+                  </div>
+                  <span class="text-sm font-medium text-text">15%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+     
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-semibold text-text">Active Trading Bots</h2>
+              <a href="bot-settings.html" class="text-sm font-medium text-indigo-500 hover:text-indigo-600 flex items-center gap-1">
+                View All
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+  
+              <div class="card-elevated p-5 cursor-pointer js-open-drawer" data-drawer-type="botDetails">
+                <div class="flex items-start justify-between mb-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl gradient-crypto flex items-center justify-center">
+                      <i data-lucide="bot" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div>
+                      <h3 class="font-semibold text-text">BTC Signal Bot</h3>
+                      <p class="text-xs text-muted">BTC/USDT</p>
+                    </div>
+                  </div>
+                  <div class="bot-status">
+                    <span class="bot-status-dot active"></span>
+                  </div>
+                </div>
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-muted">Today's PnL</span>
+                    <span class="text-sm font-semibold text-green-500">+$1,245.80</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-muted">Win Rate</span>
+                    <span class="text-sm font-medium text-text">72.4%</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-muted">Trades</span>
+                    <span class="text-sm font-medium text-text">48</span>
+                  </div>
+                </div>
+                <div class="mt-4 pt-4 border-t border-border">
+                  <div class="sparkline">
+                    <div class="sparkline-bar bg-green-500" style="height: 60%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 80%"></div>
+                    <div class="sparkline-bar bg-red-500" style="height: 40%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 90%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 70%"></div>
+                    <div class="sparkline-bar bg-red-500" style="height: 30%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 85%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 95%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 75%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 100%"></div>
+                  </div>
+                </div>
+              </div>
+
+   
+              <div class="card-elevated p-5 cursor-pointer js-open-drawer" data-drawer-type="botDetails">
+                <div class="flex items-start justify-between mb-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl gradient-defi flex items-center justify-center">
+                      <i data-lucide="repeat" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div>
+                      <h3 class="font-semibold text-text">ETH DCA Bot</h3>
+                      <p class="text-xs text-muted">ETH/USDT</p>
+                    </div>
+                  </div>
+                  <div class="bot-status">
+                    <span class="bot-status-dot active"></span>
+                  </div>
+                </div>
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-muted">Today's PnL</span>
+                    <span class="text-sm font-semibold text-green-500">+$892.45</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-muted">Avg Entry</span>
+                    <span class="text-sm font-medium text-text">$2,145.32</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-muted">Orders</span>
+                    <span class="text-sm font-medium text-text">24</span>
+                  </div>
+                </div>
+                <div class="mt-4 pt-4 border-t border-border">
+                  <div class="sparkline">
+                    <div class="sparkline-bar bg-green-500" style="height: 50%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 65%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 70%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 75%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 80%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 85%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 88%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 90%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 95%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 100%"></div>
+                  </div>
+                </div>
+              </div>
+
+     
+              <div class="card-elevated p-5 cursor-pointer js-open-drawer" data-drawer-type="botDetails">
+                <div class="flex items-start justify-between mb-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl gradient-teal flex items-center justify-center">
+                      <i data-lucide="git-compare" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div>
+                      <h3 class="font-semibold text-text">Arbitrage Bot</h3>
+                      <p class="text-xs text-muted">Multi-Exchange</p>
+                    </div>
+                  </div>
+                  <div class="bot-status">
+                    <span class="bot-status-dot paused"></span>
+                  </div>
+                </div>
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-muted">Today's PnL</span>
+                    <span class="text-sm font-semibold text-green-500">+$456.20</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-muted">Opportunities</span>
+                    <span class="text-sm font-medium text-text">127</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-muted">Executed</span>
+                    <span class="text-sm font-medium text-text">89</span>
+                  </div>
+                </div>
+                <div class="mt-4 pt-4 border-t border-border">
+                  <div class="sparkline">
+                    <div class="sparkline-bar bg-green-500" style="height: 70%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 60%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 80%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 55%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 75%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 65%"></div>
+                    <div class="sparkline-bar bg-yellow-500" style="height: 40%"></div>
+                    <div class="sparkline-bar bg-yellow-500" style="height: 35%"></div>
+                    <div class="sparkline-bar bg-yellow-500" style="height: 30%"></div>
+                    <div class="sparkline-bar bg-yellow-500" style="height: 25%"></div>
+                  </div>
+                </div>
+              </div>
+
+    
+              <div class="card-elevated p-5 cursor-pointer js-open-drawer" data-drawer-type="botDetails">
+                <div class="flex items-start justify-between mb-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl gradient-danger flex items-center justify-center">
+                      <i data-lucide="rocket" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div>
+                      <h3 class="font-semibold text-text">Pump Screener</h3>
+                      <p class="text-xs text-muted">Altcoins</p>
+                    </div>
+                  </div>
+                  <div class="bot-status">
+                    <span class="bot-status-dot active"></span>
+                  </div>
+                </div>
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-muted">Today's PnL</span>
+                    <span class="text-sm font-semibold text-red-500">-$124.50</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-muted">Alerts</span>
+                    <span class="text-sm font-medium text-text">34</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-muted">Sniped</span>
+                    <span class="text-sm font-medium text-text">8</span>
+                  </div>
+                </div>
+                <div class="mt-4 pt-4 border-t border-border">
+                  <div class="sparkline">
+                    <div class="sparkline-bar bg-green-500" style="height: 90%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 100%"></div>
+                    <div class="sparkline-bar bg-red-500" style="height: 30%"></div>
+                    <div class="sparkline-bar bg-red-500" style="height: 20%"></div>
+                    <div class="sparkline-bar bg-green-500" style="height: 50%"></div>
+                    <div class="sparkline-bar bg-red-500" style="height: 40%"></div>
+                    <div class="sparkline-bar bg-red-500" style="height: 35%"></div>
+                    <div class="sparkline-bar bg-red-500" style="height: 25%"></div>
+                    <div class="sparkline-bar bg-red-500" style="height: 30%"></div>
+                    <div class="sparkline-bar bg-red-500" style="height: 20%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+            <div class="card-elevated">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg font-semibold text-text">Top Performing Assets</h2>
+                <div class="dropdown js-dropdown-toggle">
+                  <button class="btn-icon w-8 h-8" aria-label="Sort Options">
+                    <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+                  </button>
+                  <div class="dropdown-menu">
+                    <div class="dropdown-item js-sort-option" data-sort="gain">
+                      <i data-lucide="arrow-up" class="w-4 h-4"></i>
+                      <span>Sort by Gain</span>
+                    </div>
+                    <div class="dropdown-item js-sort-option" data-sort="loss">
+                      <i data-lucide="arrow-down" class="w-4 h-4"></i>
+                      <span>Sort by Loss</span>
+                    </div>
+                    <div class="dropdown-item js-sort-option" data-sort="volume">
+                      <i data-lucide="bar-chart" class="w-4 h-4"></i>
+                      <span>Sort by Volume</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-4">
+
+                <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-border/30 transition cursor-pointer js-open-drawer" data-drawer-type="assetDetails">
+                  <img src="assets/images/crypto-icons/btc.png" alt="BTC" class="w-10 h-10 rounded-full object-cover" />
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-1">
+                      <h3 class="font-semibold text-text">Bitcoin</h3>
+                      <span class="font-semibold text-text">$97,245.80</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-muted">2.45 BTC</span>
+                      <span class="text-sm font-medium text-green-500">+8.42%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-border/30 transition cursor-pointer js-open-drawer" data-drawer-type="assetDetails">
+                  <img src="assets/images/crypto-icons/eth.png" alt="ETH" class="w-10 h-10 rounded-full object-cover" />
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-1">
+                      <h3 class="font-semibold text-text">Ethereum</h3>
+                      <span class="font-semibold text-text">$52,840.20</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-muted">18.2 ETH</span>
+                      <span class="text-sm font-medium text-green-500">+5.18%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-border/30 transition cursor-pointer js-open-drawer" data-drawer-type="assetDetails">
+                  <img src="assets/images/crypto-icons/solana-badge.png" alt="SOL" class="w-10 h-10 rounded-full object-cover" />
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-1">
+                      <h3 class="font-semibold text-text">Solana</h3>
+                      <span class="font-semibold text-text">$28,450.00</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-muted">142 SOL</span>
+                      <span class="text-sm font-medium text-green-500">+12.34%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-border/30 transition cursor-pointer js-open-drawer" data-drawer-type="assetDetails">
+                  <img src="assets/images/crypto-icons/link.png" alt="LINK" class="w-10 h-10 rounded-full object-cover" />
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-1">
+                      <h3 class="font-semibold text-text">Chainlink</h3>
+                      <span class="font-semibold text-text">$8,920.40</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-muted">485 LINK</span>
+                      <span class="text-sm font-medium text-red-500">-2.15%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-border/30 transition cursor-pointer js-open-drawer" data-drawer-type="assetDetails">
+                  <img src="assets/images/crypto-icons/avalanche-badge.png" alt="AVAX" class="w-10 h-10 rounded-full object-cover" />
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-1">
+                      <h3 class="font-semibold text-text">Avalanche</h3>
+                      <span class="font-semibold text-text">$6,245.60</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-muted">156 AVAX</span>
+                      <span class="text-sm font-medium text-green-500">+3.87%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+         
+            <div class="card-elevated">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg font-semibold text-text">Recent Activity</h2>
+                <a href="execution-logs.html" class="text-sm font-medium text-indigo-500 hover:text-indigo-600">View All</a>
+              </div>
+              <div class="space-y-4">
+                <div class="flex items-start gap-4">
+                  <div class="w-10 h-10 rounded-xl gradient-success flex items-center justify-center shrink-0">
+                    <i data-lucide="arrow-up-right" class="w-5 h-5 text-white"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-1">
+                      <h3 class="font-medium text-text">BTC Sold</h3>
+                      <span class="text-sm font-medium text-green-500">+$2,450.00</span>
+                    </div>
+                    <p class="text-sm text-muted">0.025 BTC @ $98,000</p>
+                    <p class="text-xs text-muted mt-1">2 minutes ago · Signal Bot</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                  <div class="w-10 h-10 rounded-xl gradient-secondary flex items-center justify-center shrink-0">
+                    <i data-lucide="arrow-down-left" class="w-5 h-5 text-white"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-1">
+                      <h3 class="font-medium text-text">ETH Bought</h3>
+                      <span class="text-sm font-medium text-text">-$1,850.00</span>
+                    </div>
+                    <p class="text-sm text-muted">0.62 ETH @ $2,984</p>
+                    <p class="text-xs text-muted mt-1">15 minutes ago · DCA Bot</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                  <div class="w-10 h-10 rounded-xl gradient-defi flex items-center justify-center shrink-0">
+                    <i data-lucide="layers" class="w-5 h-5 text-white"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-1">
+                      <h3 class="font-medium text-text">Staking Reward</h3>
+                      <span class="text-sm font-medium text-green-500">+$124.50</span>
+                    </div>
+                    <p class="text-sm text-muted">ETH Staking Pool</p>
+                    <p class="text-xs text-muted mt-1">1 hour ago · Auto-compound</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                  <div class="w-10 h-10 rounded-xl gradient-teal flex items-center justify-center shrink-0">
+                    <i data-lucide="git-compare" class="w-5 h-5 text-white"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-1">
+                      <h3 class="font-medium text-text">Arbitrage Executed</h3>
+                      <span class="text-sm font-medium text-green-500">+$45.20</span>
+                    </div>
+                    <p class="text-sm text-muted">BTC Binance → Coinbase</p>
+                    <p class="text-xs text-muted mt-1">2 hours ago · Arbitrage Bot</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                  <div class="w-10 h-10 rounded-xl gradient-warning flex items-center justify-center shrink-0">
+                    <i data-lucide="alert-triangle" class="w-5 h-5 text-white"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-1">
+                      <h3 class="font-medium text-text">Stop Loss Triggered</h3>
+                      <span class="text-sm font-medium text-red-500">-$180.00</span>
+                    </div>
+                    <p class="text-sm text-muted">LINK/USDT Position Closed</p>
+                    <p class="text-xs text-muted mt-1">3 hours ago · Signal Bot</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- ======================================
+             Start Tab Content: Bot Performance
+             ====================================== -->
+        <!-- <div id="tab-bots" class="tab-content">
+          <div class="card-elevated">
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-lg font-semibold text-text">Bot Performance Comparison</h2>
+              <div class="flex items-center gap-2">
+                <button class="btn btn-secondary js-open-export-modal">
+                  <i data-lucide="download" class="w-4 h-4"></i>
+                  Export
+                </button>
+              </div>
+            </div>
+            <div class="h-80">
+              <canvas id="botPerformanceChart"></canvas>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- ======================================
+             Start Tab Content: Portfolio
+             ====================================== -->
+        <!-- <div id="tab-portfolio" class="tab-content">
+          <div class="card-elevated">
+            <h2 class="text-lg font-semibold text-text mb-6">Portfolio Holdings</h2>
+            <div class="overflow-x-auto">
+              <table class="data-table whitespace-nowrap">
+                <thead>
+                  <tr>
+                    <th>Asset</th>
+                    <th>Holdings</th>
+                    <th>Avg. Buy Price</th>
+                    <th>Current Price</th>
+                    <th>Value</th>
+                    <th>PnL</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="js-open-drawer" data-drawer-type="assetDetails">
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div class="crypto-icon bg-orange-500">BTC</div>
+                        <div>
+                          <p class="font-semibold text-text">Bitcoin</p>
+                          <p class="text-xs text-muted">BTC</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="font-medium text-text">2.45 BTC</td>
+                    <td class="text-muted">$38,420.00</td>
+                    <td class="text-text">$97,245.80</td>
+                    <td class="font-semibold text-text">$238,252.21</td>
+                    <td><span class="text-green-500 font-semibold">+153.08%</span></td>
+                    <td>
+                      <button class="btn-icon w-8 h-8" aria-label="Asset Options">
+                        <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="js-open-drawer" data-drawer-type="assetDetails">
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div class="crypto-icon bg-indigo-500">ETH</div>
+                        <div>
+                          <p class="font-semibold text-text">Ethereum</p>
+                          <p class="text-xs text-muted">ETH</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="font-medium text-text">18.2 ETH</td>
+                    <td class="text-muted">$1,850.00</td>
+                    <td class="text-text">$2,903.30</td>
+                    <td class="font-semibold text-text">$52,840.06</td>
+                    <td><span class="text-green-500 font-semibold">+56.94%</span></td>
+                    <td>
+                      <button class="btn-icon w-8 h-8" aria-label="Asset Options">
+                        <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="js-open-drawer" data-drawer-type="assetDetails">
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div class="crypto-icon bg-purple-500">SOL</div>
+                        <div>
+                          <p class="font-semibold text-text">Solana</p>
+                          <p class="text-xs text-muted">SOL</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="font-medium text-text">142 SOL</td>
+                    <td class="text-muted">$98.50</td>
+                    <td class="text-text">$200.35</td>
+                    <td class="font-semibold text-text">$28,449.70</td>
+                    <td><span class="text-green-500 font-semibold">+103.40%</span></td>
+                    <td>
+                      <button class="btn-icon w-8 h-8" aria-label="Asset Options">
+                        <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- ======================================
+             Start Tab Content: DeFi Analytics
+             ====================================== -->
+        <!-- <div id="tab-defi" class="tab-content">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div class="card-elevated">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-2xl gradient-defi flex items-center justify-center">
+                  <i data-lucide="layers" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                  <p class="text-muted text-sm">Total Staked</p>
+                  <p class="text-xl font-bold text-text">$42,580.00</p>
+                </div>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill gradient-defi" style="width: 72%"></div>
+              </div>
+              <p class="text-sm text-muted mt-2">72% of portfolio staked</p>
+            </div>
+            <div class="card-elevated">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-2xl gradient-success flex items-center justify-center">
+                  <i data-lucide="sprout" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                  <p class="text-muted text-sm">Yield Earned (30d)</p>
+                  <p class="text-xl font-bold text-green-500">+$1,847.32</p>
+                </div>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill gradient-success" style="width: 85%"></div>
+              </div>
+              <p class="text-sm text-muted mt-2">85% above target</p>
+            </div>
+            <div class="card-elevated">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-2xl gradient-info flex items-center justify-center">
+                  <i data-lucide="droplets" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                  <p class="text-muted text-sm">Liquidity Provided</p>
+                  <p class="text-xl font-bold text-text">$18,420.00</p>
+                </div>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill gradient-info" style="width: 45%"></div>
+              </div>
+              <p class="text-sm text-muted mt-2">Across 4 pools</p>
+            </div>
+          </div>
+          <div class="card-elevated">
+            <h2 class="text-lg font-semibold text-text mb-6">DeFi Yield Performance</h2>
+            <div class="h-80">
+              <canvas id="defiYieldChart"></canvas>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- Tab Content: Recent Trades -->
+        <!-- <div id="tab-trades" class="tab-content">
+          <div class="card-elevated">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <h2 class="text-lg font-semibold text-text">Trade History</h2>
+              <div class="flex items-center flex-wrap gap-3">
+                <div class="relative">
+                  <i data-lucide="search" class="w-4 h-4 absolute left-3 top-[15px] text-muted"></i>
+                  <input type="text" id="tradeSearch" placeholder="Search trades..." class="form-control pl-8! w-48" />
+                </div>
+                <button class="btn btn-secondary js-open-export-modal">
+                  <i data-lucide="download" class="w-4 h-4"></i>
+                  Export
+                </button>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="data-table whitespace-nowrap" id="tradesTable">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Pair</th>
+                    <th>Type</th>
+                    <th>Side</th>
+                    <th>Price</th>
+                    <th>Amount</th>
+                    <th>Total</th>
+                    <th>PnL</th>
+                    <th>Bot</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-muted text-sm">12:45:23</td>
+                    <td><span class="font-semibold text-text">BTC/USDT</span></td>
+                    <td><span class="badge badge-info">Limit</span></td>
+                    <td><span class="text-green-500 font-semibold">BUY</span></td>
+                    <td class="text-text">$97,245.80</td>
+                    <td class="text-text">0.025</td>
+                    <td class="text-text">$2,431.14</td>
+                    <td class="text-green-500 font-semibold">+$124.50</td>
+                    <td><span class="badge badge-teal">Signal</span></td>
+                  </tr>
+                  <tr>
+                    <td class="text-muted text-sm">12:32:15</td>
+                    <td><span class="font-semibold text-text">ETH/USDT</span></td>
+                    <td><span class="badge badge-warning">Market</span></td>
+                    <td><span class="text-red-500 font-semibold">SELL</span></td>
+                    <td class="text-text">$2,903.30</td>
+                    <td class="text-text">0.62</td>
+                    <td class="text-text">$1,800.05</td>
+                    <td class="text-green-500 font-semibold">+$85.20</td>
+                    <td><span class="badge badge-info">DCA</span></td>
+                  </tr>
+                  <tr>
+                    <td class="text-muted text-sm">12:18:42</td>
+                    <td><span class="font-semibold text-text">SOL/USDT</span></td>
+                    <td><span class="badge badge-info">Limit</span></td>
+                    <td><span class="text-green-500 font-semibold">BUY</span></td>
+                    <td class="text-text">$200.35</td>
+                    <td class="text-text">5.0</td>
+                    <td class="text-text">$1,001.75</td>
+                    <td class="text-red-500 font-semibold">-$42.30</td>
+                    <td><span class="badge badge-crypto">Pump</span></td>
+                  </tr>
+                  <tr>
+                    <td class="text-muted text-sm">11:55:08</td>
+                    <td><span class="font-semibold text-text">LINK/USDT</span></td>
+                    <td><span class="badge badge-danger">Stop</span></td>
+                    <td><span class="text-red-500 font-semibold">SELL</span></td>
+                    <td class="text-text">$18.40</td>
+                    <td class="text-text">50</td>
+                    <td class="text-text">$920.00</td>
+                    <td class="text-red-500 font-semibold">-$180.00</td>
+                    <td><span class="badge badge-teal">Signal</span></td>
+                  </tr>
+                  <tr>
+                    <td class="text-muted text-sm">11:42:33</td>
+                    <td><span class="font-semibold text-text">AVAX/USDT</span></td>
+                    <td><span class="badge badge-info">Limit</span></td>
+                    <td><span class="text-green-500 font-semibold">BUY</span></td>
+                    <td class="text-text">$40.05</td>
+                    <td class="text-text">25</td>
+                    <td class="text-text">$1,001.25</td>
+                    <td class="text-green-500 font-semibold">+$56.80</td>
+                    <td><span class="badge badge-info">DCA</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div> -->
+        </div>
+    </main>
+
+    <!-- Drawer Overlay -->
+    <!-- <div class="drawer-overlay" id="drawerOverlay"></div> -->
+
+    <!-- Drawer -->
+    <!-- <div class="drawer" id="drawer">
+      <div class="p-6 border-b border-border flex items-center justify-between">
+        <h2 class="text-xl font-bold text-text" id="drawerTitle">Details</h2>
+        <button class="btn-icon js-close-drawer" aria-label="Close Drawer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="p-6" id="drawerContent">
+      
+      </div>
+    </div> -->
+
+    <!-- Export Modal -->
+    <!-- <div class="modal-overlay" id="exportModal">
+      <div class="modal-content bg-panel border-accent/20 border shadow-2xl rounded-lg p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-bold text-text">Export Data</h2>
+          <button class="p-2 rounded-lg hover:bg-border/50 js-close-modal" aria-label="Close Modal">
+            <i data-lucide="x" class="w-5 h-5 text-muted"></i>
+          </button>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-text mb-2">Export Format</label>
+            <select class="form-control" id="exportFormat">
+              <option value="csv">CSV</option>
+              <option value="xlsx">Excel (XLSX)</option>
+              <option value="json">JSON</option>
+              <option value="pdf">PDF Report</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text mb-2">Date Range</label>
+            <select class="form-control" id="exportRange">
+              <option value="7d">Last 7 Days</option>
+              <option value="30d">Last 30 Days</option>
+              <option value="90d">Last 90 Days</option>
+              <option value="all">All Time</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text mb-2">Include</label>
+            <div class="space-y-2">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked class="w-4 h-4 rounded border-border" />
+                <span class="text-sm text-text">Dashboard Overview</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked class="w-4 h-4 rounded border-border" />
+                <span class="text-sm text-text">Bot Performance</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="w-4 h-4 rounded border-border" />
+                <span class="text-sm text-text">Trade History</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 mt-6 pt-6 border-t border-border">
+          <button class="btn btn-secondary flex-1 js-close-modal">Cancel</button>
+          <button class="btn btn-primary flex-1 js-export-data">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            Export
+          </button>
+        </div>
+      </div>
+    </div> -->
+    <script src="../unpkg.com/lucide%401.8.0/dist/umd/lucide.js" defer></script>
+    <script src="../cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script defer src="{% static 'assets/js/index.js' %}"></script>
+</body>
+
+<!-- Mirrored from tradebotx-html-tau.vercel.app/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 15 Apr 2026 03:38:07 GMT -->
+
+</html>

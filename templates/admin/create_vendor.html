@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+
+{% block title %}Create Vendor{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* ===== PAGE ===== */
+.vendor-page {
+    max-width: 1100px;
+    margin: 30px auto;
+}
+
+/* GRID */
+.vendor-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 20px;
+}
+
+/* CARD */
+.card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+}
+
+/* TITLE */
+.card h2, .card h3 {
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* INPUT */
+.card input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    transition: 0.2s;
+}
+
+.card input:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37,99,235,0.1);
+}
+
+/* BUTTON */
+.card button {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: 0.2s;
+}
+
+.card button:hover {
+    transform: scale(1.02);
+}
+
+.card button:disabled {
+    background: #aaa;
+}
+
+/* MESSAGE */
+#msg {
+    margin-top: 10px;
+    font-size: 13px;
+    padding: 8px;
+    border-radius: 6px;
+}
+
+/* TABLE */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    text-align: left;
+    padding: 12px;
+    background: #f8fafc;
+    font-weight: 600;
+}
+
+.table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.table tr:hover {
+    background: #f1f5f9;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .vendor-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
+
+<div class="vendor-page">
+
+<div class="vendor-grid">
+
+<!-- ========= FORM ========= -->
+<div class="card">
+
+<h2>Create Vendor</h2>
+
+<input id="first_name" placeholder="First Name">
+<input id="last_name" placeholder="Last Name">
+<input id="email" placeholder="Email">
+<input id="phone" placeholder="Phone">
+
+<button onclick="sendOTP()">Send OTP</button>
+
+<div id="otpBox" style="display:none;">
+    <input id="otp" placeholder="Enter OTP">
+    <button onclick="verifyOTP()">Verify OTP</button>
+</div>
+
+<div id="passBox" style="display:none;">
+    <input id="password" type="password" placeholder="Password">
+    <input id="confirm_password" type="password" placeholder="Confirm Password">
+    <button onclick="createVendor()">Create Vendor</button>
+</div>
+
+<p id="msg"></p>
+
+</div>
+
+<!-- ========= TABLE ========= -->
+<div class="card">
+
+<h3>All Vendors</h3>
+
+<table class="table">
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>Phone</th>
+</tr>
+
+{% for v in vendors %}
+<tr>
+<td>{{ v.first_name }} {{ v.last_name }}</td>
+<td>{{ v.email }}</td>
+<td>{{ v.phone }}</td>
+</tr>
+{% empty %}
+<tr><td colspan="3">No vendors</td></tr>
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* ===== CSRF ===== */
+function getCSRF(){
+    return "{{ csrf_token }}";
+}
+
+/* ===== MESSAGE ===== */
+function showMsg(text, type=""){
+    const msg = document.getElementById("msg");
+    msg.innerText = text;
+
+    if(type === "error"){
+        msg.style.background = "#fee2e2";
+        msg.style.color = "#b91c1c";
+    } else if(type === "success"){
+        msg.style.background = "#dcfce7";
+        msg.style.color = "#166534";
+    }
+}
+
+/* ===== SEND OTP ===== */
+function sendOTP(){
+
+    if(!phone.value){
+        showMsg("Enter phone number","error");
+        return;
+    }
+
+    fetch("/send-otp/", {
+        method:"POST",
+        headers:{'X-CSRFToken':getCSRF()},
+        body:new URLSearchParams({phone:phone.value})
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        if(data.status==="sent"){
+            otpBox.style.display="block";
+            showMsg("OTP sent successfully","success");
+        }else{
+            showMsg("Failed to send OTP","error");
+        }
+    })
+    .catch(()=>{
+        showMsg("Server error","error");
+    });
+}
+
+/* ===== VERIFY OTP ===== */
+function verifyOTP(){
+    fetch("/verify-otp/", {
+        method:"POST",
+        headers:{'X-CSRFToken':getCSRF()},
+        body:new URLSearchParams({otp:otp.value})
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        if(data.status==="verified"){
+            passBox.style.display="block";
+            showMsg("OTP verified","success");
+        }else{
+            showMsg("Invalid OTP","error");
+        }
+    });
+}
+
+/* ===== CREATE VENDOR ===== */
+function createVendor(){
+
+    if(password.value !== confirm_password.value){
+        showMsg("Passwords do not match","error");
+        return;
+    }
+
+    fetch("/create_vendor/",{
+        method:"POST",
+        headers:{'X-CSRFToken':getCSRF()},
+        body:new URLSearchParams({
+            first_name:first_name.value,
+            last_name:last_name.value,
+            email:email.value,
+            phone:phone.value,
+            password:password.value,
+            confirm_password:confirm_password.value
+        })
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        if(data.error){
+            showMsg(data.error,"error");
+        }else{
+            showMsg("Vendor created successfully","success");
+            setTimeout(()=>location.reload(),1000);
+        }
+    })
+    .catch(()=>{
+        showMsg("Server error","error");
+    });
+}
+
+</script>
+
+{% endblock %}

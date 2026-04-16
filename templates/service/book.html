@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Book Service</title>
+
+<style>
+
+/* ===== PAGE ===== */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f7fb;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+    max-width: 450px;
+    margin: 50px auto;
+    padding: 0 15px;
+}
+
+/* ===== CARD ===== */
+.card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* ===== TITLE ===== */
+h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    text-align: center;
+}
+
+/* ===== INPUT ===== */
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+input:focus, textarea:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37,99,235,0.1);
+}
+
+/* ===== TEXTAREA ===== */
+textarea {
+    min-height: 90px;
+    resize: none;
+}
+
+/* ===== BUTTON ===== */
+button {
+    width: 100%;
+    padding: 11px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: scale(1.02);
+}
+
+/* ===== MESSAGE ===== */
+#msg {
+    text-align: center;
+    font-size: 13px;
+    margin-top: 10px;
+    padding: 8px;
+    border-radius: 6px;
+}
+
+/* ===== HIDDEN ===== */
+.hidden {
+    display: none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Book {{ service.name }}</h2>
+
+<input id="name" placeholder="Full Name">
+<input id="phone" placeholder="Phone Number">
+
+<button onclick="sendOTP()">Send OTP</button>
+
+<div id="otpBox" class="hidden">
+    <input id="otp" placeholder="Enter OTP">
+    <button onclick="verifyOTP()">Verify OTP</button>
+</div>
+
+<div id="formBox" class="hidden">
+    <input id="password" type="password" placeholder="Create Password">
+
+    <textarea id="address" placeholder="Enter your address"></textarea>
+    <textarea id="problem" placeholder="Describe your problem"></textarea>
+
+    <button onclick="bookNow()">Confirm Booking</button>
+</div>
+
+<p id="msg"></p>
+
+</div>
+
+</div>
+
+<script>
+
+function getCSRF(){
+    return "{{ csrf_token }}";
+}
+
+function showMsg(t, type=""){
+    const msg = document.getElementById("msg");
+    msg.innerText = t;
+
+    if(type==="error"){
+        msg.style.background="#fee2e2";
+        msg.style.color="#b91c1c";
+    }else if(type==="success"){
+        msg.style.background="#dcfce7";
+        msg.style.color="#166534";
+    }
+}
+
+function sendOTP(){
+    fetch("/send-otp/",{
+        method:"POST",
+        headers:{'X-CSRFToken':getCSRF()},
+        body:new URLSearchParams({phone:phone.value})
+    }).then(()=>{
+        otpBox.classList.remove("hidden");
+        showMsg("OTP sent successfully","success");
+    });
+}
+
+function verifyOTP(){
+    fetch("/verify-otp/",{
+        method:"POST",
+        headers:{'X-CSRFToken':getCSRF()},
+        body:new URLSearchParams({otp:otp.value})
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        if(data.status==="verified"){
+            formBox.classList.remove("hidden");
+            showMsg("OTP verified","success");
+        }else{
+            showMsg("Invalid OTP","error");
+        }
+    });
+}
+
+function bookNow(){
+
+    fetch("/book_service/", {
+        method:"POST",
+        headers:{ 'X-CSRFToken': getCSRF() },
+        body:new URLSearchParams({
+            name:name.value,
+            phone:phone.value,
+            password:password.value,
+            address:address.value,
+            problem:problem.value
+        })
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        if(data.status==="success"){
+            window.location.href = "/order_success/";
+        }else{
+            showMsg(data.error,"error");
+        }
+    })
+    .catch(()=>{
+        showMsg("Server error","error");
+    });
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Register</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* CARD */
+.card {
+    width: 380px;
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* INPUT */
+.input-group {
+    margin-bottom: 12px;
+}
+
+.input-group label {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+/* BUTTON */
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: #007bff;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+/* EXTRA */
+.extra {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.extra a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.extra a:hover {
+    text-decoration: underline;
+}
+
+/* MESSAGE */
+.msg {
+    text-align: center;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.success { color: green; }
+.error { color: red; }
+
+.hidden { display: none; }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Create Account</h2>
+
+<!-- NAME -->
+<div class="input-group">
+<label>First Name</label>
+<input id="first_name">
+</div>
+
+<div class="input-group">
+<label>Last Name</label>
+<input id="last_name">
+</div>
+
+<!-- EMAIL -->
+<div class="input-group">
+<label>Email</label>
+<input id="email">
+</div>
+
+<!-- PHONE -->
+<div class="input-group">
+<label>Phone</label>
+<input id="phone">
+</div>
+
+<button onclick="sendOTP()">Send OTP</button>
+
+<!-- OTP -->
+<div id="otpBox" class="hidden">
+<div class="input-group">
+<label>Enter OTP</label>
+<input id="otp">
+</div>
+<button onclick="verifyOTP()">Verify OTP</button>
+</div>
+
+<!-- PASSWORD -->
+<div id="passBox" class="hidden">
+<div class="input-group">
+<label>Password</label>
+<input id="password" type="password">
+</div>
+
+<div class="input-group">
+<label>Confirm Password</label>
+<input id="confirm_password" type="password">
+</div>
+
+<button onclick="registerUser()">Register</button>
+</div>
+
+<div id="msg" class="msg"></div>
+
+<div class="extra">
+Already have an account? <a href="/login/">Login</a>
+</div>
+
+</div>
+
+<script>
+
+/* CSRF */
+function getCSRFToken() {
+    return "{{ csrf_token }}";
+}
+
+/* VALIDATION */
+function validateBasic() {
+    if (!first_name.value || !last_name.value || !email.value || !phone.value) {
+        showMsg("Fill all fields", "error");
+        return false;
+    }
+
+    if (!email.value.includes("@")) {
+        showMsg("Invalid email", "error");
+        return false;
+    }
+
+    if (phone.value.length < 10) {
+        showMsg("Invalid phone", "error");
+        return false;
+    }
+
+    return true;
+}
+
+function validatePassword() {
+    if (password.value.length < 6) {
+        showMsg("Password must be 6+ chars", "error");
+        return false;
+    }
+
+    if (password.value !== confirm_password.value) {
+        showMsg("Passwords do not match", "error");
+        return false;
+    }
+
+    return true;
+}
+
+function showMsg(text, type) {
+    const msg = document.getElementById("msg");
+    msg.innerText = text;
+    msg.className = "msg " + type;
+}
+
+/* SEND OTP */
+function sendOTP() {
+    if (!validateBasic()) return;
+
+    fetch("/send-otp/", {
+        method: "POST",
+        headers: { 'X-CSRFToken': getCSRFToken() },
+        body: new URLSearchParams({ phone: phone.value })
+    })
+    .then(res => res.json())
+    .then(() => {
+        otpBox.classList.remove("hidden");
+        showMsg("OTP sent ✅", "success");
+    })
+    .catch(() => showMsg("OTP failed ❌", "error"));
+}
+
+/* VERIFY OTP */
+function verifyOTP() {
+    fetch("/verify-otp/", {
+        method: "POST",
+        headers: { 'X-CSRFToken': getCSRFToken() },
+        body: new URLSearchParams({ otp: otp.value })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "verified") {
+            passBox.classList.remove("hidden");
+            showMsg("OTP verified ✅", "success");
+        } else {
+            showMsg("Invalid OTP ❌", "error");
+        }
+    });
+}
+
+/* REGISTER */
+function registerUser() {
+    if (!validatePassword()) return;
+
+    fetch("/register/", {
+        method: "POST",
+        headers: {
+            'X-CSRFToken': getCSRFToken()
+        },
+        body: new URLSearchParams({
+            first_name: first_name.value,
+            last_name: last_name.value,
+            email: email.value,
+            phone: phone.value,
+            password: password.value,
+            confirm_password: confirm_password.value   // 🔥 ADD THIS
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.error) {
+            showMsg(data.error, "error");
+        } else {
+            window.location.href = "/customer-dashboard/";
+        }
+    });
+}
+</script>
+
+</body>
+</html>

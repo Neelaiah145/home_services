@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}Create Admin{% endblock %}
+
+{% block content %}
+
+<style>
+.admin-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 20px;
+}
+
+/* CARD */
+.admin-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* INPUT */
+.admin-card input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+/* BUTTON */
+.admin-card button {
+    width: 100%;
+    padding: 10px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.admin-card button:hover {
+    background: #1d4ed8;
+}
+
+/* MESSAGE */
+.msg { margin-top: 8px; font-size: 13px; }
+.success { color: green; }
+.error { color: red; }
+
+.hidden { display: none; }
+
+/* TABLE */
+.table-card table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-card th {
+    background: #f8fafc;
+    padding: 12px;
+    text-align: left;
+}
+
+.table-card td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.table-card tr:hover {
+    background: #f1f5f9;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="admin-grid">
+
+<!-- ================= FORM ================= -->
+<div class="admin-card">
+
+<h2>Create Admin</h2>
+
+<input id="first_name" placeholder="First Name">
+<input id="last_name" placeholder="Last Name">
+<input id="email" placeholder="Email">
+<input id="phone" placeholder="Phone">
+
+<button id="otpBtn" onclick="sendOTP()">Send OTP</button>
+
+<div id="otpBox" class="hidden">
+    <input id="otp" placeholder="Enter OTP">
+    <button onclick="verifyOTP()">Verify OTP</button>
+</div>
+
+<div id="passBox" class="hidden">
+    <input id="password" type="password" placeholder="Password">
+    <input id="confirm_password" type="password" placeholder="Confirm Password">
+    <button id="createBtn" onclick="createAdmin()">Create Admin</button>
+</div>
+
+<p id="msg" class="msg"></p>
+
+</div>
+
+<!-- ================= TABLE ================= -->
+<div class="admin-card table-card">
+
+<h2>All Admins</h2>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>Phone</th>
+</tr>
+</thead>
+
+<tbody>
+{% for admin in admins %}
+<tr>
+<td>{{ admin.first_name }} {{ admin.last_name }}</td>
+<td>{{ admin.email }}</td>
+<td>{{ admin.phone }}</td>
+</tr>
+{% empty %}
+<tr><td colspan="3">No admins found</td></tr>
+{% endfor %}
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+/* ===== CSRF ===== */
+function getCSRF(){
+    return "{{ csrf_token }}";
+}
+
+/* ===== MESSAGE ===== */
+function showMsg(text, type=""){
+    const msg = document.getElementById("msg");
+    msg.innerText = text;
+    msg.className = "msg " + type;
+}
+
+/* ===== SEND OTP ===== */
+function sendOTP(){
+
+    if(!phone.value){
+        showMsg("Enter phone number","error");
+        return;
+    }
+
+    otpBtn.disabled = true;
+    otpBtn.innerText = "Sending...";
+
+    fetch("/send-otp/", {
+        method: "POST",
+        headers: {'X-CSRFToken': getCSRF()},
+        body: new URLSearchParams({ phone: phone.value })
+    })
+    .then(res => res.json())
+    .then(data=>{
+        otpBtn.disabled = false;
+        otpBtn.innerText = "Send OTP";
+
+        if(data.status === "sent"){
+            otpBox.classList.remove("hidden");
+            showMsg("OTP sent successfully","success");
+        }else{
+            showMsg("Failed to send OTP","error");
+        }
+    })
+    .catch(()=>{
+        otpBtn.disabled = false;
+        otpBtn.innerText = "Send OTP";
+        showMsg("Server error","error");
+    });
+}
+
+/* ===== VERIFY OTP ===== */
+function verifyOTP(){
+    fetch("/verify-otp/", {
+        method: "POST",
+        headers: {'X-CSRFToken': getCSRF()},
+        body: new URLSearchParams({ otp: otp.value })
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        if(data.status==="verified"){
+            passBox.classList.remove("hidden");
+            showMsg("OTP verified","success");
+        }else{
+            showMsg("Invalid OTP","error");
+        }
+    });
+}
+
+/* ===== CREATE ADMIN ===== */
+function createAdmin(){
+
+    if(password.value !== confirm_password.value){
+        showMsg("Passwords do not match","error");
+        return;
+    }
+
+    createBtn.disabled = true;
+    createBtn.innerText = "Creating...";
+
+    fetch("/create_admin/", {
+        method: "POST",
+        headers: {'X-CSRFToken': getCSRF()},
+        body: new URLSearchParams({
+            first_name:first_name.value,
+            last_name:last_name.value,
+            email:email.value,
+            phone:phone.value,
+            password:password.value,
+            confirm_password:confirm_password.value
+        })
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        createBtn.disabled = false;
+        createBtn.innerText = "Create Admin";
+
+        if(data.error){
+            showMsg(data.error,"error");
+        }else{
+            showMsg("Admin created successfully","success");
+            setTimeout(()=>location.reload(),1000);
+        }
+    })
+    .catch(()=>{
+        createBtn.disabled = false;
+        createBtn.innerText = "Create Admin";
+        showMsg("Server error","error");
+    });
+}
+
+</script>
+
+{% endblock %}
