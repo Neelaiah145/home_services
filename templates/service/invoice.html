@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Invoice</title>
+
+<style>
+body{
+  font-family: 'Inter', Arial, sans-serif;
+  background:#f5f7fb;
+  padding:30px;
+}
+
+/* MAIN CARD */
+.invoice{
+  max-width:800px;
+  margin:auto;
+  background:#fff;
+  padding:30px;
+  border-radius:12px;
+  border:1px solid #e5e7eb;
+}
+
+/* HEADER */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+
+.company{
+  font-size:18px;
+  font-weight:600;
+  color:#111827;
+}
+
+.meta{
+  font-size:13px;
+  color:#6b7280;
+}
+
+/* INVOICE TITLE */
+.title{
+  font-size:22px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+/* BILL SECTION */
+.bill{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:25px;
+}
+
+.bill-box{
+  width:48%;
+}
+
+.bill-title{
+  font-size:13px;
+  color:#6b7280;
+  margin-bottom:5px;
+}
+
+.bill-value{
+  font-size:14px;
+  font-weight:500;
+  color:#111827;
+}
+
+/* TABLE */
+.table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+.table th{
+  text-align:left;
+  font-size:12px;
+  color:#6b7280;
+  padding-bottom:8px;
+}
+
+.table td{
+  padding:12px 0;
+  border-top:1px solid #e5e7eb;
+  font-size:14px;
+}
+
+/* TOTAL */
+.total{
+  margin-top:20px;
+  text-align:right;
+}
+
+.total-row{
+  display:flex;
+  justify-content:flex-end;
+  gap:40px;
+  margin-bottom:5px;
+}
+
+.total-final{
+  font-size:18px;
+  font-weight:700;
+  margin-top:8px;
+}
+
+/* PAYMENT */
+.payment{
+  margin-top:25px;
+  font-size:14px;
+  color:#111827;
+}
+
+.payment img{
+  width:100px;
+  margin-top:10px;
+  border-radius:8px;
+  border:1px solid #e5e7eb;
+}
+
+/* BUTTONS */
+.actions{
+  margin-top:25px;
+  text-align:right;
+}
+
+.btn{
+  padding:8px 14px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:13px;
+  margin-left:10px;
+}
+
+.print{
+  background:#2563eb;
+  color:#fff;
+}
+
+.download{
+  background:#111827;
+  color:#fff;
+}
+
+/* FOOTER */
+.footer{
+  margin-top:30px;
+  font-size:12px;
+  color:#6b7280;
+  text-align:center;
+}
+
+/* PRINT */
+@media print{
+  body{
+    background:#fff;
+    padding:0;
+  }
+  .actions{display:none;}
+  .invoice{
+    border:none;
+    border-radius:0;
+  }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="invoice">
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <div class="company">Your Company</div>
+    <div class="meta">Address line</div>
+  </div>
+
+  <div class="meta">
+    <div><b>Invoice</b></div>
+    <div>INV-{{ p.id }}</div>
+    <div>{{ p.created_at|date:"d M Y" }}</div>
+  </div>
+</div>
+
+<!-- BILL -->
+<div class="bill">
+
+<div class="bill-box">
+  <div class="bill-title">Bill To</div>
+  <div class="bill-value">{{ p.booking.user.first_name }}</div>
+  <div class="meta">{{ p.booking.user.phone }}</div>
+</div>
+
+<div class="bill-box" style="text-align:right;">
+  <div class="bill-title">Vendor</div>
+  <div class="bill-value">{{ p.vendor.first_name }}</div>
+</div>
+
+</div>
+
+<!-- TABLE -->
+<table class="table">
+
+<tr>
+<th>Service</th>
+<th>Qty</th>
+<th style="text-align:right;">Amount</th>
+</tr>
+
+<tr>
+<td>{{ p.service.name }}</td>
+<td>1</td>
+<td style="text-align:right;">₹{{ p.amount }}</td>
+</tr>
+
+</table>
+
+<!-- TOTAL -->
+<div class="total">
+
+<div class="total-row">
+<span>Subtotal</span>
+<span>₹{{ p.amount }}</span>
+</div>
+
+<div class="total-row">
+<span>Tax</span>
+<span>₹0</span>
+</div>
+
+<div class="total-row total-final">
+<span>Total</span>
+<span>₹{{ p.amount }}</span>
+</div>
+
+</div>
+
+<!-- PAYMENT -->
+<div class="payment">
+<b>Transaction ID:</b> {{ p.transaction_id }}
+
+{% if p.screenshot %}
+<br><br>
+<img src="{{ p.screenshot.url }}">
+{% endif %}
+</div>
+
+<!-- ACTIONS -->
+<div class="actions">
+<button class="btn print" onclick="window.print()">Print</button>
+<button class="btn download" onclick="window.print()">Download PDF</button>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+Thank you for your business
+</div>
+
+</div>
+
+</body>
+</html>

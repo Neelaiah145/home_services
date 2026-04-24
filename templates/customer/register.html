@@ -2,269 +2,459 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Register</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register | Create Account</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
+  :root {
+    --primary: #6d28d9;
+    --primary-hover: #5b21b6;
+    --primary-light: #f5f3ff;
+    --text: #1f2937;
+    --gray: #6b7280;
+    --border: #e5e7eb;
+    --error: #ef4444;
+    --success: #10b981;
+    --bg: #f8f9fd;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100vh;
-}
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
 
-/* CARD */
-.card {
-    width: 380px;
+  .card {
+    width: 100%;
+    max-width: 420px;
     background: #fff;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+    padding: 35px;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+  }
 
-h2 {
+  h2 {
+  
+    margin: 0 0 8px 0;
+    color: var(--text);
+    font-size: 26px;
     text-align: center;
-    margin-bottom: 20px;
-}
+  }
 
-/* INPUT */
-.input-group {
-    margin-bottom: 12px;
-}
-
-.input-group label {
+  .sub {
+    color: var(--gray);
     font-size: 14px;
-    display: block;
-    margin-bottom: 4px;
-}
+    margin-bottom: 25px;
+    text-align: center;
+  }
 
-.input-group input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-}
+  .msg { 
+    text-align: center; 
+    margin-bottom: 15px; 
+    font-size: 13px; 
+    min-height: 18px;
+    font-weight: 500;
+  }
+  .error { color: var(--error); }
+  .success { color: var(--success); }
 
-/* BUTTON */
-button {
+  /* Form Groups */
+  .group { margin-bottom: 18px; }
+  label { font-size: 13px; font-weight: 600; color: var(--gray); display: block; margin-bottom: 6px; }
+
+  input:not(.otp-box) {
     width: 100%;
-    padding: 10px;
-    border: none;
-    background: #007bff;
-    color: white;
-    border-radius: 6px;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
+  }
+
+  input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(109, 40, 217, 0.1);
+  }
+
+  /* Phone Input with Flag Dropdown */
+  .phone-container {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    position: relative;
+    background: #fff;
+    overflow: visible;
+  }
+
+  .phone-container:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(109, 40, 217, 0.1);
+  }
+
+  .selected-country {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
     cursor: pointer;
-    font-weight: bold;
+    border-right: 1px solid var(--border);
+    min-width: 85px;
+    user-select: none;
+  }
+
+  .flag-img { width: 22px; height: 15px; border-radius: 2px; object-fit: cover; }
+
+  .country-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    z-index: 100;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+  }
+
+  .country-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .country-item:hover { background: var(--primary-light); }
+
+  #phone { border: none !important; box-shadow: none !important; }
+
+  /* OTP Grid */
+  .hidden { display: none; }
+  .otp-wrap { 
+    padding-top: 15px;
     margin-top: 5px;
-}
+    border-top: 1px dashed var(--border);
+    animation: fadeIn 0.4s ease;
+  }
 
-button:hover {
-    background: #0056b3;
-}
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* EXTRA */
-.extra {
+  .otp-grid { display: flex; justify-content: center; gap: 12px; margin: 15px 0; }
+
+  .otp-box {
+    width: 50px;
+    height: 60px;
     text-align: center;
-    margin-top: 15px;
-    font-size: 14px;
-}
+    font-size: 24px;
+    font-weight: 700;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    outline: none;
+    transition: 0.2s;
+  }
+  .otp-box:focus { border-color: var(--primary); background: var(--primary-light); }
 
-.extra a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-.extra a:hover {
-    text-decoration: underline;
-}
-
-/* MESSAGE */
-.msg {
-    text-align: center;
-    font-size: 14px;
+  /* Button & Timer */
+  button {
+    width: 100%;
+    padding: 15px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
     margin-top: 10px;
-}
+    transition: 0.3s;
+  }
 
-.success { color: green; }
-.error { color: red; }
+  button:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-1px); }
+  button:disabled { background: #d1d5db; cursor: not-allowed; }
 
-.hidden { display: none; }
+  .timer-row { text-align: center; font-size: 13px; color: var(--gray); margin-top: 15px; }
+  #resendBtn { background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; display: none; padding: 0; }
+
+  .footer {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #f3f4f6;
+    font-size: 14px;
+    color: var(--gray);
+  }
+  .footer a { color: var(--primary); text-decoration: none; font-weight: 700; }
+
+  /* Responsive Design */
+  @media (max-width: 480px) {
+    .card { padding: 25px 20px; }
+    .otp-box { width: 45px; height: 55px; }
+  }
 </style>
 </head>
 
 <body>
 
 <div class="card">
+  <h2>Create Account</h2>
+  <p class="sub">Join us using your mobile number</p>
 
-<h2>Create Account</h2>
+  <p id="msg" class="msg"></p>
 
-<!-- NAME -->
-<div class="input-group">
-<label>First Name</label>
-<input id="first_name">
-</div>
+  <div id="step1">
+    <div class="group">
+      <label>Full Name</label>
+      <input id="name" placeholder="John Doe">
+    </div>
 
-<div class="input-group">
-<label>Last Name</label>
-<input id="last_name">
-</div>
+    <div class="group">
+      <label>Email Address</label>
+      <input id="email" type="email" placeholder="john@example.com">
+    </div>
 
-<!-- EMAIL -->
-<div class="input-group">
-<label>Email</label>
-<input id="email">
-</div>
+    <div class="group">
+      <label>Mobile Number</label>
+      <div class="phone-container">
+        <div class="selected-country" id="dropdownTrigger">
+          <img src="https://flagcdn.com/w40/in.png" class="flag-img" id="mainFlag">
+          <span id="mainCode">+91</span>
+        </div>
+        <div class="country-dropdown" id="countryMenu">
+          <div class="country-item" onclick="selectCountry('in', '+91')"><img src="https://flagcdn.com/w40/in.png" class="flag-img"> India (+91)</div>
+          <div class="country-item" onclick="selectCountry('us', '+1')"><img src="https://flagcdn.com/w40/us.png" class="flag-img"> USA (+1)</div>
+          <div class="country-item" onclick="selectCountry('gb', '+44')"><img src="https://flagcdn.com/w40/gb.png" class="flag-img"> UK (+44)</div>
+        </div>
+        <input id="phone" type="tel" placeholder="9876543210" maxlength="10">
+      </div>
+    </div>
+  </div>
 
-<!-- PHONE -->
-<div class="input-group">
-<label>Phone</label>
-<input id="phone">
-</div>
+  <div id="step2" class="hidden">
+    <div class="otp-wrap">
+      <label style="text-align: center;">Enter 4-Digit OTP</label>
+      <div class="otp-grid">
+        <input class="otp-box" maxlength="1" inputmode="numeric">
+        <input class="otp-box" maxlength="1" inputmode="numeric">
+        <input class="otp-box" maxlength="1" inputmode="numeric">
+        <input class="otp-box" maxlength="1" inputmode="numeric">
+      </div>
+      <div class="timer-row">
+        <span id="tText">Resend in <b id="timer">30</b>s</span>
+        <button id="resendBtn" type="button">Resend OTP</button>
+      </div>
+    </div>
+  </div>
 
-<button onclick="sendOTP()">Send OTP</button>
+  <button id="btn">Send OTP </button>
 
-<!-- OTP -->
-<div id="otpBox" class="hidden">
-<div class="input-group">
-<label>Enter OTP</label>
-<input id="otp">
-</div>
-<button onclick="verifyOTP()">Verify OTP</button>
-</div>
-
-<!-- PASSWORD -->
-<div id="passBox" class="hidden">
-<div class="input-group">
-<label>Password</label>
-<input id="password" type="password">
-</div>
-
-<div class="input-group">
-<label>Confirm Password</label>
-<input id="confirm_password" type="password">
-</div>
-
-<button onclick="registerUser()">Register</button>
-</div>
-
-<div id="msg" class="msg"></div>
-
-<div class="extra">
-Already have an account? <a href="/login/">Login</a>
-</div>
-
+  <div class="footer">
+    Already have an account? <a href="/login/">Sign In</a>
+  </div>
 </div>
 
 <script>
+let step = 1;
+let countdown;
 
-/* CSRF */
-function getCSRFToken() {
-    return "{{ csrf_token }}";
+const btn = document.getElementById("btn");
+const msg = document.getElementById("msg");
+const nameInput = document.getElementById("name");
+const emailInput = document.getElementById("email");
+const phoneInput = document.getElementById("phone");
+const countryMenu = document.getElementById("countryMenu");
+const step1 = document.getElementById("step1");
+const step2 = document.getElementById("step2");
+const boxes = document.querySelectorAll(".otp-box");
+const resendBtn = document.getElementById("resendBtn");
+const timerVal = document.getElementById("timer");
+const tText = document.getElementById("tText");
+
+// Dropdown
+document.getElementById("dropdownTrigger").onclick = (e) => {
+  e.stopPropagation();
+  countryMenu.style.display = countryMenu.style.display === "block" ? "none" : "block";
+};
+
+function selectCountry(flag, code) {
+  document.getElementById("mainFlag").src = `https://flagcdn.com/w40/${flag}.png`;
+  document.getElementById("mainCode").innerText = code;
+  countryMenu.style.display = "none";
 }
 
-/* VALIDATION */
-function validateBasic() {
-    if (!first_name.value || !last_name.value || !email.value || !phone.value) {
-        showMsg("Fill all fields", "error");
-        return false;
+window.onclick = () => countryMenu.style.display = "none";
+
+// OTP input focus
+boxes.forEach((b,i)=>{
+  b.addEventListener("input", ()=>{
+    if(b.value && i < boxes.length-1){
+      boxes[i+1].focus();
+    }
+  });
+  b.addEventListener("keydown", (e)=>{
+    if(e.key === "Backspace" && !b.value && i > 0){
+      boxes[i-1].focus();
+    }
+  });
+});
+
+function showMsg(text, type){
+  msg.innerText = text;
+  msg.className = "msg " + type;
+}
+
+function startTimer() {
+  let time = 30;
+  resendBtn.style.display = "none";
+  tText.style.display = "inline";
+  clearInterval(countdown);
+  countdown = setInterval(() => {
+    time--;
+    timerVal.innerText = time;
+    if(time <= 0) {
+      clearInterval(countdown);
+      tText.style.display = "none";
+      resendBtn.style.display = "inline";
+    }
+  }, 1000);
+}
+
+function getCSRF(){
+  const token = document.cookie.split('; ').find(r=>r.startsWith('csrftoken='));
+  return token ? token.split('=')[1] : '';
+}
+
+resendBtn.onclick = () => { step = 1; btn.click(); };
+
+btn.onclick = async function(){
+  let otp = Array.from(boxes).map(b => b.value).join("");
+
+  // STEP 1 → SEND OTP
+  if(step === 1){
+    if(!nameInput.value || !emailInput.value || phoneInput.value.length < 10){
+      return showMsg("Please fill all fields correctly", "error");
     }
 
-    if (!email.value.includes("@")) {
-        showMsg("Invalid email", "error");
-        return false;
-    }
+    btn.disabled = true;
 
-    if (phone.value.length < 10) {
-        showMsg("Invalid phone", "error");
-        return false;
-    }
-
-    return true;
-}
-
-function validatePassword() {
-    if (password.value.length < 6) {
-        showMsg("Password must be 6+ chars", "error");
-        return false;
-    }
-
-    if (password.value !== confirm_password.value) {
-        showMsg("Passwords do not match", "error");
-        return false;
-    }
-
-    return true;
-}
-
-function showMsg(text, type) {
-    const msg = document.getElementById("msg");
-    msg.innerText = text;
-    msg.className = "msg " + type;
-}
-
-/* SEND OTP */
-function sendOTP() {
-    if (!validateBasic()) return;
-
-    fetch("/send-otp/", {
-        method: "POST",
-        headers: { 'X-CSRFToken': getCSRFToken() },
-        body: new URLSearchParams({ phone: phone.value })
-    })
-    .then(res => res.json())
-    .then(() => {
-        otpBox.classList.remove("hidden");
-        showMsg("OTP sent ✅", "success");
-    })
-    .catch(() => showMsg("OTP failed ❌", "error"));
-}
-
-/* VERIFY OTP */
-function verifyOTP() {
-    fetch("/verify-otp/", {
-        method: "POST",
-        headers: { 'X-CSRFToken': getCSRFToken() },
-        body: new URLSearchParams({ otp: otp.value })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.status === "verified") {
-            passBox.classList.remove("hidden");
-            showMsg("OTP verified ✅", "success");
-        } else {
-            showMsg("Invalid OTP ❌", "error");
-        }
-    });
-}
-
-/* REGISTER */
-function registerUser() {
-    if (!validatePassword()) return;
-
-    fetch("/register/", {
-        method: "POST",
-        headers: {
-            'X-CSRFToken': getCSRFToken()
+    try{
+      const res = await fetch("/register/", {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "X-CSRFToken":getCSRF()
         },
-        body: new URLSearchParams({
-            first_name: first_name.value,
-            last_name: last_name.value,
-            email: email.value,
-            phone: phone.value,
-            password: password.value,
-            confirm_password: confirm_password.value   // 🔥 ADD THIS
+        body:JSON.stringify({
+          name: nameInput.value,
+          email: emailInput.value,
+          phone: phoneInput.value
         })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.error) {
-            showMsg(data.error, "error");
-        } else {
-            window.location.href = "/customer-dashboard/";
+      });
+
+      const data = await res.json();
+      btn.disabled = false;
+
+      if(data.error){
+        showMsg(data.error, "error");
+
+        if(data.redirect){
+          setTimeout(()=> window.location.href = data.redirect, 1500);
         }
-    });
-}
+      } else {
+        showMsg("OTP sent to your mobile", "success");
+        step2.classList.remove("hidden");
+        nameInput.disabled = true;
+        emailInput.disabled = true;
+        phoneInput.disabled = true;
+        btn.innerText = "Verify OTP";
+        step = 2;
+        startTimer();
+      }
+
+    } catch(e){
+      showMsg("Connection failed", "error");
+      btn.disabled = false;
+    }
+  }
+
+  // STEP 2 → VERIFY OTP + CREATE USER + REDIRECT
+  else if(step === 2){
+    if(otp.length < 4){
+      return showMsg("Enter 4-digit OTP", "error");
+    }
+
+    btn.disabled = true;
+
+    try {
+      // VERIFY OTP
+      const res = await fetch("/register/", {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "X-CSRFToken":getCSRF()
+        },
+        body:JSON.stringify({
+          phone: phoneInput.value,
+          otp: otp
+        })
+      });
+
+      const data = await res.json();
+
+      if(data.error){
+        showMsg(data.error, "error");
+        btn.disabled = false;
+        return;
+      }
+
+      // CREATE USER
+      const res2 = await fetch("/register/", {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "X-CSRFToken":getCSRF()
+        },
+        body:JSON.stringify({
+          name: nameInput.value,
+          email: emailInput.value,
+          phone: phoneInput.value,
+          create_user: true
+        })
+      });
+
+      const data2 = await res2.json();
+      btn.disabled = false;
+
+      if(data2.error){
+        showMsg(data2.error, "error");
+      } else {
+        showMsg("Registered successfully 🎉 Redirecting...", "success");
+
+        setTimeout(() => {
+          window.location.href = data2.redirect || "/login/";
+        }, 1500);
+      }
+
+    } catch(e){
+      showMsg("Something went wrong", "error");
+      btn.disabled = false;
+    }
+  }
+};
 </script>
 
 </body>

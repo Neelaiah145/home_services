@@ -1,0 +1,128 @@
+{% extends 'dashboardbase.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+  
+    <div class="card shadow-sm border-0 rounded-3">
+
+        <!-- Header -->
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Category List</h5>
+            <a href="{% url 'create.category' %}" class="btn btn-sm btn-light">
+                <i class="bi bi-plus-circle-fill"></i> Add Category
+            </a>
+        </div>
+
+        <!-- Table -->
+        <div class="card-body table-responsive">
+
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Badge</th>
+                            <th>Tags</th>
+                            <th>Icon</th>
+                            <th>Service description </th>
+                            <th>Service img</th>
+                            <th>banner_img</th>
+                            <th>Created Date</th>
+                            
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for category in categories %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+
+                            <!-- Title -->
+                            <td>{{ category.title }}</td>
+
+                            <!-- Description -->
+                            <td style="max-width:200px;">
+                                {{ category.description|truncatechars:50 }}
+                            </td>
+
+                            <!-- Badge -->
+                            <td>
+                                {% if category.badge %}
+                                <span class="badge bg-success">{{ category.badge }}</span>
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+
+                            <!-- Tags -->
+                            <td>
+                                {% for tag in category.get_tags_list %}
+                                <span class="badge bg-secondary">{{ tag }}</span>
+                                {% empty %}
+                                
+                                {% endfor %}
+                            </td>
+
+                            <!-- Icon -->
+                            <td>
+                                {% if category.icon %}
+                                <img src="{{ category.icon.url }}" width="60" height="60" style="object-fit:cover;">
+                                {% endif %}
+                            </td>
+                          
+                            <td>
+                            {{category.category_about_des}}
+                            </td>
+                            <td>
+                                
+                                 {% if category.category_about_img %}
+                                <img src="{{ category.category_about_img.url }}" width="60" height="60" style="object-fit:cover;">
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if category.banner_image %}
+                                <img src="{{ category.banner_image.url }}" width="60" height="60" style="object-fit:cover;">
+                                {% endif %}
+                            </td>
+
+                            <!-- Date -->
+                            <td>{{ category.created_at|date:"d M Y" }}</td>
+
+                            <!-- Actions -->
+                            <td class="text-center">
+                                <a href="{% url 'update.category' category.pk  %}" class="btn btn-sm btn-warning">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <a href="{% url 'delete.category' category.pk  %}" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+                            </td>
+                        </tr>
+
+                        {% empty %}
+                        <tr>
+                            <td colspan="12" class="text-center text-muted py-4">
+                                No categories available
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+{% endblock %}

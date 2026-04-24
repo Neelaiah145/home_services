@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+
+:root {
+  --bg:#f9fafb;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --text:#111827;
+  --sub:#6b7280;
+  --primary:#2563eb;
+  --success:#16a34a;
+  --purple:#7c3aed;
+}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+}
+
+.page-wrap{
+  max-width:1200px;
+  margin:auto;
+  padding:30px 20px;
+}
+
+/* FILTER */
+.filter-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:18px;
+  margin-bottom:20px;
+}
+
+.filter-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  align-items:flex-end;
+}
+
+.field-group{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.field-label{
+  font-size:11px;
+  font-weight:600;
+  color:var(--sub);
+}
+
+.field-input{
+  height:38px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:0 12px;
+  font-size:13px;
+}
+
+/* BUTTONS */
+.btn-primary{
+  height:38px;
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  padding:0 18px;
+  border-radius:8px;
+  font-size:13px;
+  font-weight:600;
+}
+
+.btn-reset{
+  height:38px;
+  border:1px solid var(--border);
+  background:#fff;
+  padding:0 16px;
+  border-radius:8px;
+}
+
+/* TABLE */
+.table-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+thead th{
+  background:#f8fafc;
+  padding:16px;
+  font-size:11px;
+  text-transform:uppercase;
+  color:var(--sub);
+}
+
+tbody td{
+  padding:18px 16px;
+  border-top:1px solid var(--border);
+}
+
+tbody tr:hover{
+  background:#fafafa;
+}
+
+.inline-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.small-input{
+  height:36px;
+}
+
+.btn-small{
+  height:36px;
+  padding:0 14px;
+  background:#111827;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+}
+
+/* STATUS */
+.status{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:28px;
+  padding:0 12px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:600;
+}
+
+.status.assigned{background:#eef1ff;color:#2563eb;}
+.status.in_progress{background:#f5f3ff;color:#7c3aed;}
+.status.completed{background:#e6f7ed;color:#16a34a;}
+
+</style>
+
+<div class="page-wrap">
+
+<header style="margin-bottom:25px;">
+<h6>Order Management</h6>
+<p>Manage service requests and vendor assignments</p>
+</header>
+
+<!-- FILTER -->
+<div class="filter-card">
+<form method="GET" class="filter-grid">
+
+<div class="field-group">
+<label class="field-label">Search</label>
+<input type="text" name="q" class="field-input" value="{{ q }}">
+</div>
+
+<!-- CATEGORY -->
+<div class="field-group">
+<label class="field-label">Category</label>
+<select name="category" class="field-input" onchange="handleCategoryChange(this)">
+<option value="">All</option>
+
+{% for c in categories %}
+<option value="{{ c.id }}" {% if selected_category == c.id|stringformat:"s" %}selected{% endif %}>
+{{ c.title }}
+</option>
+{% endfor %}
+
+</select>
+</div>
+
+<!-- SERVICE -->
+<div class="field-group">
+<label class="field-label">Service</label>
+<select name="service" class="field-input"
+{% if not selected_category %}disabled{% endif %}
+onchange="this.form.submit()">
+
+<option value="">All</option>
+
+{% for s in services %}
+<option value="{{ s.id }}"
+{% if selected_service == s.id|stringformat:"s" %}selected{% endif %}>
+{{ s.s_title }}
+</option>
+{% endfor %}
+
+</select>
+</div>
+
+<button class="btn-primary">Apply</button>
+<a href="?" class="btn-reset">Reset</a>
+
+</form>
+</div>
+
+<!-- TABLE -->
+<div class="table-card">
+<table>
+
+<thead>
+<tr>
+<th>Order</th>
+<th>Customer</th>
+<th>Service</th>
+<th>Vendor</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for b in bookings %}
+<tr>
+
+<td><b>{{ b.order_id }}</b></td>
+
+<td>
+{{ b.name }}<br>
+<small>{{ b.phone }}</small>
+</td>
+
+<td>{{ b.service.s_title }}</td>
+
+<td>
+<div class="inline-actions">
+
+<select id="vendor-{{ b.id }}" class="field-input small-input">
+<option value="">Select</option>
+
+{% for v in vendors %}
+<option value="{{ v.id }}" {% if b.vendor.id == v.id %}selected{% endif %}>
+{{ v.first_name }}
+</option>
+{% endfor %}
+
+</select>
+
+<button class="btn-small" onclick="assignVendor({{ b.id }})">Assign</button>
+
+</div>
+</td>
+
+<td>
+<div class="inline-actions">
+
+<span class="status {{ b.status }}">{{ b.status }}</span>
+
+<select id="status-{{ b.id }}" class="field-input small-input">
+<option value="in_progress">Progress</option>
+<option value="completed">Completed</option>
+</select>
+
+<button class="btn-small" onclick="updateStatus({{ b.id }})">Update</button>
+
+</div>
+</td>
+
+</tr>
+
+{% empty %}
+<tr>
+<td colspan="5" style="text-align:center;">No orders</td>
+</tr>
+{% endfor %}
+
+</tbody>
+
+</table>
+</div>
+
+</div>
+
+<script>
+
+// CATEGORY → RESET SERVICE
+function handleCategoryChange(select){
+    let form = select.form;
+    let service = form.querySelector('[name="service"]');
+
+    if(service){
+        service.value = "";
+    }
+
+    form.submit();
+}
+
+// CSRF
+function getCSRF(){
+return document.cookie.split('; ').find(r=>r.startsWith('csrftoken='))?.split('=')[1];
+}
+
+// ASSIGN VENDOR
+async function assignVendor(id){
+let v=document.getElementById("vendor-"+id).value;
+
+if(!v){ alert("Select vendor"); return; }
+
+await fetch("/assign-vendor/",{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+"X-CSRFToken":getCSRF()
+},
+body:JSON.stringify({booking_id:id,vendor_id:v})
+});
+
+location.reload();
+}
+
+// UPDATE STATUS
+async function updateStatus(id){
+let s=document.getElementById("status-"+id).value;
+
+await fetch("/update-status/",{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+"X-CSRFToken":getCSRF()
+},
+body:JSON.stringify({booking_id:id,status:s})
+});
+
+location.reload();
+}
+
+</script>
+
+{% endblock %}

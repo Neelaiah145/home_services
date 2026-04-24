@@ -1,0 +1,72 @@
+{% extends 'dashboardbase.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <h3 class="mb-4">Update Contact Status</h3>
+
+    <!-- Success / Error Messages -->
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="card p-4 shadow-sm">
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Name -->
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" value="{{ contact.name }}" readonly>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="text" class="form-control" value="{{ contact.email }}" readonly>
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-3">
+                <label class="form-label">Phone</label>
+                <input type="text" class="form-control" value="{{ contact.phone }}" readonly>
+            </div>
+
+            <!-- City -->
+            <div class="mb-3">
+                <label class="form-label">City</label>
+                <input type="text" class="form-control" value="{{ contact.city }}" readonly>
+            </div>
+
+            <!-- Message -->
+            <div class="mb-3">
+                <label class="form-label">Message</label>
+                <textarea class="form-control" rows="4" readonly>{{ contact.message }}</textarea>
+            </div>
+
+            <!-- STATUS DROPDOWN -->
+            <div class="mb-3">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-control">
+                    <option value="pending" {% if contact.status == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="contacted" {% if contact.status == 'contacted' %}selected{% endif %}>Contacted</option>
+                    <option value="in_progress" {% if contact.status == 'in_progress' %}selected{% endif %}>In Progress
+                    </option>
+                    <option value="closed" {% if contact.status == 'closed' %}selected{% endif %}>Closed</option>
+                </select>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'list.contact' %}" class="btn btn-secondary">Back</a>
+                <button type="submit" class="btn btn-primary">Update Status</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}

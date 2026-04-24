@@ -1,0 +1,523 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#f9fafb;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --text:#111827;
+  --sub:#6b7280;
+  --primary:#2563eb;
+}
+
+/* BASE */
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+}
+
+/* PAGE */
+.dashboard-container{
+  max-width:1200px;
+  margin:auto;
+  padding:30px 20px;
+}
+
+/* HEADER */
+.header-section{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:24px;
+}
+
+.header-section h6{
+  font-weight:600;
+}
+
+.header-section p{
+  font-size:13px;
+  color:var(--sub);
+}
+
+.count-badge{
+  background:var(--primary);
+  color:#fff;
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:600;
+}
+
+/* CARD */
+.data-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+}
+
+/* TABLE */
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+thead{
+  background:#f8fafc;
+}
+
+thead th{
+  padding:14px;
+  font-size:11px;
+  text-transform:uppercase;
+  color:var(--sub);
+  font-weight:600;
+}
+
+tbody td{
+  padding:16px;
+  border-top:1px solid var(--border);
+  font-size:14px;
+}
+
+tbody tr:hover{
+  background:#f9fafb;
+}
+
+/* 🔥 FIXED STATUS BADGES */
+.status-tag{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:4px 12px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:600;
+  text-transform:capitalize;
+  border:1px solid transparent;
+}
+
+/* Pending */
+.status-tag.pending{
+  background:#fff4e5;
+  color:#b45309;
+  border-color:#fde68a;
+}
+
+/* Progress */
+.status-tag.progress{
+  background:#eef2ff;
+  color:#4338ca;
+  border-color:#c7d2fe;
+}
+
+/* Completed */
+.status-tag.completed{
+  background:#e6f7ed;
+  color:#15803d;
+  border-color:#bbf7d0;
+}
+
+/* ACTION */
+.action-flex{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.custom-select{
+  height:36px;
+  padding:0 10px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  font-size:13px;
+}
+
+.custom-select:focus{
+  border-color:var(--primary);
+  outline:none;
+}
+
+.update-btn{
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.update-btn:hover{
+  background:#1d4ed8;
+}
+
+/* PAYMENT */
+.payment-wrapper{
+  margin-top:12px;
+}
+
+.upload-link{
+  font-size:12px;
+  color:var(--primary);
+  font-weight:600;
+  cursor:pointer;
+}
+
+.payment-box{
+  display:none;
+  margin-top:10px;
+  padding:10px;
+  background:#f9fafb;
+  border:1px solid var(--border);
+  border-radius:8px;
+}
+
+.payment-box input{
+  width:100%;
+  margin-bottom:8px;
+  padding:8px;
+  border:1px solid var(--border);
+  border-radius:6px;
+  font-size:12px;
+}
+
+.success-receipt{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  background:#e6f7ed;
+  padding:8px;
+  border-radius:8px;
+}
+
+.receipt-img{
+  width:40px;
+  height:40px;
+  border-radius:6px;
+  object-fit:cover;
+  cursor:pointer;
+}
+.more-btn{
+  display:inline-block;
+  padding:6px 14px;
+  font-size:12px;
+  font-weight:600;
+  color:#2563eb;
+  background:#eff6ff;
+  border:1px solid #dbeafe;
+  border-radius:8px;
+  text-decoration:none;
+  transition:all 0.2s ease;
+}
+
+.more-btn:hover{
+  background:#2563eb;
+  color:#fff;
+  border-color:#2563eb;
+}
+
+@media (max-width:768px){
+
+  .dashboard-container{
+    padding:15px;
+  }
+
+  .header-section{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:6px;
+  }
+
+  .header-section h6{
+    font-size:16px;
+  }
+
+  .count-badge{
+    font-size:11px;
+    padding:5px 10px;
+  }
+
+
+  .data-card{
+    overflow-x:auto;
+  }
+
+  table{
+    min-width:650px;
+  }
+
+  thead th{
+    font-size:10px;
+    padding:10px;
+  }
+
+  tbody td{
+    font-size:12px;
+    padding:10px;
+  }
+
+  .status-tag{
+    font-size:10px;
+    padding:3px 8px;
+  }
+
+ 
+  .action-flex{
+    flex-direction:column;
+    align-items:stretch;
+    gap:6px;
+  }
+
+  .custom-select{
+    width:100%;
+  }
+
+  .update-btn{
+    width:100%;
+    font-size:12px;
+    padding:6px;
+  }
+
+
+  .payment-wrapper{
+    max-width:100%;
+  }
+
+  .payment-box input{
+    font-size:11px;
+  }
+
+  .receipt-img{
+    width:32px;
+    height:32px;
+  }
+
+}
+
+@media (min-width:769px) and (max-width:1024px){
+
+  .dashboard-container{
+    padding:20px;
+  }
+
+  table{
+    min-width:750px;
+  }
+
+  .action-flex{
+    flex-wrap:wrap;
+  }
+
+}
+
+
+@media (min-width:1200px){
+
+  .dashboard-container{
+    max-width:1400px;
+    margin:auto;
+  }
+
+  table{
+    width:100%;
+  }
+
+}
+</style>
+
+<div class="dashboard-container">
+
+<!-- HEADER -->
+<div class="header-section">
+  <div>
+    <h6 class="fw-semibold mb-0">Vendor Dashboard</h6>
+    <p>Update job status and manage client payments</p>
+  </div>
+ 
+</div>
+
+<!-- TABLE -->
+<div class="data-card">
+
+<table>
+
+<thead>
+<tr>
+  <th>Order ID</th>
+  <th>Service Name</th>
+  <th>Status</th>
+  <th>Update & Payment</th>
+  <th>Details</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for b in bookings %}
+<tr>
+
+<td><strong>#{{ b.order_id }}</strong></td>
+
+<td>
+  <div style="font-weight:600;">{{ b.service.name }}</div>
+  <div style="font-size:11px;color:var(--sub);">ID: {{ b.service.id }}</div>
+</td>
+
+<td>
+  <span class="status-tag {{ b.status|lower }}">
+    {{ b.status|title }}
+  </span>
+</td>
+
+<td>
+
+<div class="action-flex">
+  <select id="status-{{ b.id }}" class="custom-select">
+    <option value="pending" {% if b.status == "pending" %}selected{% endif %}>Pending</option>
+    <option value="progress" {% if b.status == "progress" %}selected{% endif %}>In Progress</option>
+    <option value="completed" {% if b.status == "completed" %}selected{% endif %}>Completed</option>
+  </select>
+
+  <button class="update-btn" onclick="updateStatus('{{ b.id }}')">Save</button>
+</div>
+
+<div class="payment-wrapper">
+
+{% if b.status == "completed" %}
+
+  {% if b.payment %}
+    <div class="success-receipt">
+      <div>
+        <div style="font-size:10px;font-weight:800;">PAID</div>
+        <div style="font-size:12px;">TXN: {{ b.payment.transaction_id }}</div>
+      </div>
+
+      {% if b.payment.screenshot %}
+      <img src="{{ b.payment.screenshot.url }}" class="receipt-img"
+           onclick="window.open(this.src)">
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="upload-link" onclick="togglePayment('{{ b.id }}')">
+      + Upload Payment Screenshot
+    </div>
+
+    <div class="payment-box" id="box-{{ b.id }}">
+      <input type="file" id="file-{{ b.id }}">
+      <input type="text" id="txn-{{ b.id }}" placeholder="Transaction ID">
+
+      <button class="update-btn" style="width:100%;"
+              onclick="submitPayment('{{ b.id }}', this)">
+        Confirm Upload
+      </button>
+
+      <div id="msg-{{ b.id }}" style="font-size:11px;text-align:center;"></div>
+    </div>
+  {% endif %}
+
+{% endif %}
+
+</div>
+
+</td>
+
+<td>
+  <a href="{% url 'vendor_booking_detail' b.id %}" class="more-btn">
+    View More
+  </a>
+</td>
+
+</tr>
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+function getCSRF(){
+  let name="csrftoken";
+  let cookies=document.cookie.split(";");
+  for(let c of cookies){
+    c=c.trim();
+    if(c.startsWith(name+"=")){
+      return c.substring(name.length+1);
+    }
+  }
+  return "";
+}
+
+function togglePayment(id){
+  let box=document.getElementById("box-"+id);
+  box.style.display = box.style.display==="block" ? "none" : "block";
+}
+
+function updateStatus(id){
+  let status=document.getElementById("status-"+id).value;
+
+  fetch(window.location.href,{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "X-CSRFToken":getCSRF()
+    },
+    body:JSON.stringify({booking_id:id,status:status})
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.success){ location.reload(); }
+    else{ alert(data.error); }
+  });
+}
+
+function submitPayment(id,btn){
+  let file=document.getElementById("file-"+id).files[0];
+  let txn=document.getElementById("txn-"+id).value;
+  let msg=document.getElementById("msg-"+id);
+
+  if(!file || !txn){
+    msg.innerText="Please provide all details.";
+    msg.style.color="red";
+    return;
+  }
+
+  btn.disabled=true;
+  btn.innerText="Uploading...";
+
+  let formData=new FormData();
+  formData.append("booking_id",id);
+  formData.append("transaction_id",txn);
+  formData.append("screenshot",file);
+
+  fetch(window.location.href,{
+    method:"POST",
+    body:formData,
+    headers:{ "X-CSRFToken":getCSRF() }
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.success){
+      msg.innerText="Payment Recorded!";
+      msg.style.color="green";
+      setTimeout(()=>location.reload(),800);
+    }else{
+      msg.innerText=data.error;
+      btn.disabled=false;
+      btn.innerText="Confirm Upload";
+    }
+  });
+}
+</script>
+
+{% endblock %}

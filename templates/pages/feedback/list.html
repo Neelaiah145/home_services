@@ -1,0 +1,113 @@
+{% extends 'dashboardbase.html' %}
+
+{% block content %}
+
+{% if messages %}
+
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">
+    {{ message }}
+</div>
+{% endfor %}
+{% endif %}
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-0 rounded-3">
+
+        <!-- Header -->
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Feedback List</h5>
+            
+        </div>
+
+        <!-- Table -->
+        <div class="card-body table-responsive">
+
+            <table class="table table-hover table-bordered align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Service Name</th>
+                        <th>Customer Name</th>
+                        <th>Type</th>
+                        <th>Rating</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                        <th>Date</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for fb in feedbacks %}
+                    <tr>
+
+                        <td>{{ forloop.counter }}</td>
+
+                        <!-- Service -->
+                        <td>{{ fb.service_name }}</td>
+
+                        <!-- Customer -->
+                        <td>{{ fb.customer_name }}</td>
+
+                        <!-- Type -->
+                        <td>
+                            <span class="badge bg-info">
+                                {{ fb.customer_type }}
+                            </span>
+                        </td>
+
+                        <!-- Rating -->
+                        <td>
+                            {% for i in "12345" %}
+                            {% if forloop.counter <= fb.rating %} ⭐ {% else %} ☆ {% endif %} {% endfor %} </td>
+
+                                <!-- Description -->
+                        <td style="max-width:250px;">
+                            {{ fb.description|truncatechars:60 }}
+                        </td>
+
+                        <!-- Image -->
+                        <td>
+                            {% if fb.image %}
+                            <img src="{{ fb.image.url }}" width="60" height="60" style="object-fit:cover;">
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+
+                        <!-- Date -->
+                        <td>{{ fb.created_at|date:"d M Y" }}</td>
+
+                        <!-- Actions -->
+                        <td class="text-center">
+
+                            <a href="{% url 'delete.feedback' fb.id  %}" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted py-4">
+                            No feedbacks available
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
