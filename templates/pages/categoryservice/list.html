@@ -1,0 +1,116 @@
+{% extends 'dashboardbase.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-0 rounded-3">
+
+        <!-- HEADER FILTER (ALWAYS VISIBLE) -->
+        <div class="card-header bg-dark text-white">
+
+            <form method="GET" class="d-flex align-items-center gap-2">
+
+                <h5 class="mb-0 me-3">Select Category:</h5>
+
+                <select name="category" class="form-select w-auto" onchange="this.form.submit()">
+                    <option value="">-- Choose Category --</option>
+
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if selected_category and cat.id == selected_category.id %}selected{% endif %}>
+                        {{ cat.title }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+
+            </form>
+            <span style="display: flex; justify-content: right;"><a  class="btn btn-sm btn-success" style="color: white;" href="{% url 'add.categories.service' %}"> <i class="bi bi-plus-circle-fill"></i> Add services</a></span>
+        
+        </div>
+
+        <!-- BODY -->
+        <div class="card-body table-responsive">
+
+            {% if selected_category %}
+
+            <h5 class="mb-3">
+                {{ selected_category.title }} - Services List
+            </h5>
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Service Title</th>
+                        <th>Tag</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                        <th>Created At</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for service in services %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+
+                        <td>{{ service.s_title }}</td>
+
+                        <td>
+                            <span class="badge bg-secondary">
+                                {{ service.s_tag }}
+                            </span>
+                        </td>
+
+                        <td style="max-width:250px;">
+                            {{ service.s_desc|truncatechars:60 }}
+                        </td>
+
+                        <td>
+                            {% if service.image %}
+                            <img src="{{ service.image.url }}" width="60" height="60" style="object-fit:cover;">
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>{{ service.created_at|date:"d M Y" }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'update.category.services' service.id %}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <a href="{% url 'delete.category.services' service.id %}" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                        </td>
+
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            No services found
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <p class="text-muted text-center mt-3">
+                Please select a category to view services
+            </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

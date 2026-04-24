@@ -1,0 +1,71 @@
+{% extends 'dashboardbase.html' %}
+{% block content %}
+{% if messages %}
+{% for message in messages %}
+<div style="color:green;" class="mt-4 mb-4">{{ message }}</div>
+{% endfor %}
+{% endif %}
+<div class="container mt-4">
+    <h2 class="mb-4">Contact Requests</h2>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>City</th>
+                <th>Message</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contact in contacts %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ contact.name }}</td>
+                <td>{{ contact.email }}</td>
+                <td>{{ contact.phone }}</td>
+                <td>{{ contact.city }}</td>
+                <td>{{ contact.message|truncatechars:50 }}</td>
+
+                <!-- STATUS BADGE -->
+                <td>
+                    {% if contact.status == 'pending' %}
+                    <span class="badge bg-warning">Pending</span>
+                    {% elif contact.status == 'contacted' %}
+                    <span class="badge bg-primary">Contacted</span>
+                    {% elif contact.status == 'in_progress' %}
+                    <span class="badge bg-info">In Progress</span>
+                    {% elif contact.status == 'closed' %}
+                    <span class="badge bg-success">Closed</span>
+                    {% endif %}
+                </td>
+
+                <td>{{ contact.created_at|date:"d M Y" }}</td>
+                <td class="text-center">
+
+                    <a href="{% url 'update.contact' contact.pk %}" class="btn btn-sm btn-warning">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+
+                    <a href="{% url 'delete.contact' contact.pk %}" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash3"></i>
+                    </a>
+
+                </td>
+
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10" class="text-center">No Contacts Found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

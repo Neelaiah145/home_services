@@ -1,10 +1,10 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.conf import settings
 
 
-
-# USER MANAGER
+# user manager
 
 class UserManager(BaseUserManager):
 
@@ -26,9 +26,11 @@ class UserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
+      
 
 
-# USER MODEL
+
+# user model table
 
 class User(AbstractUser):
 
@@ -47,7 +49,7 @@ class User(AbstractUser):
         choices=Role.choices,
         default=Role.CUSTOMER
     )
-
+    services = models.ManyToManyField("core.CategoryService", blank=True, related_name="vendors")
 
     created_by = models.ForeignKey(
         "self",
@@ -58,7 +60,7 @@ class User(AbstractUser):
     )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["first_name", "phone"]
 
     objects = UserManager()
 
@@ -70,39 +72,67 @@ class User(AbstractUser):
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-class Service(models.Model):
-    name = models.CharField(max_length=200)
-    title = models.CharField(max_length=100)
-    description = models.TextField()
-    image = models.ImageField(upload_to="services/", null=True, blank=True)
-
-    def __str__(self):
-        return self.name
 
 
 
 
 
+
+
+  
+    
+
+
+
+
+
+
+
+
+from core.models import Category, CategoryService
+
+import uuid
+
+def generate_order_id():
+    return "RCN" + uuid.uuid4().hex[:8].upper()
+
+# bookings
 class Booking(models.Model):
 
     STATUS = (
         ('pending', 'Pending'),
-        ('progress','Progress'),
+        ('accepted', 'Accepted'),
+        ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
     )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE
+    )
+
+    service = models.ForeignKey(
+        CategoryService,
+        on_delete=models.CASCADE
+    )
+
+    order_id = models.CharField(
+        max_length=20,
+        unique=True,
+        editable=False,
+        default=generate_order_id
+    )
+
+    vendor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="vendor_bookings"
+    )
 
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
@@ -110,5 +140,154 @@ class Booking(models.Model):
     address = models.TextField()
     problem = models.TextField()
 
-    status = models.CharField(max_length=20, choices=STATUS, default='pending')
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS,
+        default='pending'
+    )
+
+    scheduled_date = models.DateField()
+    scheduled_time = models.CharField(max_length=50)
+
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.service.s_title}"
+
+
+
+# booking history(track the order)
+class BookingHistory(models.Model):
+
+    booking = models.ForeignKey(
+        Booking,
+        on_delete=models.CASCADE,
+        related_name="history"  
+    )
+
+    status = models.CharField(max_length=20)
+
+    updated_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+    def __str__(self):
+        return f"{self.booking.order_id} - {self.status}"
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+
+
+# payments
+class Payment(models.Model):
+
+    booking = models.ForeignKey(
+        Booking,
+        on_delete=models.CASCADE,
+        related_name="payments"
+    )
+
+    vendor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+
+    service = models.ForeignKey(
+    CategoryService,
+    on_delete=models.CASCADE,
+    null=True,
+    blank=True
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ("pending", "Pending"),
+            ("paid", "Paid"),
+        ],
+        default="pending"
+    )
+
+    transaction_id = models.CharField(max_length=100, blank=True, null=True)
+
+    screenshot = models.ImageField(
+        upload_to="payments/",
+        blank=True,
+        null=True
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.booking.order_id} - {self.status}"
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+
+class VendorProfile(models.Model):
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="vendor_profile"
+    )
+
+   
+    experience = models.PositiveIntegerField(help_text="Years of experience")
+
+   
+    locality = models.CharField(max_length=200, db_index=True)
+    street = models.CharField(max_length=200)
+    city = models.CharField(max_length=100, db_index=True)
+    postal_code = models.CharField(max_length=10, db_index=True)
+
+   
+    company_name = models.CharField(max_length=200, blank=True)
+    company_address = models.TextField(blank=True)
+
+
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="vendor_profiles"
+    )
+
+    services = models.ManyToManyField(
+        CategoryService,
+        blank=True,
+        related_name="vendor_profiles"
+    )
+
+ 
+    is_verified = models.BooleanField(default=False)
+    rating = models.FloatField(default=0)
+    total_jobs = models.IntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.email} - VendorProfile"

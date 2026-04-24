@@ -1,0 +1,97 @@
+{% extends 'dashboardbase.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-0 rounded-3">
+
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Add Services</h5>
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <!-- ICON -->
+                    <div class="col-md-6 text-center">
+                        <label class="form-label fw-semibold">Upload Service Icon Image</label>
+
+                        <div class="border rounded p-3 mb-3"
+                            style="height:200px; display:flex; align-items:center; justify-content:center;">
+                            <img id="iconPreview" style="max-height:100%; max-width:100%; object-fit:cover;">
+                        </div>
+
+                        <input type="file" name="serviceicon" class="form-control" onchange="previewIcon(event)"
+                            required>
+                    </div>
+
+                    <!-- BACKGROUND IMAGE -->
+                    <div class="col-md-6 text-center">
+                        <label class="form-label fw-semibold">Upload Background Image</label>
+
+                        <div class="border rounded p-3 mb-3"
+                            style="height:200px; display:flex; align-items:center; justify-content:center;">
+                            <img id="bgPreview" style="max-height:100%; max-width:100%; object-fit:cover;">
+                        </div>
+
+                        <input type="file" name="service_image" class="form-control" onchange="previewBg(event)"
+                            required>
+                    </div>
+
+                    <!-- SERVICE NAME -->
+                    <div class="col-md-6 mt-3">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Service Name</label>
+                            <input type="text" name="servicename" class="form-control"
+                                placeholder="Enter Service Name..." required>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="d-flex justify-content-between mt-3">
+                    <a href="{% url 'services.list' %}" class="btn btn-outline-success">Back</a>
+
+                   <button type="submit" name="save_add_more" class="btn btn-primary px-4">
+                        Save & Add More
+                    </button>
+
+                    <button type="submit" class="btn btn-primary px-4">
+                        Save
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- IMAGE PREVIEW SCRIPT -->
+<script>
+    function previewIcon(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            document.getElementById('iconPreview').src = reader.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function previewBg(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            document.getElementById('bgPreview').src = reader.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+
+{% endblock %}

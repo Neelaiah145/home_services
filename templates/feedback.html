@@ -1,0 +1,491 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Feedback Form</title>
+
+  <!--==============================
+	  Google Fonts
+	============================== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Miranda+Sans:ital,wght@0,400..700;1,400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playwrite+AU+NSW+Guides&family=Playwrite+NZ+Guides&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+    rel="stylesheet">
+  <!--==============================
+	    All CSS File
+	============================== -->
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+  <!-- Fontawesome Icon -->
+  <link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css' %}">
+  <!-- Magnific Popup -->
+  <link rel="stylesheet" href="{% static 'assets/css/magnific-popup.min.css' %}">
+  <!-- Slick Slider -->
+  <link rel="stylesheet" href="{% static 'assets/css/slick.min.css' %}">
+  <!-- nice-select -->
+  <link rel="stylesheet" href="{% static 'assets/css/nice-select.min.css' %}">
+  <!-- animate js -->
+  <link rel="stylesheet" href="{% static 'assets/css/animate.min.css' %}">
+  <!-- nouislider js -->
+  <link rel="stylesheet" href="{% static 'assets/css/nouislider.css' %}">
+  <!-- Theme Custom CSS -->
+  <link rel="stylesheet" href="{% static 'assets/css/style1.css' %}">
+
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+  <div class="vs-menu-wrapper">
+    <div class="vs-menu-area text-center">
+      <div class="mobile-logo">
+        <a href="#"><img
+            src="{% if footer.logo_image %} {{ footer.logo_image.url }} {% else %} {% static 'assets/img/new_image/sridixitha-logo.gif' %} {% endif %}"
+            alt="Sridixitha" class="logo logo_news"></a>
+        <button class="vs-menu-toggle"><i class="fal fa-times"></i></button>
+      </div>
+      <div class="vs-mobile-menu">
+        <ul>
+          <li class="">
+            <a href="{% url 'indexpage' %}">Home</a>
+
+          <li class="">
+            <a href="#categories">Categories</a>
+            <a href="#services">Services</a>
+
+          </li>
+          <li class="menu-item-has-children mega-menu-wrap">
+            <a href="#services">Services</a>
+
+          </li>
+          <li>
+            <a href="#jobs">Careers</a>
+          </li>
+          <li>
+            <a href="#Testimonials">Testimonials</a>
+          </li>
+          <li>
+            <a href="{% url 'feedbackform' %}">FeedBack</a>
+          </li>
+          <li>
+            <a href="{% url 'contact' %}">Contact</a>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+
+  <header class="vs-header header-layout2">
+    <!--contact numbers-->
+    <div class="header-top">
+      <div class="top-container">
+        <div class="social-media-header">
+          <div class="">
+            <div class="header-links ">
+              <ul>
+                <li class="contact-info">
+
+                  <span class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <a href="tel:+919876543210">+91 {{ footer.phone_num }}</a>
+                  </span>
+
+                  <span class="contact-item">
+                    <i class="fab fa-whatsapp"></i>
+                    <a href="https://wa.me/919876543210" target="_blank">+91 {{ footer.whatsapp_num }}</a>
+                  </span>
+
+                </li>
+
+              </ul>
+            </div>
+          </div>
+          <div class="">
+            <div class="header-right">
+
+              <div class="header-social">
+                {% if footer.facebook %}
+                <a href="{{ footer.facebook }}"><i class="fab fa-facebook-f"></i></a>
+                {% else %}
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                {% endif %}
+                {% if footer.twitter %}
+                <a href="{% url 'footer.twitter' %}"><i class="fa-brands fa-x-twitter"></i></a>
+                {% else %}
+                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                {% endif %}
+                {% if footer.instagram %}
+                <a href="{% url 'footer.instagram' %}"><i class="fab fa-instagram"></i></a>
+                {% else %}
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--news area-->
+    <div class="news-ticker">
+      <div class="news-track">
+        {% for i in news %}
+        <span> <i class="fa-solid fa-circle dot-icon"></i> {{ i.content }}</span>
+        {% empty %}
+        <span>No latest updates available</span>
+        {% endfor %}
+
+      </div>
+    </div>
+
+    <!-nav area->
+      <div class="sticky-wrapper">
+        <div class="sticky-active">
+          <div class="container-fluid">
+            <div class="row justify-content-between align-items-center gx-sm-0">
+              <div class="col-auto">
+                <div class="header-logo">
+                  <a href="{% url 'indexpage' %}">
+
+                    {% if footer.logo_image %}
+                    <img src="{{ footer.logo_image.url }}" alt="Logo" class="logo logo_news">
+                    {% else %}
+                    <span>No Image</span>
+                    {% endif %}
+
+                  </a>
+                </div>
+              </div>
+              <div class="col-auto d-inline-flex align-items-center">
+                <nav class="main-menu menu-style1 d-none d-lg-block">
+                  <ul>
+
+                    <li>
+                      <a href="{% url 'indexpage' %}">Home</a>
+                    </li>
+
+                    <li>
+                      <a href="#categories">categories </a>
+
+                    </li>
+                    <li>
+                      <a href="#services">Services </a>
+                    </li>
+
+                    <li>
+                      <a href="#jobs">Careers </a>
+                    </li>
+                    <li>
+                      <a href="#Testimonials">Testimonials </a>
+                    </li>
+                    <li>
+                      <a href="{% url 'feedbackform' %}">Feedback</a>
+                    </li>
+                    <li>
+                      <a href="{% url 'contact' %}">Contact</a>
+                    </li>
+
+                  </ul>
+                </nav>
+                <div class="header-buttons d-inline-block d-xl-none me-2 dropdown">
+
+                  <button class="vs-btn dropdown-toggle" data-bs-toggle="dropdown">
+                    Account
+                  </button>
+
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Login</a></li>
+                    <li><a class="dropdown-item" href="#">Register</a></li>
+                  </ul>
+
+                </div>
+                <button class="vs-menu-toggle d-inline-block d-lg-none"><i class="fal fa-bars"></i></button>
+
+              </div>
+              <div class="col-auto d-xl-block d-none">
+                <div class="header-buttons dropdown account-dropdown">
+
+                  <!-- Search Icon -->
+                  <!-- <a href="#" class="vs-icon searchBoxTggler">
+                  <i class="fas fa-search"></i>
+                </a> -->
+
+                  <!-- Account Button -->
+                  <button class="vs-btn dropdown-toggle">
+                    Account
+                  </button>
+
+                  <!-- Dropdown -->
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <i class="fa-regular fa-user me-2"></i> Login
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <i class="fa-regular fa-user-plus me-2"></i> Register
+                      </a>
+                    </li>
+                  </ul>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </header>
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}">
+    {{ message }}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <div class="fb-wrapper">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+
+          <div class="fb-card">
+            <h2 class="fb-title">Service Feedback Form</h2>
+
+            <form method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              <div class="row">
+
+                <!-- Service Name -->
+                <div class="col-md-6 mb-3">
+                  <label class="fb-label">Service Name</label>
+                  <input type="text" name="service_name" class="form-control fb-input" placeholder="Enter service name">
+                </div>
+
+                <!-- Customer Name -->
+                <div class="col-md-6 mb-3">
+                  <label class="fb-label">Customer Name</label>
+                  <input type="text" name="customer_name" class="form-control fb-input" placeholder="Enter your name">
+                </div>
+
+                <!-- Customer Type -->
+                <div class="col-md-6 mb-3">
+                  <label class="fb-label">Customer Type</label>
+                  <select name="customer_type" class="form-control fb-input">
+                    <option value="" disabled selected>-- Select Type --</option>
+                    <option value="Client">Client</option>
+                    <option value="House_Owner">House Owner</option>
+                    <option value="Business_Owner">Business Owner</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="col-md-6 mb-3">
+                  <label class="fb-label">Upload Image</label>
+                  <input type="file" name="image" class="form-control fb-input">
+                </div>
+
+                <!-- Rating -->
+                <div class="col-12 mb-3">
+                  <label class="fb-label">Rating</label>
+                  <div class="fb-rating">
+                    <input type="radio" name="rating" value="5" id="star5"><label for="star5">★</label>
+                    <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
+                    <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
+                    <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
+                    <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+                  </div>
+                </div>
+
+                <!-- Description -->
+                <div class="col-12 mb-3">
+                  <label class="fb-label">Service Description</label>
+                  <textarea name="description" class="form-control fb-textarea"
+                    placeholder="Write your experience"></textarea>
+                </div>
+
+                <!-- Submit -->
+                <div class="col-12 text-center mt-3">
+                  <button type="submit" class="fb-btn">Submit Feedback</button>
+                </div>
+
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer-layout1 bg-body z-index-common" data-bg-src="assets/img/bg/">
+    <!-- Cta Area -->
+
+    <!-- Cta Area End -->
+    <div class="footer-top">
+      <div class="container">
+        <div class="row g-5 justify-content-between">
+          <div class="col-md-6 col-lg-6 col-xl-auto">
+            <div class="newsletter-area">
+              <div class="footer-logo">
+                <a href="#">
+                  <img src="{% static 'assets/img/new_image/sridixitha-logo.gif' %}" alt="Direx" class="logo">
+                </a>
+              </div>
+              <p class="footer-text">At Sri Dixitha Enterprises, we provide trusted staffing solutions
+                including
+                domestic help,
+                caregivers, and professional services. We connect people with the right opportunities
+                and deliver reliable support for homes and businesses.</p>
+              <div class="footer-social-media">
+                <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-6 col-xl-auto">
+            <div class="widget widget_nav_menu footer-widget">
+              <h3 class="widget_title">Company<span class="title-shape"><img
+                    src="{% static 'assets/img/shapes/footer-line-shape.svg' %}" alt="Shape Image"></span></h3>
+              <ul class="menu">
+                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i>Our
+                    Services</a></li>
+                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i>Careers</a>
+                </li>
+                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i> Contact
+                    Us</a></li>
+                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i>Join as
+                    Vendor</a></li>
+                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i> Client
+                    Reviews</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-6 col-xl-auto">
+            <div class="widget widget_nav_menu footer-widget">
+              <h3 class="widget_title"> Our Services <span class="title-shape"><img
+                    src="{% static 'assets/img/shapes/footer-line-shape.svg' %}" alt="Shape Image"></span></h3>
+              <ul class="menu">
+                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i>Female
+                    Cook</a></li>
+                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i> Brahmin
+                    Cook</a></li>
+                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i> Baby Care</a>
+                </li>
+                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i>Patient
+                    Care</a></li>
+                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i> Japa Maid</a>
+                </li>
+                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i>Catering
+                    Services</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-6 col-xl-auto">
+            <div class="widget widget_nav_menu footer-widget">
+              <h3 class="widget_title"> Need Help?<span class="title-shape"><img
+                    src="{% static 'assets/img/shapes/footer-line-shape.svg' %}" alt="Shape Image"></span></h3>
+              <ul class="menu footer-menu">
+
+                <li><a href="#"><i style="color: #ea6e12" class="fa-solid fa-phone"></i>+91
+                    9966286721</a></li>
+                <li><a href="#"><i style="color: #ea6e12" class="fa-brands fa-square-whatsapp"></i>+91
+                    9292657671</a></li>
+                <li><a href="#"><i style="color: #ea6e12" class="fa-solid fa-envelope"></i>support@sridixitha.com</a>
+                </li>
+                <li><a href="#"><i style="color: #ea6e12" class="fa-solid fa-location-dot"></i>Hyderabad</a></li>
+
+
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="copyright-wrap">
+        <div class="row g-2  justify-content-center">
+          <div class="col-xl-6">
+            <p class="copyright-text">
+              Copyright <i class="fal fa-copyright"></i>
+              <script>
+                document.write(new Date().getFullYear())
+              </script>
+              <a href="index.html">Sri Dixitha </a>.
+              All Rights Reserved.
+            </p>
+          </div>
+          <!-- <div class="col-xl-6">
+            <div class="copyright-menu">
+              <ul class="list-unstyled">
+                <li><a href="#">Privacy</a></li>
+                <li><a href="#">Policy</a></li>
+                <li><a href="#">Terms &amp; Conditions </a></li>
+              </ul>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!--==============================
+        All Js File
+    ============================== -->
+  <!-- Jquery -->
+  <script src="{% static 'assets/js/vendor/jquery-3.7.1.min.js' %}"></script>
+  <!-- Bootstrap -->
+  <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+  <!-- Slick Slider -->
+  <script src="{% static 'assets/js/slick.min.js' %}"></script>
+  <!-- Magnific Popup -->
+  <script src="{% static 'assets/js/jquery.magnific-popup.min.js' %}"></script>
+  <!-- imagesloaded -->
+  <script src="{% static 'assets/js/imagesloaded.pkgd.min.js' %}"></script>
+  <!-- Isotope Filter -->
+  <script src="{% static 'assets/js/isotope.pkgd.min.js' %}"></script>
+  <!-- Gsap -->
+  <script src="{% static 'assets/js/gsap.min.js' %}"></script>
+  <!-- ScrollTrigger -->
+  <script src="{% static  'assets/js/ScrollTrigger.min.js' %}"></script>
+  <!-- Gsap ScrollTo Plugin -->
+  <script src="{% static 'assets/js/gsap-scroll-to-plugin.js' %}"></script>
+  <!-- Split Text -->
+  <script src="{% static 'assets/js/SplitText.js' %}"></script>
+  <!-- lenis -->
+  <script src="{% static 'assets/js/lenis.min.js' %}"></script>
+  <!-- wow js -->
+  <script src="{% static 'assets/js/wow.min.js' %}"></script>
+  <!-- nice-select -->
+  <script src="{% static 'assets/js/jquery.nice-select.min.js' %}"></script>
+  <!-- nouislider -->
+  <script src="{% static 'assets/js/nouislider.min.js' %}"></script>
+  <!-- Main Js File -->
+  <script src="{% static 'assets/js/main.js' %}"></script>
+
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/slick-carousel/slick/slick.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/wowjs/dist/wow.min.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,126 @@
+{% extends 'dashboardbase.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-0 rounded-3">
+
+        <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">Update Footer</h5>
+        </div>
+
+        <div class="card-body">
+
+            <!-- Messages -->
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <!-- Logo -->
+                    <div class="col-md-4 text-center">
+                        <label class="form-label fw-semibold">Footer Logo</label>
+
+                        <div class="border rounded p-3 mb-3"
+                            style="height:200px; display:flex; align-items:center; justify-content:center;">
+
+                            {% if footer.logo_image %}
+                            <img id="preview" src="{{ footer.logo_image.url }}"
+                                style="max-height:100%; max-width:100%;">
+                            {% else %}
+                            <img id="preview">
+                            {% endif %}
+                        </div>
+
+                        <input type="file" name="logo_image" class="form-control" onchange="previewImage(event)">
+                        <small class="text-muted">Leave empty to keep old image</small>
+                    </div>
+
+                    <!-- Fields -->
+                    <div class="col-md-8">
+
+                        <div class="mb-3">
+                            <label>Description</label>
+                            <textarea name="footer_description" class="form-control"
+                                required>{{ footer.footer_description }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Phone</label>
+                            <input type="text" name="phone_num" class="form-control" value="{{ footer.phone_num }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label>WhatsApp</label>
+                            <input type="text" name="whatsapp_num" class="form-control"
+                                value="{{ footer.whatsapp_num }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ footer.email }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Address</label>
+                            <textarea name="address" class="form-control">{{ footer.address }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Facebook</label>
+                            <input type="url" name="facebook" class="form-control" value="{{ footer.facebook }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Instagram</label>
+                            <input type="url" name="instagram" class="form-control" value="{{ footer.instagram }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Twitter</label>
+                            <input type="url" name="twitter" class="form-control" value="{{ footer.twitter }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label>WhatsApp Link</label>
+                            <input type="url" name="whatsapp" class="form-control" value="{{ footer.whatsapp }}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-between mt-3">
+                    <a href="{% url 'list.footer' %}" class="btn btn-outline-secondary">Back</a>
+
+                    <button type="submit" class="btn btn-warning px-4">
+                        Update Footer
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            document.getElementById('preview').src = reader.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+
+{% endblock %}

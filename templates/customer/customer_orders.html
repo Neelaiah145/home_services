@@ -1,0 +1,405 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+<style>
+    
+/* ── PREMIUM THEME VARIABLES ── */
+:root {
+    --white: #ffffff;
+    --gh-bg: #f9fafb;
+    --gh-blue: #0070eb;
+    --gh-text-dark: #111827;
+    --gh-text-muted: #6b7280;
+    --gh-border: #e5e7eb;
+    --font-main: 'DM Sans', sans-serif;
+    
+    /* Status Colors */
+    --bg-pending: #fff7ed;   --text-pending: #c2410c;
+    --bg-assigned: #eef2ff;  --text-assigned: #4338ca;
+    --bg-completed: #f0fdf4; --text-completed: #15803d;
+}
+
+body { background: var(--gh-bg); }
+
+.page-wrap {
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: var(--font-main);
+}
+
+/* ── HEADER & SUBTITLE ── */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.page-subtitle {
+    font-size: 14px;
+    color: var(--gh-text-muted);
+    margin-top: 4px;
+}
+
+/* ── STAT TILES (FROM DIRECTORY STYLE) ── */
+.stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+   
+    padding: 1.25rem;
+    border-radius: 10px;
+    border: 1px solid var(--gh-border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.stat-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--gh-text-muted);
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--gh-text-dark);
+}
+
+/* ── TOOLBAR: TABS + SEARCH ── */
+.content-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--white);
+    padding: 1rem 1.5rem;
+    border-radius: 12px 12px 0 0;
+    border: 1px solid var(--gh-border);
+    border-bottom: none;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    background: #f1f5f9;
+    padding: 0.25rem;
+    border-radius: 8px;
+    gap: 0.125rem;
+}
+
+.filter-btn {
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    background: transparent;
+    color: var(--gh-text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-btn.active {
+    background: var(--white);
+    color: var(--gh-blue);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.search-container {
+    position: relative;
+    min-width: 300px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 0.875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gh-text-muted);
+    pointer-events: none;
+}
+
+.search-input {
+    width: 100%;
+    height: 40px;
+    padding-left: 2.5rem;
+    border: 1px solid var(--gh-border);
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+/* ── ORDER CARDS CONTAINER ── */
+.orders-list {
+    background: var(--white);
+    border: 1px solid var(--gh-border);
+    border-radius: 0 0 12px 12px;
+    padding: 1rem;
+}
+
+.order-card {
+    display: flex;
+    gap: 24px;
+    padding: 24px;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.2s;
+}
+
+.order-card:last-child { border-bottom: none; }
+.order-card:hover { background: #fafafa; }
+
+.brand-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gh-text-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.brand-circle img { width: 100%; height: 100%; object-fit: cover; }
+.brand-initial { font-weight: 800; font-size: 22px; }
+
+.order-details { flex: 1; }
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.service-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gh-blue);
+    text-decoration: none;
+}
+
+.order-amount { font-size: 18px; font-weight: 700; }
+
+.meta-row {
+    font-size: 13px;
+    color: var(--gh-text-muted);
+    margin-bottom: 12px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.status-pill {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+.status-pending { background: var(--bg-pending); color: var(--text-pending); }
+.status-assigned { background: var(--bg-assigned); color: var(--text-assigned); }
+.status-completed { background: var(--bg-completed); color: var(--text-completed); }
+
+.item-summary {
+    font-size: 14px;
+    color: var(--gh-text-dark);
+    padding-top: 10px;
+    border-top: 1px dashed #eee;
+}
+
+.action-column {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.gh-btn {
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid var(--gh-blue);
+    cursor: pointer;
+}
+
+.gh-btn-fill { background: var(--gh-blue); color: var(--white); }
+.gh-btn-outline { background: var(--white); color: var(--gh-blue); }
+.gh-btn-cancel { border: none; color: #ef4444; font-size: 12px; }
+
+@media (max-width: 768px) {
+    .content-toolbar { flex-direction: column; align-items: stretch; }
+    .order-card { flex-direction: column; gap: 16px; }
+    .action-column { width: 100%; }
+}
+</style>
+
+<div class="page-wrap">
+
+    <div class="page-header">
+        <div>
+           <h6 class="fw-semibold mb-0"> Booking History</h6>
+            <div class="page-subtitle">Track and manage your professional service orders</div>
+        </div>
+     
+    </div>
+
+    <div class="stat-row">
+        <div class="stat-card">
+            <span class="stat-label">Total Spend</span>
+            <span class="stat-value" id="statTotal">₹0</span>
+        </div>
+        <div class="stat-card" style="border-left: 4px solid #ea580c;">
+            <span class="stat-label">Pending</span>
+            <span class="stat-value" id="statPending">0</span>
+        </div>
+        <div class="stat-card" style="border-left: 4px solid #4338ca;">
+            <span class="stat-label">Assigned</span>
+            <span class="stat-value" id="statAssigned">0</span>
+        </div>
+        <div class="stat-card" style="border-left: 4px solid #16a34a;">
+            <span class="stat-label">Completed</span>
+            <span class="stat-value" id="statCompleted">0</span>
+        </div>
+    </div>
+
+    <div class="content-toolbar">
+        <div class="filter-group">
+            <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+            <button class="filter-btn" onclick="setFilter('pending', this)">Pending</button>
+            <button class="filter-btn" onclick="setFilter('assigned', this)">Assigned</button>
+            <button class="filter-btn" onclick="setFilter('completed', this)">Completed</button>
+        </div>
+
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search service name or ID..." onkeyup="applyFilter()">
+        </div>
+    </div>
+
+    <div class="orders-list" id="ordersContainer">
+        {% for b in bookings %}
+        <div class="order-card order-box" data-status="{{ b.status|lower }}" data-amount="{{ b.amount }}">
+            <div class="brand-circle">
+                {% if b.service.image %}
+                    <img src="{{ b.service.image.url }}" alt="Logo">
+                {% else %}
+                    <span class="brand-initial">{{ b.service.name|slice:":1"|upper }}</span>
+                {% endif %}
+            </div>
+
+            <div class="order-details">
+                <div class="header-row">
+                    <a href="javascript:void(0)" onclick="trackOrder('{{ b.id }}')" class="service-title">{{ b.service.name }}</a>
+                    <span class="order-amount">₹{{ b.amount }}</span>
+                </div>
+
+                <div class="meta-row">
+                    <span>{{ b.created_at|date:"M d, Y" }}</span>
+                    <span>•</span>
+                    <span class="status-pill status-{{ b.status|lower }}">{{ b.status|title }}</span>
+                </div>
+
+                <div class="item-summary">
+                    Order #{{ b.order_id }} • 1 Service Professional
+                </div>
+            </div>
+
+            <div class="action-column">
+                {% if b.status == "completed" %}
+                    <a href="javascript:void(0)" onclick="bookAgain('{{ b.service.id }}')" class="gh-btn gh-btn-fill">Book again</a>
+                    <a href="#" class="gh-btn gh-btn-outline">Review</a>
+                {% else %}
+                    <a href="javascript:void(0)" onclick="trackOrder('{{ b.id }}')" class="gh-btn gh-btn-outline">Track order</a>
+                    {% if b.status == "pending" %}
+                        <button class="gh-btn-cancel" onclick="cancelOrder('{{ b.id }}', this)">Cancel Booking</button>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div style="padding: 60px; text-align: center; color: var(--gh-text-muted);">
+            No bookings found.
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+let currentFilter = "all";
+
+function setFilter(filter, el) {
+    currentFilter = filter;
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    el.classList.add("active");
+    applyFilter();
+}
+
+function applyFilter() {
+    let search = document.getElementById("searchInput").value.toLowerCase();
+    document.querySelectorAll(".order-box").forEach(el => {
+        let status = el.dataset.status;
+        let text = el.innerText.toLowerCase();
+        let matchStatus = (currentFilter === "all" || status === currentFilter);
+        let matchSearch = text.includes(search);
+        el.style.display = (matchStatus && matchSearch) ? "flex" : "none";
+    });
+}
+
+function updateStats() {
+    let totalSpend = 0;
+    let counts = { pending: 0, assigned: 0, completed: 0 };
+    
+    document.querySelectorAll(".order-box").forEach(el => {
+        let status = el.dataset.status;
+        let amt = parseFloat(el.dataset.amount) || 0;
+        totalSpend += amt;
+        if(counts.hasOwnProperty(status)) counts[status]++;
+    });
+
+    document.getElementById("statTotal").textContent = "₹" + totalSpend.toLocaleString();
+    document.getElementById("statPending").textContent = counts.pending;
+    document.getElementById("statAssigned").textContent = counts.assigned;
+    document.getElementById("statCompleted").textContent = counts.completed;
+}
+
+function trackOrder(id) { window.location.href = `/order-history/${id}/`; }
+function bookAgain(id) { window.location.href = `/book-service/${id}/`; }
+
+function cancelOrder(id, btn) {
+    if (!confirm("Are you sure?")) return;
+    fetch(`/cancel-booking/${id}/`, {
+        method: "POST",
+        headers: { "X-CSRFToken": "{{ csrf_token }}" }
+    }).then(res => res.json()).then(data => {
+        if (data.status === "success") {
+            btn.innerText = "Cancelled";
+            btn.disabled = true;
+            btn.closest(".order-card").style.opacity = "0.5";
+            updateStats();
+        }
+    });
+}
+
+// Initialize stats on load
+window.onload = updateStats;
+</script>
+
+{% endblock %}

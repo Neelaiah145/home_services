@@ -1,253 +1,279 @@
 {% extends "base.html" %}
-
-{% block title %}Create Admin{% endblock %}
-
+{% load static %}
 {% block content %}
 
-<style>
-.admin-grid {
-    display: grid;
-    grid-template-columns: 350px 1fr;
-    gap: 20px;
-}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css">
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
 
-/* CARD */
-.admin-card {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
 
-/* INPUT */
-.admin-card input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-}
 
-/* BUTTON */
-.admin-card button {
-    width: 100%;
-    padding: 10px;
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
+<div class="page-wrap">
 
-.admin-card button:hover {
-    background: #1d4ed8;
-}
+  <div class="page-header">
+    <div>
+       <h6 class="fw-semibold mb-0"> Create Admin</h6>
+      <div class="page-subtitle">Manage admin users</div>
+    </div>
+  </div>
 
-/* MESSAGE */
-.msg { margin-top: 8px; font-size: 13px; }
-.success { color: green; }
-.error { color: red; }
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">New Admin</div>
+    </div>
 
-.hidden { display: none; }
+    <div class="card-body">
 
-/* TABLE */
-.table-card table {
-    width: 100%;
-    border-collapse: collapse;
-}
+      <div class="form-grid">
 
-.table-card th {
-    background: #f8fafc;
-    padding: 12px;
-    text-align: left;
-}
+        <div class="form-group">
+          <label>First Name</label>
+          <input id="first_name" class="form-input" required placeholder="Enter first name">
+        </div>
 
-.table-card td {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-}
+        <div class="form-group">
+          <label>Last Name</label>
+          <input id="last_name" class="form-input" required placeholder="Enter last name">
+        </div>
 
-.table-card tr:hover {
-    background: #f1f5f9;
-}
+        <div class="form-group">
+          <label>Email Address</label>
+          <input id="email" class="form-input" required placeholder="Enter email address">
+        </div>
 
-/* MOBILE */
-@media (max-width: 768px) {
-    .admin-grid {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input id="phone" type="tel" class="form-input" required>
+        </div>
 
-<div class="admin-grid">
+      </div>
 
-<!-- ================= FORM ================= -->
-<div class="admin-card">
+      <div class="form-actions">
+        <button onclick="sendOTP()" class="btn-primary">Send OTP</button>
+      </div>
 
-<h2>Create Admin</h2>
+      <div id="otpBox" class="form-section" style="display:none;">
+        <label class="otp-label">Enter OTP</label>
+        <div class="otp-container">
+          <input maxlength="1" class="otp-input" oninput="moveNext(this,0)">
+          <input maxlength="1" class="otp-input" oninput="moveNext(this,1)">
+          <input maxlength="1" class="otp-input" oninput="moveNext(this,2)">
+          <input maxlength="1" class="otp-input" oninput="moveNext(this,3)">
+        </div>
 
-<input id="first_name" placeholder="First Name">
-<input id="last_name" placeholder="Last Name">
-<input id="email" placeholder="Email">
-<input id="phone" placeholder="Phone">
+        <div class="otp-footer">
+          <span id="timer">02:00</span>
+          <button onclick="resendOTP()" id="resendBtn" disabled>Resend OTP</button>
+        </div>
+        <button onclick="verifyOTP()" class="btn-primary full">Verify OTP</button>
+      </div>
 
-<button id="otpBtn" onclick="sendOTP()">Send OTP</button>
+      <div id="passBox" class="form-section" style="display:none;">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Password</label>
+            <input id="password" type="password" class="form-input" placeholder="Enter password">
+          </div>
+          <div class="form-group">
+            <label>Confirm Password</label>
+            <input id="confirm_password" type="password" class="form-input" placeholder="Confirm password">
+          </div>
+        </div>
+        <button onclick="createAdmin()" class="btn-primary full">Create Admin</button>
+      </div>
 
-<div id="otpBox" class="hidden">
-    <input id="otp" placeholder="Enter OTP">
-    <button onclick="verifyOTP()">Verify OTP</button>
+      <p id="msg" class="form-msg"></p>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">All Admins</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for admin in admins %}
+          <tr>
+            <td>
+              <div class="customer-cell">
+                <div class="c-avatar">{{ admin.first_name|first }}</div>
+                <div class="c-name">{{ admin.first_name }} {{ admin.last_name }}</div>
+              </div>
+            </td>
+            <td>{{ admin.email }}</td>
+            <td>{{ admin.phone }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3">
+              <div class="empty-state">
+                <div class="empty-ico">👤</div>
+                <div class="empty-text">No admins found</div>
+                <div class="empty-sub">Create your first admin above</div>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tbl-footer">
+      <div class="tbl-footer-info">
+        Showing {{ admins.start_index }} - {{ admins.end_index }} of {{ admins.paginator.count }}
+      </div>
+      <div class="page-btns">
+        {% if admins.has_previous %}
+          <a class="pg-btn" href="?page={{ admins.previous_page_number }}">‹</a>
+        {% endif %}
+        {% for num in admins.paginator.page_range %}
+          {% if admins.number == num %}
+            <span class="pg-btn active">{{ num }}</span>
+          {% elif num >= admins.number|add:'-2' and num <= admins.number|add:'2' %}
+            <a class="pg-btn" href="?page={{ num }}">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
+        {% if admins.has_next %}
+          <a class="pg-btn" href="?page={{ admins.next_page_number }}">›</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </div>
 
-<div id="passBox" class="hidden">
-    <input id="password" type="password" placeholder="Password">
-    <input id="confirm_password" type="password" placeholder="Confirm Password">
-    <button id="createBtn" onclick="createAdmin()">Create Admin</button>
-</div>
-
-<p id="msg" class="msg"></p>
-
-</div>
-
-<!-- ================= TABLE ================= -->
-<div class="admin-card table-card">
-
-<h2>All Admins</h2>
-
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Email</th>
-<th>Phone</th>
-</tr>
-</thead>
-
-<tbody>
-{% for admin in admins %}
-<tr>
-<td>{{ admin.first_name }} {{ admin.last_name }}</td>
-<td>{{ admin.email }}</td>
-<td>{{ admin.phone }}</td>
-</tr>
-{% empty %}
-<tr><td colspan="3">No admins found</td></tr>
-{% endfor %}
-</tbody>
-</table>
-
-</div>
-
-</div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
 <script>
+// Initialize the Phone Input with Flags
+const phoneInput = document.querySelector("#phone");
+const iti = window.intlTelInput(phoneInput, {
+    utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
+    separateDialCode: true,
+    initialCountry: "auto",
+    geoIpLookup: function(callback) {
+        fetch("https://ipapi.co/json").then(res => res.json()).then(data => callback(data.country_code)).catch(() => callback("in"));
+    },
+});
 
-/* ===== CSRF ===== */
 function getCSRF(){
     return "{{ csrf_token }}";
 }
 
-/* ===== MESSAGE ===== */
 function showMsg(text, type=""){
-    const msg = document.getElementById("msg");
+    let msg = document.getElementById("msg");
     msg.innerText = text;
-    msg.className = "msg " + type;
+    msg.style.color = type === "error" ? "#EF4A00" : "#45B369";
 }
 
-/* ===== SEND OTP ===== */
+let otpTimer;
+let timeLeft = 120;
+
+function moveNext(el, index){
+  let inputs = document.querySelectorAll(".otp-input");
+  if(el.value.length === 1 && index < inputs.length - 1){
+    inputs[index + 1].focus();
+  }
+}
+
+function getOTP(){
+  let inputs = document.querySelectorAll(".otp-input");
+  return Array.from(inputs).map(i => i.value).join("");
+}
+
+function startTimer(){
+  clearInterval(otpTimer); // Clear existing
+  timeLeft = 120;
+  document.getElementById("resendBtn").disabled = true;
+  otpTimer = setInterval(()=>{
+    let min = Math.floor(timeLeft / 60);
+    let sec = timeLeft % 60;
+    document.getElementById("timer").innerText = `${min}:${sec < 10 ? '0'+sec : sec}`;
+    timeLeft--;
+    if(timeLeft < 0){
+      clearInterval(otpTimer);
+      document.getElementById("timer").innerText = "Expired";
+      document.getElementById("resendBtn").disabled = false;
+    }
+  },1000);
+}
+
 function sendOTP(){
+  // Use iti.getNumber() to get the full international number (e.g., +123456789)
+  let phone = iti.getNumber();
+  
+  if(!iti.isValidNumber()){ 
+      showMsg("Enter a valid phone number","error"); 
+      return; 
+  }
 
-    if(!phone.value){
-        showMsg("Enter phone number","error");
-        return;
+  fetch("/send-otp/",{
+    method:"POST",
+    headers:{"Content-Type":"application/x-www-form-urlencoded","X-CSRFToken": getCSRF()},
+    body: new URLSearchParams({ phone: phone })
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.status === "sent"){
+      document.getElementById("otpBox").style.display = "block";
+      startTimer();
+      showMsg("OTP sent to " + phone);
+    } else {
+      showMsg(data.error,"error");
     }
-
-    otpBtn.disabled = true;
-    otpBtn.innerText = "Sending...";
-
-    fetch("/send-otp/", {
-        method: "POST",
-        headers: {'X-CSRFToken': getCSRF()},
-        body: new URLSearchParams({ phone: phone.value })
-    })
-    .then(res => res.json())
-    .then(data=>{
-        otpBtn.disabled = false;
-        otpBtn.innerText = "Send OTP";
-
-        if(data.status === "sent"){
-            otpBox.classList.remove("hidden");
-            showMsg("OTP sent successfully","success");
-        }else{
-            showMsg("Failed to send OTP","error");
-        }
-    })
-    .catch(()=>{
-        otpBtn.disabled = false;
-        otpBtn.innerText = "Send OTP";
-        showMsg("Server error","error");
-    });
+  });
 }
 
-/* ===== VERIFY OTP ===== */
 function verifyOTP(){
-    fetch("/verify-otp/", {
-        method: "POST",
-        headers: {'X-CSRFToken': getCSRF()},
-        body: new URLSearchParams({ otp: otp.value })
-    })
-    .then(res=>res.json())
-    .then(data=>{
-        if(data.status==="verified"){
-            passBox.classList.remove("hidden");
-            showMsg("OTP verified","success");
-        }else{
-            showMsg("Invalid OTP","error");
-        }
-    });
-}
-
-/* ===== CREATE ADMIN ===== */
-function createAdmin(){
-
-    if(password.value !== confirm_password.value){
-        showMsg("Passwords do not match","error");
-        return;
+  let otp = getOTP();
+  fetch("/verify-otp/",{
+    method:"POST",
+    headers:{"Content-Type":"application/x-www-form-urlencoded","X-CSRFToken": getCSRF()},
+    body: new URLSearchParams({ otp: otp })
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.status === "verified"){
+      document.getElementById("passBox").style.display = "block";
+      showMsg("OTP verified");
+    } else {
+      showMsg("Invalid OTP","error");
     }
-
-    createBtn.disabled = true;
-    createBtn.innerText = "Creating...";
-
-    fetch("/create_admin/", {
-        method: "POST",
-        headers: {'X-CSRFToken': getCSRF()},
-        body: new URLSearchParams({
-            first_name:first_name.value,
-            last_name:last_name.value,
-            email:email.value,
-            phone:phone.value,
-            password:password.value,
-            confirm_password:confirm_password.value
-        })
-    })
-    .then(res=>res.json())
-    .then(data=>{
-        createBtn.disabled = false;
-        createBtn.innerText = "Create Admin";
-
-        if(data.error){
-            showMsg(data.error,"error");
-        }else{
-            showMsg("Admin created successfully","success");
-            setTimeout(()=>location.reload(),1000);
-        }
-    })
-    .catch(()=>{
-        createBtn.disabled = false;
-        createBtn.innerText = "Create Admin";
-        showMsg("Server error","error");
-    });
+  });
 }
 
+function createAdmin(){
+  let data = new URLSearchParams({
+    first_name: document.getElementById("first_name").value,
+    last_name: document.getElementById("last_name").value,
+    email: document.getElementById("email").value,
+    phone: iti.getNumber(), // Sends the full number with country code
+    password: document.getElementById("password").value,
+    confirm_password: document.getElementById("confirm_password").value
+  });
+  fetch("/create_admin/",{
+    method:"POST",
+    headers:{"Content-Type":"application/x-www-form-urlencoded","X-CSRFToken": getCSRF()},
+    body: data
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.status === "success"){
+      showMsg("Admin created successfully");
+      setTimeout(()=>location.reload(),1000);
+    } else {
+      showMsg(data.error,"error");
+    }
+  });
+}
+
+function resendOTP(){ sendOTP(); }
 </script>
 
 {% endblock %}

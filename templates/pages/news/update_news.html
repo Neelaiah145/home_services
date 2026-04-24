@@ -1,0 +1,43 @@
+{% extends 'dashboardbase.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-0 rounded-3">
+
+        <!-- Header -->
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"></h5>Update News</h5>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+
+                <!-- Content -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Headlines</label>
+                    <textarea name="update_headline" class="form-control" rows="4"
+                        placeholder="Enter news headlines here">{{ news.content }}</textarea>
+                </div>
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'news.list' %}" class="btn btn-outline-success">
+                        Back
+                    </a>
+                    <button type="submit" class="btn btn-primary px-4">
+                        Update News
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

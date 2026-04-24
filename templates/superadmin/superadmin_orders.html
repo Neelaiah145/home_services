@@ -1,0 +1,347 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+<style>
+
+/* HEADER */
+.page-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.badge-count{
+  background: var(--primary-50);
+  color: var(--primary-600);
+  padding:6px 12px;
+  border-radius:8px;
+  font-size:13px;
+  font-weight:600;
+}
+
+/* STATS */
+.stat-row{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.stat-card{
+  background:#fff;
+  border:1px solid var(--border-color);
+  border-radius:12px;
+  padding:16px;
+  box-shadow:var(--shadow-7);
+}
+
+.stat-label{
+  font-size:11px;
+  color:var(--neutral-400);
+  font-weight:600;
+  text-transform:uppercase;
+}
+
+.stat-value{
+  font-size:22px;
+  font-weight:700;
+}
+
+.stat-card.warning{ border-left:4px solid #ef8e00; }
+.stat-card.primary{ border-left:4px solid var(--primary-600); }
+.stat-card.success{ border-left:4px solid var(--success-main); }
+
+/* TOOLBAR (same as user page) */
+.card-header-flex{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:1rem;
+}
+
+.toolbar{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.search-container{
+  position:relative;
+}
+
+.search-container input{
+  padding-left:30px;
+  height:38px;
+  border:1px solid var(--border-color);
+  border-radius:8px;
+}
+
+.search-icon{
+  position:absolute;
+  left:8px;
+  top:50%;
+  transform:translateY(-50%);
+}
+
+.filter-group{
+  display:flex;
+  background:#f3f4f6;
+  padding:4px;
+  border-radius:8px;
+  gap:4px;
+}
+
+.filter-btn{
+  padding:6px 12px;
+  border:none;
+  border-radius:6px;
+  background:transparent;
+  cursor:pointer;
+}
+
+.filter-btn.active{
+  background:#fff;
+  color:var(--primary-600);
+  box-shadow:0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* TABLE */
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+thead th{
+  padding:12px;
+  font-size:11px;
+  text-transform:uppercase;
+  color:var(--neutral-500);
+  border-bottom:1px solid var(--border-color);
+}
+
+tbody td{
+  padding:14px;
+  border-bottom:1px solid var(--border-color);
+}
+
+.status{
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:600;
+}
+
+.status.pending{ background:#fff4e5; color:#ef8e00; }
+.status.progress{ background:#eef1ff; color:var(--primary-600); }
+.status.completed{ background:#e6f7ed; color:var(--success-main); }
+
+.actions button{
+  border:none;
+  background:#f5f5f5;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+}
+/* DATE INPUT */
+.date-input{
+  height:38px;
+  padding:0 10px;
+  border:1px solid var(--border-color);
+  border-radius:8px;
+  font-size:13px;
+  color:var(--text-primary-light);
+  background:#fff;
+  cursor:pointer;
+  transition:all 0.2s ease;
+}
+
+/* HOVER */
+.date-input:hover{
+  border-color:var(--primary-600);
+}
+
+/* FOCUS */
+.date-input:focus{
+  outline:none;
+  border-color:var(--primary-600);
+  box-shadow:0 0 0 2px rgba(37,99,235,0.1);
+}
+
+/* CALENDAR ICON FIX (optional) */
+.date-input::-webkit-calendar-picker-indicator{
+  cursor:pointer;
+  opacity:0.7;
+}
+</style>
+
+<div class="page-wrap">
+
+<!-- HEADER -->
+<div class="page-header">
+  <div>
+    <h6 class="fw-semibold mb-0">All Orders</h6>
+    <p class="page-subtitle">Order Management</p>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stat-row">
+
+  <div class="stat-card">
+    <span class="stat-label">Total Orders</span>
+    <div class="stat-value">
+      {{ bookings|length }}
+    </div>
+  </div>
+
+  <div class="stat-card warning">
+    <span class="stat-label">Pending</span>
+    <div class="stat-value">{{ pending_count }}</div>
+  </div>
+
+  <div class="stat-card primary">
+    <span class="stat-label">Progress</span>
+    <div class="stat-value">{{ progress_count }}</div>
+  </div>
+
+  <div class="stat-card success">
+    <span class="stat-label">Completed</span>
+    <div class="stat-value">{{ completed_count }}</div>
+  </div>
+
+</div>
+
+<!-- CARD -->
+<div class="card">
+
+<!-- TOOLBAR -->
+<div class="card-header card-header-flex">
+
+  <div class="card-title">Orders</div>
+
+  <div class="toolbar">
+
+    <!-- FILTER -->
+    <div class="filter-group">
+      <button class="filter-btn active" onclick="setStatus('', this)">All</button>
+      <button class="filter-btn" onclick="setStatus('pending', this)">Pending</button>
+      <button class="filter-btn" onclick="setStatus('progress', this)">Progress</button>
+      <button class="filter-btn" onclick="setStatus('completed', this)">Completed</button>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search..." onkeyup="applyFilters()">
+    </div>
+
+    <!-- DATE -->
+  <input type="date" id="dateFilter" class="date-input" onchange="applyFilters()">
+
+  </div>
+
+</div>
+
+<!-- TABLE -->
+<div class="table-wrap">
+
+<table>
+
+<thead>
+<tr>
+  <th>Sl.No</th>
+  <th>Customer</th>
+  <th>Service</th>
+  <th>Date</th>
+  <th>Status</th>
+  <th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for b in bookings %}
+<tr>
+
+<td>{{ b.order_id }}</td>
+
+<td>{{ b.user.first_name }}</td>
+
+<td>{{ b.service.name }}</td>
+
+<td>{{ b.created_at|date:"d M Y" }}</td>
+
+<td>
+  <span class="status {{ b.status }}">
+    {{ b.status }}
+  </span>
+</td>
+
+<td class="actions">
+  <button onclick="location.href='{% url 'order_history' b.id %}'">
+    View
+  </button>
+</td>
+
+</tr>
+{% empty %}
+<tr>
+<td colspan="6" style="text-align:center;padding:30px;">
+No data found
+</td>
+</tr>
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+let currentStatus = "";
+
+function setStatus(status, el){
+  currentStatus = status;
+
+  document.querySelectorAll(".filter-btn").forEach(btn=>{
+    btn.classList.remove("active");
+  });
+
+  el.classList.add("active");
+
+  applyFilters();
+}
+
+function applyFilters(){
+  const q = document.getElementById("searchInput").value.toLowerCase();
+  const rows = document.querySelectorAll("tbody tr");
+
+  rows.forEach(row => {
+    const text = row.innerText.toLowerCase();
+    const status = row.querySelector(".status")?.innerText.toLowerCase() || "";
+
+    let show = true;
+
+    if(q && !text.includes(q)) show = false;
+    if(currentStatus && !status.includes(currentStatus)) show = false;
+
+    row.style.display = show ? "" : "none";
+  });
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'dashboardbase.html' %}
+
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-0 rounded-3">
+
+        <!-- Header -->
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"> Update Service</h5>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body">
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <!--  Image Upload -->
+                    <div class="col-md-4 text-center">
+                        <label class="form-label fw-semibold">Upload Image</label>
+
+                        <div class="border rounded p-3 mb-3"
+                            style="height:200px; display:flex; align-items:center; justify-content:center;">
+
+                            {% if services.image %}
+                            <img id="preview" src="{{ services.image.url }}"
+                                style="max-height:100%; max-width:100%; object-fit:cover;">
+                            {% else %}
+                            <img id="preview" src="" style="max-height:100%; max-width:100%; object-fit:cover;">
+                            {% endif %}
+
+                        </div>
+
+                        <input type="file" name="image" class="form-control" onchange="previewImage(event)">
+                        <small class="text-muted">Leave empty to keep old image</small>
+                    </div>
+
+                    <!--  Content Fields -->
+                    <div class="col-md-8">
+
+                        <!-- tag -->
+                          <div class="mb-3">
+                            <label class="form-label fw-semibold">Update Service Tag</label>
+                            <input type="text" name="s_tag" class="form-control" value="{{ services.s_tag }}" >
+                        </div>
+
+                        <!-- title -->
+                          <div class="mb-3">
+                            <label class="form-label fw-semibold">Update Service Title</label>
+                            <input type="text" name="s_title" class="form-control" value="{{ services.s_title }}" >
+                        </div>
+
+                         <!-- Description -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Update Short Description</label>
+                            <textarea name="s_desc" class="form-control" rows="3" >{{ services.s_desc }}</textarea>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between mt-3">
+                    <a href="" class="btn btn-outline-success">
+                        Back
+                    </a>
+
+                    <button type="submit" class="btn btn-success text-white px-4">
+                        Update
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!--  Image Preview Script -->
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            document.getElementById('preview').src = reader.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+
+{% endblock %}

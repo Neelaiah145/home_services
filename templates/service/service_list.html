@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Services</title>
 
 <style>
 
-/* ===== PAGE ===== */
+/* ===== BASE ===== */
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: "Segoe UI", Arial, sans-serif;
     background: #f5f7fb;
 }
 
@@ -20,17 +21,23 @@ body {
     padding: 0 15px;
 }
 
-/* ===== TITLE ===== */
-h2 {
-    margin-bottom: 20px;
+/* ===== HEADER ===== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.header h2 {
     font-size: 26px;
-    font-weight: 600;
+    margin: 0;
 }
 
 /* ===== GRID ===== */
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 20px;
 }
 
@@ -44,7 +51,7 @@ h2 {
 }
 
 .card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
 }
 
 /* IMAGE */
@@ -61,7 +68,7 @@ h2 {
 
 /* TITLE */
 .card-body h3 {
-    margin: 0 0 5px;
+    margin: 0 0 6px;
     font-size: 18px;
 }
 
@@ -88,45 +95,59 @@ h2 {
     background: #1d4ed8;
 }
 
+/* EMPTY STATE */
+.empty {
+    text-align: center;
+    padding: 40px;
+    color: #888;
+}
+
 /* RESPONSIVE */
 @media (max-width: 600px) {
-    h2 {
+    .header h2 {
         font-size: 22px;
     }
 }
 
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-<h2>Services</h2>
-
-<div class="grid">
-
-{% for s in services %}
-<div class="card">
-
-    {% if s.image %}
-        <img src="{{ s.image.url }}">
-    {% endif %}
-
-    <div class="card-body">
-        <h3>{{ s.name }}</h3>
-        <p>{{ s.title }}</p>
-
-        <a href="{% url 'service_detail' s.id %}" class="btn">
-            View Details
-        </a>
+    <!-- HEADER -->
+    <div class="header">
+        <h2>Services</h2>
     </div>
 
-</div>
-{% endfor %}
+    <!-- GRID -->
+    <div class="grid">
 
-</div>
+        {% for s in services %}
+        <div class="card">
+
+            {% if s.image %}
+                <img src="{{ s.image.url }}" alt="{{ s.name }}">
+            {% endif %}
+
+            <div class="card-body">
+                <h3>{{ s.name }}</h3>
+                <p>{{ s.title }}</p>
+
+                <a href="{% url 'service_detail' s.id %}" class="btn">
+                    View Details
+                </a>
+            </div>
+
+        </div>
+        {% empty %}
+        <div class="empty">
+            No services available
+        </div>
+        {% endfor %}
+
+    </div>
 
 </div>
 

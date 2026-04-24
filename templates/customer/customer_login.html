@@ -2,141 +2,339 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Login</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsive Secure Login</title>
 <style>
-/* ===== PAGE ===== */
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
+  :root {
+    --primary: #6c5ce7;
+    --primary-light: #f4f3ff;
+    --text: #2d3436;
+    --border: #dfe6e9;
+    --error: #ff7675;
+    --success: #00b894;
+    --gray: #636e72;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #f8f9fd;
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100vh;
-}
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px; /* Prevents card from touching edges on mobile */
+  }
 
-/* ===== CARD ===== */
-.card {
-    width: 350px;
+  .card {
+    width: 100%;
+    max-width: 400px;
     background: #fff;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+    padding: 30px;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+  }
 
-/* ===== TITLE ===== */
-h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
+  h2 { text-align: center; margin: 0 0 10px; color: var(--text); font-size: clamp(20px, 5vw, 24px); }
+  p.subtitle { text-align: center; color: var(--gray); margin-bottom: 30px; font-size: 14px; }
 
-/* ===== INPUT ===== */
-.input-group {
-    margin-bottom: 15px;
-}
+  /* Input Labels */
+  .input-label { font-size: 13px; font-weight: 600; color: var(--gray); margin-bottom: 8px; display: block; }
+  
+  /* Phone Input Group */
+  .phone-container {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    position: relative;
+    background: #fff;
+    margin-bottom: 25px; /* Spacing between Phone and OTP */
+  }
 
-.input-group label {
-    display: block;
-    font-size: 14px;
-    margin-bottom: 5px;
-}
+  .phone-container:focus-within { 
+    border-color: var(--primary); 
+    box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1); 
+  }
 
-.input-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-}
-
-/* ===== BUTTON ===== */
-button {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    background: #28a745;
-    color: #fff;
-    border-radius: 6px;
+  .selected-country {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
     cursor: pointer;
-    font-weight: bold;
-}
+    border-right: 1px solid var(--border);
+    min-width: 85px;
+    justify-content: center;
+  }
 
-button:hover {
-    background: #1e7e34;
-}
+  .flag-img { width: 20px; height: 14px; border-radius: 2px; object-fit: cover; }
 
-/* ===== ERROR ===== */
-.error {
-    margin-top: 10px;
-    color: red;
-    text-align: center;
+  /* Dropdown Menu */
+  .country-dropdown {
+    position: absolute;
+    top: 55px;
+    left: 0;
+    width: 100%;
+    max-width: 250px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    z-index: 100;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+  }
+
+  .country-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    cursor: pointer;
     font-size: 14px;
-}
+  }
+  .country-item:hover { background: var(--primary-light); }
 
-/* ===== EXTRA ===== */
-.extra {
+  input#phone {
+    flex: 1;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    outline: none;
+    background: transparent;
+    width: 100%;
+  }
+
+  /* OTP Section */
+  .otp-wrap { 
+    display: none; 
+    margin-top: 10px; 
+    padding-top: 20px;
+    border-top: 1px dashed var(--border);
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .otp-grid { 
+    display: flex; 
+    gap: clamp(8px, 2vw, 12px); 
+    justify-content: center; 
+    margin: 20px 0; 
+  }
+  
+  .otp-box {
+    width: clamp(45px, 12vw, 52px);
+    height: 60px;
     text-align: center;
-    margin-top: 15px;
+    font-size: 24px;
+    font-weight: 700;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    outline: none;
+  }
+  .otp-box:focus { border-color: var(--primary); background: var(--primary-light); }
+
+  /* Actions */
+  .timer-row { font-size: 13px; color: var(--gray); margin-bottom: 20px; text-align: center; }
+  #resendBtn { background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; display: none; }
+
+  #btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #f3f4f6;
     font-size: 14px;
-}
+    color: var(--gray);
+  }
+  .footer a { color: var(--primary); text-decoration: none; font-weight: 700; }
+
+  /* Tab & Mobile Responsiveness */
+  @media (max-width: 480px) {
+    .card { padding: 25px 20px; }
+    .selected-country { min-width: 75px; padding: 10px; }
+  }
 </style>
 </head>
-
 <body>
 
 <div class="card">
+    <form method="POST" style="display:none;">
+    {% csrf_token %}
+  </form>
+  <h2>Sign In</h2>
+  <p class="subtitle">Access your account securely</p>
+  
+  <p id="msg" class="msg"></p>
 
-    <h2>Login</h2>
-
-    <form method="POST" onsubmit="return validateForm()">
-        {% csrf_token %}
-
-        <!-- EMAIL -->
-        <div class="input-group">
-            <label>Email</label>
-            <input id="email" name="email" placeholder="Enter your email">
-        </div>
-
-        <!-- PASSWORD -->
-        <div class="input-group">
-            <label>Password</label>
-            <input id="password" type="password" name="password" placeholder="Enter password">
-        </div>
-
-        <button type="submit">Login</button>
-    </form>
-
-    <!-- ERROR MESSAGE -->
-    {% if error %}
-        <div class="error">{{ error }}</div>
-    {% endif %}
-
-    <div class="extra">
-        Don't have an account? <a href="/register/">Register</a>
+  <label class="input-label">Mobile Number</label>
+  <div class="phone-container">
+    <div class="selected-country" id="dropdownTrigger">
+      <img src="https://flagcdn.com/w40/in.png" class="flag-img" id="mainFlag">
+      <span id="mainCode">+91</span>
+    </div>
+    
+    <div class="country-dropdown" id="countryMenu">
+      <div class="country-item" onclick="selectCountry('in', '+91')"><img src="https://flagcdn.com/w40/in.png" class="flag-img"> India (+91)</div>
+      <div class="country-item" onclick="selectCountry('us', '+1')"><img src="https://flagcdn.com/w40/us.png" class="flag-img"> USA (+1)</div>
+      <div class="country-item" onclick="selectCountry('gb', '+44')"><img src="https://flagcdn.com/w40/gb.png" class="flag-img"> UK (+44)</div>
     </div>
 
+    <input id="phone" type="tel" placeholder="10 Digit Number" maxlength="10">
+  </div>
+
+  <div class="otp-wrap" id="otpWrap">
+    <label class="input-label" style="text-align: center;">Verification Code</label>
+    <div class="otp-grid">
+      <input class="otp-box" type="text" maxlength="1" inputmode="numeric">
+      <input class="otp-box" type="text" maxlength="1" inputmode="numeric">
+      <input class="otp-box" type="text" maxlength="1" inputmode="numeric">
+      <input class="otp-box" type="text" maxlength="1" inputmode="numeric">
+    </div>
+    <div class="timer-row">
+      <span id="tText">Resend in <b id="timer">30</b>s</span>
+      <button id="resendBtn" type="button">Resend Code</button>
+    </div>
+  </div>
+
+  <button id="btn">Send OTP</button>
+
+  <div class="footer">
+    New here? <a href="/register/">Create Account</a>
+  </div>
 </div>
 
 <script>
 
-/* ===== SIMPLE VALIDATION ===== */
-function validateForm() {
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    if (!email || !password) {
-        alert("Please fill all fields");
-        return false;
+  function getCSRF() {
+  let name = "csrftoken";
+  let cookies = document.cookie.split(";");
+  for (let c of cookies) {
+    c = c.trim();
+    if (c.startsWith(name + "=")) {
+      return c.substring(name.length + 1);
     }
-
-    if (!email.includes("@")) {
-        alert("Enter valid email");
-        return false;
-    }
-
-    return true;
+  }
+  return "";
 }
 
-</script>
+let step = 1;
+let countdown;
+const btn = document.getElementById("btn");
+const msg = document.getElementById("msg");
+const phoneInput = document.getElementById("phone");
+const otpWrap = document.getElementById("otpWrap");
+const boxes = document.querySelectorAll(".otp-box");
+const resendBtn = document.getElementById("resendBtn");
+const timerVal = document.getElementById("timer");
+const tText = document.getElementById("tText");
+const countryMenu = document.getElementById("countryMenu");
 
+// Dropdown Logic
+document.getElementById("dropdownTrigger").onclick = (e) => {
+  e.stopPropagation();
+  countryMenu.style.display = countryMenu.style.display === "block" ? "none" : "block";
+};
+
+function selectCountry(flag, code) {
+  document.getElementById("mainFlag").src = `https://flagcdn.com/w40/${flag}.png`;
+  document.getElementById("mainCode").innerText = code;
+  countryMenu.style.display = "none";
+}
+
+window.onclick = () => countryMenu.style.display = "none";
+
+// OTP Logic
+boxes.forEach((b, i) => {
+  b.oninput = () => { if(b.value && i < 3) boxes[i+1].focus(); };
+  b.onkeydown = (e) => { if(e.key==="Backspace" && !b.value && i>0) boxes[i-1].focus(); };
+});
+
+function showMsg(text, type) {
+  msg.innerText = text;
+  msg.style.color = type === "error" ? "#ff7675" : "#00b894";
+  msg.style.textAlign = "center";
+  msg.style.fontSize = "13px";
+}
+
+function startTimer() {
+  let time = 30;
+  resendBtn.style.display = "none";
+  tText.style.display = "inline";
+  clearInterval(countdown);
+  countdown = setInterval(() => {
+    time--;
+    timerVal.innerText = time;
+    if(time <= 0) {
+      clearInterval(countdown);
+      tText.style.display = "none";
+      resendBtn.style.display = "inline";
+    }
+  }, 1000);
+}
+
+function getCSRF() {
+  return document.cookie.split('; ').find(r=>r.startsWith('csrftoken='))?.split('=')[1];
+}
+
+resendBtn.onclick = () => { step = 1; btn.click(); };
+
+btn.onclick = async function() {
+  let otp = "";
+  boxes.forEach(b => otp += b.value);
+
+  if (step === 1) {
+    if (phoneInput.value.length < 10) return showMsg("Invalid phone number", "error");
+    btn.disabled = true;
+    try {
+      const res = await fetch("/login/", {
+        method: "POST",
+        headers: {"Content-Type":"application/json", "X-CSRFToken": getCSRF()},
+        body: JSON.stringify({ phone: phoneInput.value })
+      });
+      const data = await res.json();
+      btn.disabled = false;
+      if (data.error) showMsg(data.error, "error");
+      else {
+        showMsg("OTP sent successfully", "success");
+        otpWrap.style.display = "block";
+        phoneInput.disabled = true;
+        btn.innerText = "Verify OTP";
+        step = 2;
+        startTimer();
+      }
+    } catch (e) { showMsg("Server error", "error"); btn.disabled = false; }
+  } else {
+    if (otp.length < 4) return showMsg("Enter 4-digit OTP", "error");
+    btn.disabled = true;
+    const res = await fetch("/login/", {
+      method: "POST",
+      headers: {"Content-Type":"application/json", "X-CSRFToken": getCSRF()},
+      body: JSON.stringify({ phone: phoneInput.value, otp: otp })
+    });
+    const data = await res.json();
+    btn.disabled = false;
+    if (data.error) showMsg(data.error, "error");
+    else window.location.href = data.redirect;
+  }
+};
+</script>
 </body>
 </html>

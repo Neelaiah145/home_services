@@ -1,0 +1,133 @@
+{% extends 'dashboardbase.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-0 rounded-3">
+
+        <!-- Header -->
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Add Footer</h5>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <!-- LOGO -->
+                    <div class="col-md-4 text-center">
+                        <label class="form-label fw-semibold">Footer Logo</label>
+
+                        <div class="border rounded p-3 mb-3"
+                            style="height:200px; display:flex; align-items:center; justify-content:center;">
+                            <img id="preview" style="max-height:100%; max-width:100%; object-fit:cover;">
+                        </div>
+
+                        <input type="file" name="logo_image" class="form-control" onchange="previewImage(event)">
+                    </div>
+
+                    <!-- DETAILS -->
+                    <div class="col-md-8">
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Footer Description</label>
+                            <textarea name="footer_description" class="form-control" rows="3" required></textarea>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Phone Number</label>
+                            <input type="text" name="phone_num" class="form-control" required>
+                        </div>
+
+                        <!-- WhatsApp -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">WhatsApp Number</label>
+                            <input type="text" name="whatsapp_num" class="form-control" required>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Address</label>
+                            <textarea name="address" class="form-control" rows="2" required></textarea>
+                        </div>
+
+                    </div>
+
+                    <!-- SOCIAL LINKS -->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Facebook URL</label>
+                            <input type="url" name="facebook" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Instagram URL</label>
+                            <input type="url" name="instagram" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Twitter URL</label>
+                            <input type="url" name="twitter" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">WhatsApp Link</label>
+                            <input type="url" name="whatsapp" class="form-control">
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="d-flex justify-content-between mt-3">
+                    <a href="{% url 'list.footer' %}" class="btn btn-outline-secondary">
+                        Back
+                    </a>
+
+                    <button type="submit" class="btn btn-primary px-4">
+                        Save Footer
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- IMAGE PREVIEW -->
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            document.getElementById('preview').src = reader.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+
+{% endblock %}

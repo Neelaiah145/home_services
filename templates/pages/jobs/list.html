@@ -1,0 +1,116 @@
+{% extends 'dashboardbase.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-0 rounded-3">
+
+        <!-- Header -->
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Job / Career List</h5>
+
+            <a href="{% url 'add.jobs' %}" class="btn btn-sm btn-light">
+                <i class="bi bi-plus-circle-fill"></i> Add Job
+            </a>
+        </div>
+
+        <!-- Table -->
+        <div class="card-body table-responsive">
+
+            <table class="table table-hover table-bordered align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                      
+                        <th>Icon</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Description</th>
+                        <th>Job Type</th>
+                        <th>Work mode</th>
+                   
+                        <th>Created At</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for job in jobs %}
+                    <tr>
+
+                        <td>{{ forloop.counter }}</td>
+                       
+
+                        <!-- Icon -->
+                        <td>
+                            {% if job.icon %}
+                                <img src="{{ job.icon.url }}" width="60" height="60" style="object-fit:cover;">
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <!-- Title -->
+                        <td>{{ job.title }}</td>
+
+                        <!-- Badge -->
+                        <td>
+                            {% if job.status  == "urgent" %}
+                                <span class="badge bg-danger">Urgent</span>
+                            {% else %}
+                                <span class="badge bg-success">Hiring</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Description -->
+                        <td style="max-width:250px;">
+                            {{ job.description|truncatechars:60 }}
+                        </td>
+
+                        <!-- Job Type -->
+                        <td>{{ job.job_type }}</td>
+
+                        <!-- Location -->
+                        <td>{{ job.work_mode }}</td>
+
+              
+                        <!-- Date -->
+                        <td>{{ job.created_at|date:"d M Y" }}</td>
+
+                        <!-- Actions -->
+                        <td class="text-center">
+
+                            <a href="{% url 'update.jobs' job.id %}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <a href="{% url 'delete.jobs' job.id %}" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="10" class="text-center text-muted py-4">
+                            No jobs available
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

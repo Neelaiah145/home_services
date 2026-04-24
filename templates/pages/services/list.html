@@ -1,0 +1,93 @@
+{% extends 'dashboardbase.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-0 rounded-3">
+
+        <!-- HEADER -->
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Service List</h5>
+
+            <a href="{% url 'add.services' %}" class="btn btn-sm btn-success">
+                <i class="bi bi-plus-circle-fill"></i> Add Services
+            </a>
+        </div>
+
+        <!-- TABLE -->
+        <div class="card-body table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Service Name</th>
+                        <th>Service Icon</th>
+                        <th>Service Image</th>
+                        <th>Created Date</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for service in services %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+
+                        <td>{{ service.servicename }}</td>
+
+                        <!-- ICON -->
+                        <td>
+                            {% if service.serviceicon %}
+                                <img src="{{ service.serviceicon.url }}"
+                                     width="80" height="80" style="object-fit:cover;">
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <!-- IMAGE -->
+                        <td>
+                            {% if service.service_image %}
+                                <img src="{{ service.service_image.url }}"
+                                     width="80" height="80" style="object-fit:cover;">
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>{{ service.created_at|date:"d M Y" }}</td>
+
+                        <td class="text-center">
+                            <a href="{% url 'update.services' service.id %}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <a href="{% url 'delete.services' service.id %}" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            No Service available
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

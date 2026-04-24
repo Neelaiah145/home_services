@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#f9fafb;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --text:#111827;
+  --sub:#6b7280;
+  --primary:#2563eb;
+  --success:#16a34a;
+  --error:#dc2626;
+}
+
+/* BASE */
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+}
+
+/* WRAPPER */
+.page-wrap{
+  max-width:900px;
+  margin:auto;
+  padding:30px 20px;
+}
+
+/* HEADER */
+.page-header{
+  margin-bottom:20px;
+}
+
+.page-title{
+  font-size:22px;
+  font-weight:600;
+}
+
+.page-sub{
+  font-size:13px;
+  color:var(--sub);
+}
+
+/* CARD */
+.form-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+}
+
+/* CARD HEADER */
+.card-header{
+  padding:16px 20px;
+  border-bottom:1px solid var(--border);
+  font-weight:600;
+}
+
+/* CARD BODY */
+.card-body{
+  padding:20px;
+}
+
+/* FORM GRID */
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+@media(max-width:700px){
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+/* FULL WIDTH */
+.full{
+  grid-column:span 2;
+}
+
+/* INPUT GROUP */
+.form-group{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+label{
+  font-size:12px;
+  color:var(--sub);
+  font-weight:500;
+}
+
+input, textarea{
+  padding:10px 12px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  font-size:14px;
+}
+
+input:focus, textarea:focus{
+  border-color:var(--primary);
+  outline:none;
+  box-shadow:0 0 0 2px rgba(37,99,235,0.1);
+}
+
+textarea{
+  height:90px;
+  resize:none;
+}
+
+input[readonly]{
+  background:#f3f4f6;
+}
+
+/* BUTTON */
+.form-footer{
+  margin-top:20px;
+  display:flex;
+  justify-content:flex-end;
+}
+
+.save-btn{
+  padding:10px 20px;
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.save-btn:hover{
+  background:#1d4ed8;
+}
+
+/* ALERT */
+.alert{
+  padding:10px 14px;
+  border-radius:8px;
+  font-size:13px;
+  margin-bottom:15px;
+}
+
+.alert-success{
+  background:#ecfdf5;
+  color:var(--success);
+}
+
+.alert-error{
+  background:#fee2e2;
+  color:var(--error);
+}
+</style>
+
+<div class="page-wrap">
+
+<!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <h6 class="fw-semibold mb-0"> Edit profile</h6>
+      <p class="page-subtitle">Edit Personal Information</p>
+    </div>
+   
+  </div>
+
+<!-- FORM CARD -->
+<div class="form-card">
+
+<div class="card-header">
+  Personal Details
+</div>
+
+<div class="card-body">
+
+<!-- MESSAGES -->
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<form method="POST">
+{% csrf_token %}
+
+<div class="form-grid">
+
+<!-- First Name -->
+<div class="form-group">
+<label>First Name</label>
+<input type="text" value="{{ user.first_name }}" readonly>
+</div>
+
+<!-- Mobile -->
+<div class="form-group">
+<label>Mobile</label>
+<input type="text" value="{{ user.phone }}" readonly>
+</div>
+
+<!-- Email -->
+<div class="form-group full">
+<label>Email Address</label>
+<input type="email" name="email" value="{{ user.email }}">
+</div>
+
+<!-- Address -->
+<div class="form-group full">
+<label>Address</label>
+<textarea name="address">{{ user.address }}</textarea>
+</div>
+
+<!-- City -->
+<div class="form-group">
+<label>City</label>
+<input type="text" name="city" value="{{ user.city }}">
+</div>
+
+</div>
+
+<!-- BUTTON -->
+<div class="form-footer">
+  <button type="submit" class="save-btn">Save Changes</button>
+</div>
+
+</form>
+
+</div>
+</div>
+
+</div>
+
+{% endblock %}

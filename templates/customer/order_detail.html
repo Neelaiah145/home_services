@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.container { max-width:700px; margin:30px auto; font-family:'Segoe UI'; }
+
+.card {
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+}
+
+/* TIMELINE */
+.timeline {
+    border-left:2px solid #ddd;
+    padding-left:15px;
+    margin-top:15px;
+}
+
+.item {
+    margin-bottom:15px;
+    background:#f9f9f9;
+    padding:10px;
+    border-radius:6px;
+}
+</style>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Order: {{ booking.order_id }}</h2>
+
+<p><b>Service:</b> {{ booking.service.name }}</p>
+<p><b>Status:</b> {{ booking.status }}</p>
+
+<p><b>Vendor:</b>
+{% if booking.vendor %}
+    {{ booking.vendor.first_name }} ({{ booking.vendor.phone }})
+{% else %}
+    Not Assigned
+{% endif %}
+</p>
+
+<h3>Timeline</h3>
+
+<div class="timeline">
+
+{% for h in history %}
+
+<div class="item">
+    <b>{{ h.status }}</b><br>
+    {{ h.created_at }}<br>
+    By: {{ h.updated_by.first_name }}
+</div>
+{% empty %}
+<p>No updates yet</p>
+{% endfor %}
+
+</div>
+
+<br>
+<a href="{% url 'customer_orders' %}">⬅ Back</a>
+
+</div>
+
+</div>
+
+{% endblock %}
