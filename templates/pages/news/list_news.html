@@ -1,4 +1,4 @@
-{% extends 'dashboardbase.html' %}
+{% extends "base.html" %}
 
 {% block content %}
 
@@ -8,9 +8,9 @@
 
         <!-- Header -->
         <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">News List</h5>
+            <h5 class="mb-0 text-white">News List</h5>
             <a href="{% url 'createnews' %}" class="btn btn-sm btn-light">
-               <i class="bi bi-plus-circle-fill"></i> Add News
+                <i class="bi bi-plus-circle-fill"></i> Add News
             </a>
         </div>
 
@@ -33,19 +33,20 @@
                         {% for news in news %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                           
+
                             <td>
                                 {{ news.content|truncatewords:10 }}
                             </td>
                             <td>{{ news.created_at|date:"d M Y" }}</td>
 
                             <td class="text-center">
-                                <a href="{% url 'update.news' news.pk %}" class="btn btn-sm btn-warning">
-                                    <i class="bi bi-pencil"></i>
+                                <a href="{% url 'update.news' news.pk %}" class="text-warning me-2" title="Edit">
+                                    <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
 
-                                <a href="{% url 'delete.news' news.pk %}" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-trash3"></i>
+                                <a href="{% url 'delete.news' news.pk %}" class="text-danger" title="Delete"
+                                    onclick="return confirm('Are you sure you want to delete this?')">
+                                    <i class="fa-solid fa-trash"></i>
                                 </a>
                             </td>
                         </tr>
@@ -67,5 +68,35 @@
     </div>
 
 </div>
+{% if page_obj %}
+<div class="d-flex justify-content-center mt-4">
+    <ul class="pagination custom-pagination">
 
+        <!-- Prev -->
+        {% if page_obj.has_previous %}
+        <li>
+            <a href="?page={{ page_obj.previous_page_number }}">←</a>
+        </li>
+        {% endif %}
+
+        <!-- Numbers -->
+        {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+        <li class="active"><span>{{ num }}</span></li>
+        {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %} <li>
+            <a href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            <!-- Next -->
+            {% if page_obj.has_next %}
+            <li>
+                <a href="?page={{ page_obj.next_page_number }}">→</a>
+            </li>
+            {% endif %}
+
+    </ul>
+</div>
+{% endif %}
 {% endblock %}

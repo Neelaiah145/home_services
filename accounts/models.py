@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.conf import settings
-
+from core.models import Category, CategoryService
+import uuid
 
 # user manager
 
@@ -66,32 +67,8 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.email} ({self.role})"
-    
-    
-    
-    
-    
-    
 
 
-
-
-
-
-
-  
-    
-
-
-
-
-
-
-
-
-from core.models import Category, CategoryService
-
-import uuid
 
 def generate_order_id():
     return "RCN" + uuid.uuid4().hex[:8].upper()

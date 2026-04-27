@@ -3,13 +3,15 @@ from core.views import IndexView, ServicesListView, ContactForm, ContactListView
 
 urlpatterns = [
     path("", IndexView.as_view(), name="indexpage"),
-    path('sridixitha/servicespagelist/<int:pk>/',
+    path('servicespagelist/<int:pk>/',
          ServicesListView.as_view(), name='category.services.listing'),
 
     path('sridixitha/contact/', ContactForm.as_view(), name='contact'),
     path('list/contact/',ContactListView.as_view(),name='list.contact'),
     path('update/conatct/<int:pk>/',ContactUpdateView.as_view(),name='update.contact'),
     path('delete/contact/<int:pk>/',DeleteContact.as_view(),name='delete.contact'),
+
+    
     path("sridixitha/feebackform/", FeedbackForm.as_view(), name='feedbackform'),
     
 
@@ -21,7 +23,7 @@ urlpatterns = [
 
 
 
-    path("lis/banner/", ListBanner.as_view(), name="list.banner"),
+    path("list/banner/", ListBanner.as_view(), name="list.banner"),
     path("create/banner/", CreateBanner.as_view(), name="create.banner"),
     path("update/banner/<int:pk>/", UpdateBanner.as_view(), name="update.banner"),
     path('delete/banner/<int:pk>/', DeleteBanner.as_view(), name="delete.banner"),

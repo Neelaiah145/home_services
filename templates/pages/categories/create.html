@@ -1,4 +1,4 @@
-{% extends 'dashboardbase.html' %}
+{% extends 'base.html' %}
 {% block content %}
 <div class="container mt-4">
 
@@ -7,7 +7,7 @@
 
         <!-- Header -->
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Add Category</h5>
+            <h5 class="mb-0 text-white">Add Category</h5>
         </div>
 
         <!-- Body -->
@@ -27,7 +27,7 @@
                             <img id="preview" src="" style="max-height: 100%; max-width:100%; object-fit:cover;">
                         </div>
 
-                        <input type="file" name="icon" class="form-control" onchange="previewImage(event)" required>
+                        <input type="file" name="icon" onchange="previewImage(event, 'preview')" required>
                     </div>
 
                     <!-- Content Fields -->
@@ -62,9 +62,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Service Page  Description</label>
+                            <label class="form-label fw-semibold">Service Page Description</label>
                             <textarea name="category_about_des" class="form-control" rows="5"
-                                placeholder="Enter Service page description..." ></textarea>
+                                placeholder="Enter Service page description..."></textarea>
                         </div>
 
                         <div class="row">
@@ -79,8 +79,8 @@
                                         style="max-height: 100%; max-width:100%; object-fit:cover;">
                                 </div>
 
-                                <input type="file" name="category_about_img" class="form-control"
-                                    onchange="previewImage(event, 'about_preview')" >
+                                <input type="file" name="category_about_img"
+                                    onchange="previewImage(event, 'about_preview')">
                             </div>
 
                             <!-- Banner Image -->
@@ -93,8 +93,8 @@
                                         style="max-height: 100%; max-width:100%; object-fit:cover;">
                                 </div>
 
-                                <input type="file" name="banner_image" class="form-control"
-                                    onchange="previewImage(event, 'banner_preview')" >
+
+                                <input type="file" name="banner_image" onchange="previewImage(event, 'banner_preview')">
                             </div>
 
                         </div>
@@ -127,10 +127,10 @@
 <!-- Image Preview Script -->
 
 <script>
-    function previewImage(event) {
+    function previewImage(event, previewId = 'preview') {
         const reader = new FileReader();
         reader.onload = function () {
-            document.getElementById('preview').src = reader.result;
+            document.getElementById(previewId).src = reader.result;
         }
         reader.readAsDataURL(event.target.files[0]);
     }

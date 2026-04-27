@@ -1,15 +1,15 @@
-{% extends 'dashboardbase.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
 
 <div class="container mt-4">
 
-  
+
     <div class="card shadow-sm border-0 rounded-3">
 
         <!-- Header -->
         <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Category List</h5>
+            <h5 class="mb-0 text-white">Category List</h5>
             <a href="{% url 'create.category' %}" class="btn btn-sm btn-light">
                 <i class="bi bi-plus-circle-fill"></i> Add Category
             </a>
@@ -33,7 +33,7 @@
                             <th>Service img</th>
                             <th>banner_img</th>
                             <th>Created Date</th>
-                            
+
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -65,7 +65,7 @@
                                 {% for tag in category.get_tags_list %}
                                 <span class="badge bg-secondary">{{ tag }}</span>
                                 {% empty %}
-                                
+
                                 {% endfor %}
                             </td>
 
@@ -75,19 +75,21 @@
                                 <img src="{{ category.icon.url }}" width="60" height="60" style="object-fit:cover;">
                                 {% endif %}
                             </td>
-                          
+
                             <td>
-                            {{category.category_about_des}}
+                                {{category.category_about_des}}
                             </td>
                             <td>
-                                
-                                 {% if category.category_about_img %}
-                                <img src="{{ category.category_about_img.url }}" width="60" height="60" style="object-fit:cover;">
+
+                                {% if category.category_about_img %}
+                                <img src="{{ category.category_about_img.url }}" width="60" height="60"
+                                    style="object-fit:cover;">
                                 {% endif %}
                             </td>
                             <td>
                                 {% if category.banner_image %}
-                                <img src="{{ category.banner_image.url }}" width="60" height="60" style="object-fit:cover;">
+                                <img src="{{ category.banner_image.url }}" width="60" height="60"
+                                    style="object-fit:cover;">
                                 {% endif %}
                             </td>
 
@@ -97,11 +99,11 @@
                             <!-- Actions -->
                             <td class="text-center">
                                 <a href="{% url 'update.category' category.pk  %}" class="btn btn-sm btn-warning">
-                                    <i class="bi bi-pencil"></i>
+                                    <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
 
                                 <a href="{% url 'delete.category' category.pk  %}" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-trash3"></i>
+                                    <i class="fa-solid fa-trash"></i>
                                 </a>
                             </td>
                         </tr>
@@ -115,14 +117,40 @@
                         {% endfor %}
                     </tbody>
 
+
                 </table>
             </div>
 
         </div>
 
     </div>
-
-
 </div>
+<div class="d-flex justify-content-center mt-4">
+    <ul class="pagination custom-pagination">
 
+        <!-- Prev -->
+        {% if page_obj.has_previous %}
+        <li>
+            <a href="?page={{ page_obj.previous_page_number }}">←</a>
+        </li>
+        {% endif %}
+
+        <!-- Numbers -->
+        {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+        <li class="active"><span>{{ num }}</span></li>
+        {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+         <li><a href="?page={{ num }}">{{ num}}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            <!-- Next -->
+            {% if page_obj.has_next %}
+            <li>
+                <a href="?page={{ page_obj.next_page_number }}">→</a>
+            </li>
+            {% endif %}
+
+    </ul>
+</div>
 {% endblock %}
