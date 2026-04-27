@@ -183,7 +183,7 @@
   <!--==============================
         Header Area
     ==============================-->
-  <header class="vs-header header-layout2">
+   <header class="vs-header header-layout2">
     <!--contact numbers-->
     <div class="header-top">
       <div class="top-container">
@@ -215,7 +215,7 @@
                 {% if footer.facebook %}
                 <a href="{{ footer.facebook }}"><i class="fab fa-facebook-f"></i></a>
                 {% else %}
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href=""><i class="fab fa-facebook-f"></i></a>
                 {% endif %}
                 {% if footer.twitter %}
                 <a href="{% url 'footer.twitter' %}"><i class="fa-brands fa-x-twitter"></i></a>
@@ -227,7 +227,6 @@
                 {% else %}
                 <a href="#"><i class="fab fa-instagram"></i></a>
                 {% endif %}
-              
               </div>
             </div>
           </div>
@@ -287,7 +286,7 @@
                       <a href="#Testimonials">Testimonials </a>
                     </li>
                     <li>
-                      <a href="{% url 'feedbackform' %}">Feedback</a>
+                      <a href="{% url 'feedbackform' %}" style="color: #ea6e12;">Feedback & Suggestions</a>
                     </li>
                     <li>
                       <a href="{% url 'contact' %}">Contact</a>
@@ -326,12 +325,12 @@
                   <!-- Dropdown -->
                   <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                      <a class="dropdown-item" href="#">
+                      <a class="dropdown-item" href="{% url 'login' %}">
                         <i class="fa-regular fa-user me-2"></i> Login
                       </a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#">
+                      <a class="dropdown-item" href="{% url 'register' %}">
                         <i class="fa-regular fa-user-plus me-2"></i> Register
                       </a>
                     </li>
@@ -497,7 +496,7 @@
           <div class="col-md-6 col-lg-6 col-xl-auto">
             <div class="widget widget_nav_menu footer-widget">
               <h3 class="widget_title">Company<span class="title-shape"><img
-                    src="{% static 'assets/img/shapes/footer-line-shape.svg' %}" alt="Shape Image"></span></h3>
+                    src="{% static 'assets/images/shapes/footer-line-shape.svg' %}" alt="Shape Image"></span></h3>
               <ul class="menu">
                 <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i>Our Services</a></li>
                 <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i>Careers</a></li>
@@ -510,7 +509,7 @@
           <div class="col-md-6 col-lg-6 col-xl-auto">
             <div class="widget widget_nav_menu footer-widget">
               <h3 class="widget_title"> Our Services <span class="title-shape"><img
-                    src="{% static 'assets/img/shapes/footer-line-shape.svg' %}" alt="Shape Image"></span></h3>
+                    src="{% static 'assets/images/shapes/footer-line-shape.svg' %}" alt="Shape Image"></span></h3>
               <ul class="menu">
                 <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i>Female Cook</a></li>
                 <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i> Brahmin Cook</a></li>
@@ -524,12 +523,13 @@
           <div class="col-md-6 col-lg-6 col-xl-auto">
             <div class="widget widget_nav_menu footer-widget">
               <h3 class="widget_title"> Need Help?<span class="title-shape"><img
-                    src="{% static 'assets/img/shapes/footer-line-shape.svg' %}" alt="line footer"></span></h3>
+                    src="{% static 'assets/images/shapes/footer-line-shape.svg' %}" alt="line footer"></span></h3>
               <ul class="menu footer-menu">
 
                 <li><a href="#"><i style="color: #ea6e12" class="fa-solid fa-phone"></i>+91 {{ footer.phone_num }}</a>
                 </li>
-                <li><a href="#"><i style="color: #ea6e12" class="fa-brands fa-square-whatsapp"></i>+91 {{ footer.whatsapp_num }}</a>
+                <li><a href="#"><i style="color: #ea6e12" class="fa-brands fa-square-whatsapp"></i>+91 {{
+                    footer.whatsapp_num }}</a>
                 </li>
                 <li><a href="#"><i style="color: #ea6e12" class="fa-solid fa-envelope"></i>{{ footer.email }}</a>
                 </li>

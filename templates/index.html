@@ -112,7 +112,7 @@
             <a href="#Testimonials">Testimonials</a>
           </li>
           <li>
-            <a href="{% url 'feedbackform' %}">FeedBack</a>
+            <a href="{% url 'feedbackform' %}" style="color: #ea6e12 !important;">FeedBack & Suggestions</a>
           </li>
           <li>
             <a href="{% url 'contact' %}">Contact</a>
@@ -130,7 +130,8 @@
       <div class="widget">
         <div class="vs-widget-about">
           <div class="mb-4">
-            <a href="#"><img src="{% static 'assets/images/new_image/sridixitha-logo.gif' %}" alt="logo" class="logo"></a>
+            <a href="#"><img src="{% static 'assets/images/new_image/sridixitha-logo.gif' %}" alt="logo"
+                class="logo"></a>
           </div>
           <p class="sidemenu-text">
             Welcome to Hoerseno, your ultimate for destination all things equestrian! Whether you're a seasoned
@@ -306,7 +307,7 @@
                       <a href="#Testimonials">Testimonials </a>
                     </li>
                     <li>
-                      <a href="{% url 'feedbackform' %}">Feedback</a>
+                      <a href="{% url 'feedbackform' %}" style="color: #ea6e12;">Feedback & Suggestions</a>
                     </li>
                     <li>
                       <a href="{% url 'contact' %}">Contact</a>
@@ -413,32 +414,49 @@
     <div class="listing-style1">
       <div class="sub-container">
         <div class="listing-body">
-          <form class="form-style2 search-horizontal">
+         <form method="GET" class="form-style2 search-horizontal">
 
-            <div class="form-group">
-              <label>What?</label>
-              <input type="text" placeholder="What are you looking for...">
-            </div>
+  <!-- CATEGORY -->
+  <div class="form-group">
+    <label>Category</label>
 
-            <div class="form-group">
-              <label>Where?</label>
-              <input type="text" placeholder="Where...">
-            </div>
+    <select name="category" class="form-control" onchange="this.form.submit()">
 
-            <div class="form-group">
-              <label>Category</label>
-              <select>
-                <option>All Category</option>
-                <option>Plumber</option>
-                <option>Electrician</option>
-              </select>
-            </div>
+      <option value="">-- select category --</option>
 
-            <div class="form-group btn-group">
-              <button class="vs-btn">Search</button>
-            </div>
+      {% for cat in categories %}
+      <option value="{{ cat.id }}"
+        {% if selected_category and selected_category.id == cat.id %}selected{% endif %}>
+        {{ cat.title }}
+      </option>
+      {% endfor %}
 
-          </form>
+    </select>
+  </div>
+
+  <!-- SERVICES (DEPENDENT) -->
+  <div class="form-group">
+    <label>Services</label>
+
+    <select name="cat_service" class="form-control">
+
+      <option value="">-- select service --</option>
+
+      {% for serv in cat_services %}
+      <option value="{{ serv.id }}"
+        {% if selected_category == serv.id|stringformat:"s" %}selected{% endif %}>
+        {{ serv.s_title }}
+      </option>
+      {% endfor %}
+
+    </select>
+  </div>
+
+  <div class="form-group btn-group">
+    <button type="submit" class="vs-btn">Search</button>
+  </div>
+
+</form>
         </div>
       </div>
     </div>
@@ -627,7 +645,7 @@
   <!--==============================
     tesmonial area 
 	============================== -->
-  <section class="testi-layout1 space" style = "background-image: url('{% static 'assets/img/bg/test_bg.png' %}');"
+  <section class="testi-layout1 space" style="background: url('{% static 'assets/images/bg/test_bg.png' %}');"
     id="Testimonials">
     <div class="container">
       <div class="row justify-content-center">
@@ -771,7 +789,9 @@
 
                 <li><a href="#"><i style="color: #ea6e12" class="fa-solid fa-phone"></i>+91 {{ footer.phone_num }}</a>
                 </li>
-                <li><a href="#"><i style="color: #ea6e12" class="fa-brands fa-square-whatsapp"></i>+91 {{ footer.whatsapp_num }}</a>
+                <li><a href="#"><i style="color: #ea6e12" class="fa-brands fa-square-whatsapp">
+
+                </i>+91 {{ footer.whatsapp_num }}</a>
                 </li>
                 <li><a href="#"><i style="color: #ea6e12" class="fa-solid fa-envelope"></i>{{ footer.email }}</a>
                 </li>

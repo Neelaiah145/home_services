@@ -13,8 +13,6 @@ urlpatterns = [
     
     
     
-    
-    
     # rediret the dashboards
     
     path('customer-dashboard/', CustomerDashboardView.as_view(), name='customer_dashboard'),

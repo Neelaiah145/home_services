@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
@@ -8,6 +8,7 @@ from django.views import View
 from datetime import datetime
 from django.core.paginator import Paginator
 import re
+
 # Create your views here.
 
 
@@ -20,7 +21,21 @@ class IndexView(View):
         services_cards = ServicesCards.objects.all().order_by('servicename')
         jobs = Job.objects.all().order_by('title')
         feedbacks = ServiceFeedback.objects.all().order_by('-id')
-        return render(request, 'index.html', {'footer': footer, 'news': news, 'banners': banners, 'categories': categories, 'services_cards': services_cards, 'jobs': jobs, 'feedbacks': feedbacks})
+        category_id = request.GET.get('category')
+        category_id = request.GET.get('category')
+        service_id = request.GET.get('cat_service')
+
+        cat_services = CategoryService.objects.none()
+        selected_category = None
+
+        if category_id:
+            selected_category = Category.objects.filter(id=category_id).first()
+
+            cat_services = CategoryService.objects.filter(
+            category_id=category_id
+            ).order_by('s_title')
+       
+        return render(request, 'index.html', {'selected_category':selected_category,'footer': footer, 'news': news, 'banners': banners, 'categories': categories, 'services_cards': services_cards, 'jobs': jobs, 'feedbacks': feedbacks,'cat_services':cat_services,})
 
 
 class ServicesListView(View):
@@ -322,8 +337,16 @@ class DeleteBanner(View):
 
 class ListCategory(View):
     def get(self, request):
-        categories = Category.objects.all()
-        return render(request, 'pages/categories/list.html', {'categories': categories})
+        categories = Category.objects.all().order_by('-created_at')
+
+        paginator = Paginator(categories, 5) 
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, 'pages/categories/list.html', {
+            'categories': page_obj,  
+            'page_obj': page_obj
+        })
 
 
 class CreateCategory(View):
@@ -399,17 +422,28 @@ class ListCategoryService(View):
         categories = Category.objects.all()
 
         category_id = request.GET.get('category')
-        services = None
         selected_category = None
+        services = CategoryService.objects.none()
 
+        # if category selected
         if category_id:
             selected_category = Category.objects.filter(id=category_id).first()
-            services = CategoryService.objects.filter(category_id=category_id)
+
+            if selected_category:
+                services = CategoryService.objects.filter(
+                    category=selected_category
+                ).order_by('-created_at')
+
+       
+        paginator = Paginator(services, 5) 
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
 
         return render(request, 'pages/categoryservice/list.html', {
             'categories': categories,
-            'services': services,
-            'selected_category': selected_category
+            'selected_category': selected_category,
+            'services': page_obj,   # use paginated object
+            'page_obj': page_obj,
         })
 
 
