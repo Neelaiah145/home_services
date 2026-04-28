@@ -8,8 +8,18 @@ from django.views import View
 from datetime import datetime
 from django.core.paginator import Paginator
 import re
-
+from django.http import JsonResponse
 # Create your views here.
+
+
+
+
+class CategoryServicesAPIView(View):
+    def get(self, request, category_id):
+        services = CategoryService.objects.filter(
+            category_id=category_id
+        ).order_by('s_title').values('id', 's_title')
+        return JsonResponse({'services': list(services)})
 
 
 class IndexView(View):
@@ -21,21 +31,38 @@ class IndexView(View):
         services_cards = ServicesCards.objects.all().order_by('servicename')
         jobs = Job.objects.all().order_by('title')
         feedbacks = ServiceFeedback.objects.all().order_by('-id')
-        category_id = request.GET.get('category')
+
         category_id = request.GET.get('category')
         service_id = request.GET.get('cat_service')
+
+        # If both are selected, redirect to the services listing page
+        if category_id and service_id:
+            from django.urls import reverse
+            from django.shortcuts import redirect
+            url = reverse('category.services.listing',
+                          kwargs={'pk': category_id})
+            return redirect(f"{url}?service={service_id}")
 
         cat_services = CategoryService.objects.none()
         selected_category = None
 
         if category_id:
             selected_category = Category.objects.filter(id=category_id).first()
-
             cat_services = CategoryService.objects.filter(
-            category_id=category_id
+                category_id=category_id
             ).order_by('s_title')
-       
-        return render(request, 'index.html', {'selected_category':selected_category,'footer': footer, 'news': news, 'banners': banners, 'categories': categories, 'services_cards': services_cards, 'jobs': jobs, 'feedbacks': feedbacks,'cat_services':cat_services,})
+
+        return render(request, 'index.html', {
+            'selected_category': selected_category,
+            'footer': footer,
+            'news': news,
+            'banners': banners,
+            'categories': categories,
+            'services_cards': services_cards,
+            'jobs': jobs,
+            'feedbacks': feedbacks,
+            'cat_services': cat_services,
+        })
 
 
 class ServicesListView(View):
@@ -43,10 +70,18 @@ class ServicesListView(View):
         footer = Footer.objects.first()
         selected_category = get_object_or_404(Category, pk=pk)
         news = News.objects.all().order_by('id')
-        category_services = CategoryService.objects.filter(
-            category=selected_category).order_by('s_title')
-        paginator = Paginator(category_services, 3)
 
+        service_id = request.GET.get('service')  # optional filter
+
+        category_services = CategoryService.objects.filter(
+            category=selected_category
+        ).order_by('s_title')
+
+        # If a specific service was selected, filter down to just that one
+        if service_id:
+            category_services = category_services.filter(id=service_id)
+
+        paginator = Paginator(category_services, 3)
         page_number = request.GET.get('page')
         category_servicess = paginator.get_page(page_number)
 
@@ -120,6 +155,7 @@ class ContactForm(View):
 
         return redirect('contact')
 
+
 class ContactListView(View):
     def get(self, request):
         contacts = Contact.objects.all().order_by('-created_at')
@@ -127,7 +163,8 @@ class ContactListView(View):
         return render(request, 'pages/contact/list.html', {
             'contacts': contacts
         })
-    
+
+
 class ContactUpdateView(View):
     def get(self, request, pk):
         contact = get_object_or_404(Contact, pk=pk)
@@ -150,9 +187,10 @@ class ContactUpdateView(View):
         messages.success(request, "Status updated successfully!")
         return redirect('list.contact')
 
+
 class DeleteContact(View):
-    def get(self,request,pk):
-        conatct=get_object_or_404(Contact,pk=pk)
+    def get(self, request, pk):
+        conatct = get_object_or_404(Contact, pk=pk)
         conatct.delete()
         messages.success(request, "Contact  deleted")
         return redirect('list.contact')
@@ -163,7 +201,7 @@ class FeedbackForm(View):
     def get(self, request):
         footer = Footer.objects.first()
         news = News.objects.all().order_by('id')
-        return render(request, 'feedback.html',{'footer':footer,'news':news})
+        return render(request, 'feedback.html', {'footer': footer, 'news': news})
 
     def post(self, request):
 
@@ -339,12 +377,12 @@ class ListCategory(View):
     def get(self, request):
         categories = Category.objects.all().order_by('-created_at')
 
-        paginator = Paginator(categories, 5) 
+        paginator = Paginator(categories, 5)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
         return render(request, 'pages/categories/list.html', {
-            'categories': page_obj,  
+            'categories': page_obj,
             'page_obj': page_obj
         })
 
@@ -434,8 +472,7 @@ class ListCategoryService(View):
                     category=selected_category
                 ).order_by('-created_at')
 
-       
-        paginator = Paginator(services, 5) 
+        paginator = Paginator(services, 5)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 

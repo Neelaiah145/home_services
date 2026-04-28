@@ -1,19 +1,24 @@
 from django.urls import path
-from core.views import IndexView, ServicesListView, ContactForm, ContactListView,ContactUpdateView,DeleteContact,FeedbackForm, DashBoard, NewsListView, CreateNews, UpdateNews, DeleteNews, CreateBanner, ListBanner, UpdateBanner, DeleteBanner, CreateCategory, ListCategory, UpdateCategory, DeleteCaregory, CreateCategoryService, ListCategoryService, UpdateCategoryService, DeleteCategoryService, ListServices, CreateService, UpdateServices, DeleteServices, ListJobs, CreateJob, UpdateJob, DeleteJob, ListFeedback, DeleteFeedback, ListFooter, CreateFooter, UpdateFooter, DeleteFooter
+from core.views import CategoryServicesAPIView,IndexView, ServicesListView, ContactForm, ContactListView, ContactUpdateView, DeleteContact, FeedbackForm, DashBoard, NewsListView, CreateNews, UpdateNews, DeleteNews, CreateBanner, ListBanner, UpdateBanner, DeleteBanner, CreateCategory, ListCategory, UpdateCategory, DeleteCaregory, CreateCategoryService, ListCategoryService, UpdateCategoryService, DeleteCategoryService, ListServices, CreateService, UpdateServices, DeleteServices, ListJobs, CreateJob, UpdateJob, DeleteJob, ListFeedback, DeleteFeedback, ListFooter, CreateFooter, UpdateFooter, DeleteFooter
 
 urlpatterns = [
     path("", IndexView.as_view(), name="indexpage"),
-    path('servicespagelist/<int:pk>/',
+    path('sridixitha/servicespagelist/<int:pk>/',
          ServicesListView.as_view(), name='category.services.listing'),
+    # New AJAX endpoint
+    path('api/category/<int:category_id>/services/',
+         CategoryServicesAPIView.as_view(), name='category.services.api'),
 
     path('sridixitha/contact/', ContactForm.as_view(), name='contact'),
-    path('list/contact/',ContactListView.as_view(),name='list.contact'),
-    path('update/conatct/<int:pk>/',ContactUpdateView.as_view(),name='update.contact'),
-    path('delete/contact/<int:pk>/',DeleteContact.as_view(),name='delete.contact'),
+    path('list/contact/', ContactListView.as_view(), name='list.contact'),
+    path('update/conatct/<int:pk>/',
+         ContactUpdateView.as_view(), name='update.contact'),
+    path('delete/contact/<int:pk>/',
+         DeleteContact.as_view(), name='delete.contact'),
 
-    
+
     path("sridixitha/feebackform/", FeedbackForm.as_view(), name='feedbackform'),
-    
+
 
     path("list/news/", NewsListView.as_view(), name="news.list"),
     path("dashboard/", DashBoard.as_view(), name="dashboard"),

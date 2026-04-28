@@ -24,14 +24,6 @@ User = get_user_model()
 
 
 
-
-
-
-
-
-
-
-
 # login classes
 class LoginView(View):
 
@@ -777,6 +769,7 @@ class BookServiceView(View):
 
     def get(self, request):
         categories = Category.objects.filter(is_active=True)
+        
         return render(request, "service/book.html", {
             "categories": categories
         })
