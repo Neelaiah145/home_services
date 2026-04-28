@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Contact, News, HeroBanner, Category, CategoryService, ServicesCards, Job, ServiceFeedback, Footer
+from .models import Contact, News, HeroBanner, Category, CategoryService, ServicesCards, Job, JobApplication, ServiceFeedback, Footer
 from django.views import View
 from datetime import datetime
 from django.core.paginator import Paginator
@@ -647,6 +647,90 @@ class DeleteJob(View):
         job = get_object_or_404(Job, id=id)
         job.delete()
         return redirect('list.jobs')
+
+class JobApplications(View):
+
+    def get(self, request, job_id):
+        job = get_object_or_404(Job, id=job_id)
+        footer = Footer.objects.first()
+        news = News.objects.all().order_by('id')
+        return render(request, 'jobapply.html', {'job': job,'footer':footer,'news':news})
+
+    def post(self, request, job_id):
+        job = get_object_or_404(Job, id=job_id)
+        footer = Footer.objects.first()
+        news = News.objects.all().order_by('id')
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        experience = request.POST.get('experience')
+        salary = request.POST.get('salary')
+        address = request.POST.get('address')
+
+        resume = request.FILES.get('resume')
+        photo = request.FILES.get('photo')
+
+        errors = {}
+
+       
+        if not name:
+            errors['name'] = "Name is required"
+
+        if not email or "@" not in email:
+            errors['email'] = "Valid email required"
+
+        if not phone or len(phone) < 10:
+            errors['phone'] = "Valid phone required"
+
+        if not experience:
+            errors['experience'] = "Experience required"
+
+        if not salary:
+            errors['salary'] = "Expected salary required"
+
+        if not address:
+            errors['address'] = "Address required"
+
+        if not photo:
+            errors['photo'] = "photo required"
+
+        if resume and not resume.name.endswith(('.pdf', '.doc', '.docx')):
+            errors['resume'] = "Only PDF/DOC files allowed"
+
+        if photo and not photo.name.lower().endswith(('.jpg', '.jpeg', '.png', '.webp')):
+            errors['photo'] = "Only image files allowed"
+
+        if errors:
+            return render(request, 'jobapply.html', {
+                'job': job,
+                'footer':footer,
+                'news':news,
+                'errors': errors
+            })
+
+        
+        JobApplication.objects.create(
+            job=job,
+            name=name,
+            email=email,
+            phone=phone,
+            experience=experience,
+            expected_salary=salary,
+            address=address,
+            resume=resume,
+            photo=photo
+        )
+
+        messages.success(request, "Application submitted successfully!")
+        return redirect('job.apply', job_id=job.id)
+
+
+class Joblisting(View):
+    def get(self,request):
+        jobs = Job.objects.all().order_by('title')
+        footer = Footer.objects.first()
+        news = News.objects.all().order_by('id')
+        return render(request, 'joblisting.html', {'footer':footer,'news':news,'jobs':jobs})
 
 
 class ListFooter(View):

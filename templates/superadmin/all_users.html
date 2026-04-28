@@ -5,469 +5,541 @@
 <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
 
 <style>
-
-/* HEADER */
-.page-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px;
-}
-
-/* STATS */
-.stat-row{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:16px;
-  margin-bottom:20px;
-}
-
-/* BASE CARD */
-.stat-card{
-  background:#fff;
-  border:1px solid var(--border-color);
-  border-radius:12px;
-  padding:16px;
-  position:relative;
-}
-
-/* EDGE STYLE (LIKE STATUS) */
-.stat-card.total{
-  border-left:4px solid #111;
-}
-
-.stat-card.customer{
-  border-left:4px solid #ef8e00;
- 
-}
-
-.stat-card.admin{
-  border-left:4px solid var(--primary-600);
-
-}
-
-.stat-card.vendor{
-  border-left:4px solid var(--success-main);
-}
-
-.stat-label{
-  font-size:11px;
-  color:#888;
-  font-weight:600;
-  text-transform:uppercase;
-}
-
-.stat-value{
-  font-size:22px;
-  font-weight:700;
-}
-
-/* TOOLBAR */
-.card-header-flex{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:1rem;
-}
-
-.toolbar{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-/* FILTER */
-.filter-group{
-  display:flex;
-  background:#f3f4f6;
-  padding:4px;
-  border-radius:8px;
-  gap:4px;
-}
-
-.filter-btn{
-  padding:6px 12px;
-  border:none;
-  border-radius:6px;
-  background:transparent;
-  cursor:pointer;
-}
-
-.filter-btn.active{
-  background:#fff;
-  color:var(--primary-600);
-  box-shadow:0 1px 3px rgba(0,0,0,0.1);
-}
-
-/* SEARCH */
-.search-container{
-  position:relative;
-}
-
-.search-container input{
-  padding-left:30px;
-  height:38px;
-  border:1px solid var(--border-color);
-  border-radius:8px;
-}
-
-.search-icon{
-  position:absolute;
-  left:8px;
-  top:50%;
-  transform:translateY(-50%);
-}
-
-/* DATE */
-.date-input{
-  height:38px;
-  padding:0 10px;
-  border:1px solid var(--border-color);
-  border-radius:8px;
-}
-
-/* TABLE */
-.table-wrap{
-  overflow-x:auto;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-thead th{
-  padding:12px;
-  font-size:11px;
-  text-transform:uppercase;
-  border-bottom:1px solid var(--border-color);
-}
-
-tbody td{
-  padding:14px;
-  border-bottom:1px solid var(--border-color);
-}
-
-/* ROLE BADGES */
-.role{
-  padding:4px 10px;
-  border-radius:20px;
-  font-size:11px;
-  font-weight:600;
-  text-transform:capitalize;
-}
-
-.role.customer{ background:#fff4e5; color:#ef8e00; }
-.role.admin{ background:#eef1ff; color:#4338ca; }
-.role.vendor{ background:#e6f7ed; color:#15803d; }
-
-/* ACTION */
-.actions button{
-  border:none;
-  background:#f5f5f5;
-  padding:6px 10px;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-.actions .delete{
-  color:red;
-}
-
-
-@media (max-width:768px){
-
-  .page-wrap{
-    padding:15px;
-  }
-
   /* HEADER */
-  .page-header{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:6px;
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
   }
 
   /* STATS */
-  .stat-row{
-    grid-template-columns:1fr;
-    gap:12px;
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
   }
 
-  .stat-card{
-    padding:12px;
+  /* BASE CARD */
+  .stat-card {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
   }
 
-  .stat-value{
-    font-size:18px;
+  /* EDGE STYLE (LIKE STATUS) */
+  .stat-card.total {
+    border-left: 4px solid #111;
+  }
+
+  .stat-card.customer {
+    border-left: 4px solid #ef8e00;
+
+  }
+
+  .stat-card.admin {
+    border-left: 4px solid var(--primary-600);
+
+  }
+
+  .stat-card.vendor {
+    border-left: 4px solid var(--success-main);
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: #888;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
   }
 
   /* TOOLBAR */
-  .card-header-flex{
-    flex-direction:column;
-    align-items:stretch;
+  .card-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
 
-  .toolbar{
-    flex-direction:column;
-    gap:8px;
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
   }
 
-  .filter-group{
-    width:100%;
-    justify-content:space-between;
+  /* FILTER */
+  .filter-group {
+    display: flex;
+    background: #f3f4f6;
+    padding: 4px;
+    border-radius: 8px;
+    gap: 4px;
   }
 
-  .search-container input{
-    width:100%;
+  .filter-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
   }
 
-  .date-input{
-    width:100%;
+  .filter-btn.active {
+    background: #fff;
+    color: var(--primary-600);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
-  /* TABLE → SCROLL */
-  .table-wrap{
-    overflow-x:auto;
+  /* SEARCH */
+  .search-container {
+    position: relative;
   }
 
-  table{
-    min-width:700px;
+  .search-container input {
+    padding-left: 30px;
+    height: 38px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
   }
 
-  th, td{
-    padding:10px;
-    font-size:12px;
+  .search-icon {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
-  /* ROLE BADGE */
-  .role{
-    font-size:10px;
-    padding:3px 8px;
+  /* DATE */
+  .date-input {
+    height: 38px;
+    padding: 0 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
   }
 
-  /* BUTTON */
-  .actions button{
-    padding:5px 8px;
-    font-size:11px;
+  /* TABLE */
+  .table-wrap {
+    overflow-x: auto;
   }
 
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    padding: 12px;
+    font-size: 11px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  tbody td {
+    padding: 14px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  /* ROLE BADGES */
+  .role {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+
+  .role.customer {
+    background: #fff4e5;
+    color: #ef8e00;
+  }
+
+  .role.admin {
+    background: #eef1ff;
+    color: #4338ca;
+  }
+
+  .role.vendor {
+    background: #e6f7ed;
+    color: #15803d;
+  }
+
+  /* ACTION */
+  .actions button {
+    border: none;
+    background: #f5f5f5;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .actions .delete {
+    color: red;
+  }
+
+ .status-group {
+  display: flex;
+  gap: 8px;
 }
 
-
-
-@media (min-width:769px) and (max-width:1024px){
-
-  .page-wrap{
-    padding:20px;
-  }
-
-  .stat-row{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .toolbar{
-    flex-wrap:wrap;
-  }
-
-  table{
-    min-width:800px;
-  }
-
+.status-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: #ddd;
+  color: #fff;
+  text-decoration: none;
+  transition: 0.3s;
+  font-size: 18px;
 }
 
-
-
-@media (min-width:1200px){
-
-  .page-wrap{
-    max-width:1400px;
-    margin:auto;
-  }
-
-  table{
-    width:100%;
-  }
-
+/* ACTIVE = GREEN */
+.status-btn.active {
+  background: #28a745;
 }
 
+/* INACTIVE = RED */
+.status-btn.inactive {
+  background: #dc3545;
+}
+
+/* Hover Effect */
+.status-btn:hover {
+  transform: scale(1.1);
+  opacity: 0.9;
+}
+
+  @media (max-width:768px) {
+
+    .page-wrap {
+      padding: 15px;
+    }
+
+    /* HEADER */
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    /* STATS */
+    .stat-row {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .stat-card {
+      padding: 12px;
+    }
+
+    .stat-value {
+      font-size: 18px;
+    }
+
+    /* TOOLBAR */
+    .card-header-flex {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .toolbar {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .filter-group {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .search-container input {
+      width: 100%;
+    }
+
+    .date-input {
+      width: 100%;
+    }
+
+    /* TABLE → SCROLL */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      min-width: 700px;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      font-size: 12px;
+    }
+
+    /* ROLE BADGE */
+    .role {
+      font-size: 10px;
+      padding: 3px 8px;
+    }
+
+    /* BUTTON */
+    .actions button {
+      padding: 5px 8px;
+      font-size: 11px;
+    }
+
+  }
+
+
+
+  @media (min-width:769px) and (max-width:1024px) {
+
+    .page-wrap {
+      padding: 20px;
+    }
+
+    .stat-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .toolbar {
+      flex-wrap: wrap;
+    }
+
+    table {
+      min-width: 800px;
+    }
+
+  }
+
+
+
+  @media (min-width:1200px) {
+
+    .page-wrap {
+      max-width: 1400px;
+      margin: auto;
+    }
+
+    table {
+      width: 100%;
+    }
+
+  }
 </style>
 
 <div class="page-wrap">
 
-<!-- HEADER -->
-<div class="page-header">
-  <div>
-    <h6 class="fw-semibold mb-0">User Management</h6>
-    <p class="page-subtitle">Manage all users</p>
-  </div>
-</div>
-
-<!-- STATS -->
-<div class="stat-row">
-
-  <div class="stat-card total">
-    <span class="stat-label">Total Users</span>
-    <div class="stat-value">{{ page_obj.paginator.count }}</div>
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <h6 class="fw-semibold mb-0">User Management</h6>
+      <p class="page-subtitle">Manage all users</p>
+    </div>
   </div>
 
-  <div class="stat-card customer">
-    <span class="stat-label">Customers</span>
-    <div class="stat-value">{{ customer_count }}</div>
-  </div>
+  <!-- STATS -->
+  <div class="stat-row">
 
-  <div class="stat-card admin">
-    <span class="stat-label">Admins</span>
-    <div class="stat-value">{{ admin_count }}</div>
-  </div>
-
-  <div class="stat-card vendor">
-    <span class="stat-label">Vendors</span>
-    <div class="stat-value">{{ vendor_count }}</div>
-  </div>
-
-</div>
-
-<!-- CARD -->
-<div class="card">
-
-<!-- TOOLBAR -->
-<div class="card-header card-header-flex">
-
-  <div class="card-title">Users</div>
-
-  <div class="toolbar">
-
-    <!-- FILTER -->
-    <div class="filter-group">
-      <button class="filter-btn active" onclick="setRole('', this)">All</button>
-      <button class="filter-btn" onclick="setRole('customer', this)">Customers</button>
-      <button class="filter-btn" onclick="setRole('admin', this)">Admin</button>
-      <button class="filter-btn" onclick="setRole('vendor', this)">Vendor</button>
+    <div class="stat-card total">
+      <span class="stat-label">Total Users</span>
+      <div class="stat-value">{{ page_obj.paginator.count }}</div>
     </div>
 
-    <!-- SEARCH -->
-    <div class="search-container">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="searchInput" placeholder="Search users..." onkeyup="applyFilters()">
+    <div class="stat-card customer">
+      <span class="stat-label">Customers</span>
+      <div class="stat-value">{{ customer_count }}</div>
     </div>
 
-    <!-- DATE -->
-    <input type="date" id="dateFilter" class="date-input" onchange="applyFilters()">
+    <div class="stat-card admin">
+      <span class="stat-label">Admins</span>
+      <div class="stat-value">{{ admin_count }}</div>
+    </div>
+
+    <div class="stat-card vendor">
+      <span class="stat-label">Vendors</span>
+      <div class="stat-value">{{ vendor_count }}</div>
+    </div>
 
   </div>
 
-</div>
+  <!-- CARD -->
+  <div class="card">
 
-<!-- TABLE -->
-<div class="table-wrap">
+    <!-- TOOLBAR -->
+    <div class="card-header card-header-flex">
 
-<table>
+      <div class="card-title">Users</div>
 
-<thead>
-<tr>
-  <th>Sl.No</th>
-  <th>Name</th>
-  <th>Email</th>
-  <th>Role</th>
-  <th>Joined</th>
-  <th>Action</th>
-</tr>
-</thead>
+      <div class="toolbar">
 
-<tbody>
+        <!-- FILTER -->
+        <div class="filter-group">
+          <button class="filter-btn active" onclick="setRole('', this)">All</button>
+          <button class="filter-btn" onclick="setRole('customer', this)">Customers</button>
+          <button class="filter-btn" onclick="setRole('admin', this)">Admin</button>
+          <button class="filter-btn" onclick="setRole('vendor', this)">Vendor</button>
+        </div>
 
-{% for user in page_obj %}
-<tr class="user-row">
+        <!-- SEARCH -->
+        <div class="search-container">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="Search users..." onkeyup="applyFilters()">
+        </div>
 
-<td>{{ forloop.counter }}</td>
+        <!-- DATE -->
+        <input type="date" id="dateFilter" class="date-input" onchange="applyFilters()">
 
-<td>
-  {% if user.first_name %}
-    {{ user.first_name }} {{ user.last_name }}
-  {% else %}
-    {{ user.username }}
-  {% endif %}
-</td>
+      </div>
 
-<td>{{ user.email }}</td>
+    </div>
 
-<td>
-  <span class="role {{ user.role }}">{{ user.role }}</span>
-</td>
+    <!-- TABLE -->
+    <div class="table-wrap">
 
-<td class="joined-date" data-date="{{ user.date_joined|date:'Y-m-d' }}">
-  {{ user.date_joined|date:"d M Y" }}
-</td>
+      <table>
 
-<td class="actions">
-  <button onclick="viewUser('{{ user.id }}')">Update</button>
+        <thead>
+          <tr>
+            <th>Sl.No</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Joined</th>
+            <th>Block</th>
+            <th>Action</th>
+          </tr>
+        </thead>
 
-  {% if user.role != "superadmin" %}
-  <button class="delete">Delete</button>
-  {% endif %}
-</td>
+        <tbody>
 
-</tr>
-{% empty %}
-<tr>
-<td colspan="6" style="text-align:center;padding:30px;">
-No users found
-</td>
-</tr>
-{% endfor %}
+          {% for user in page_obj %}
+          <tr class="user-row">
 
-</tbody>
+            <td>{{ forloop.counter }}</td>
 
-</table>
+            <td>
+              {% if user.first_name %}
+              {{ user.first_name }} {{ user.last_name }}
+              {% else %}
+              {{ user.username }}
+              {% endif %}
+            </td>
 
-</div>
+            <td>{{ user.email }}</td>
 
-</div>
+            <td>
+              <span class="role {{ user.role }}">{{ user.role }}</span>
+            </td>
+
+            <td class="joined-date" data-date="{{ user.date_joined|date:'Y-m-d' }}">
+              {{ user.date_joined|date:"d M Y" }}
+            </td>
+            <td>
+              {% if user.role != "superadmin" %}
+
+              <div class="status-group">
+
+                <!-- ON (Active) -->
+                <a href="{% url 'set_user_status' user.id 'active' %}"
+                  class="status-btn {% if user.is_active %}active{% endif %}" title="Activate">
+
+                  <iconify-icon icon="mdi:power"></iconify-icon>
+                </a>
+
+                <!-- OFF (Inactive) -->
+                <a href="{% url 'set_user_status' user.id 'inactive' %}"
+                  class="status-btn {% if not user.is_active %}inactive{% endif %}" title="Deactivate">
+
+                  <iconify-icon icon="mdi:power"></iconify-icon>
+                </a>
+
+              </div>
+
+              {% else %}
+              <span class="status active">
+                <iconify-icon icon="mdi:shield-crown-outline"></iconify-icon>
+              </span>
+              {% endif %}
+            </td>
+
+            <td class="actions">
+              <button onclick="viewUser('{{ user.id }}')"><a href="">Update</a></button>
+
+              {% if user.role != "superadmin" %}
+              <button class="delete">Delete</button>
+              {% endif %}
+            </td>
+
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" style="text-align:center;padding:30px;">
+              No users found
+            </td>
+          </tr>
+          {% endfor %}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
 
 </div>
 
 <script>
 
-let currentRole = "";
+  let currentRole = "";
 
-function setRole(role, el){
-  currentRole = role;
+  function setRole(role, el) {
+    currentRole = role;
 
-  document.querySelectorAll(".filter-btn").forEach(btn=>{
-    btn.classList.remove("active");
-  });
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.classList.remove("active");
+    });
 
-  el.classList.add("active");
+    el.classList.add("active");
 
-  applyFilters();
-}
+    applyFilters();
+  }
 
-function applyFilters(){
-  const q = document.getElementById("searchInput").value.toLowerCase();
-  const selectedDate = document.getElementById("dateFilter").value;
+  function applyFilters() {
+    const q = document.getElementById("searchInput").value.toLowerCase();
+    const selectedDate = document.getElementById("dateFilter").value;
 
-  document.querySelectorAll(".user-row").forEach(row => {
+    document.querySelectorAll(".user-row").forEach(row => {
 
-    const text = row.innerText.toLowerCase();
-    const role = row.querySelector(".role")?.innerText.toLowerCase();
-    const date = row.querySelector(".joined-date")?.dataset.date;
+      const text = row.innerText.toLowerCase();
+      const role = row.querySelector(".role")?.innerText.toLowerCase();
+      const date = row.querySelector(".joined-date")?.dataset.date;
 
-    let show = true;
+      let show = true;
 
-    if(q && !text.includes(q)) show = false;
-    if(currentRole && !role.includes(currentRole)) show = false;
-    if(selectedDate && date !== selectedDate) show = false;
+      if (q && !text.includes(q)) show = false;
+      if (currentRole && !role.includes(currentRole)) show = false;
+      if (selectedDate && date !== selectedDate) show = false;
 
-    row.style.display = show ? "" : "none";
+      row.style.display = show ? "" : "none";
 
-  });
-}
+    });
+  }
 
-function viewUser(id){
-  window.location.href = `/superadmin/user/${id}/`;
-}
+  function viewUser(id) {
+    window.location.href = `/superadmin/user/${id}/`;
+  }
 
 </script>
 

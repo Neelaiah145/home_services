@@ -194,13 +194,7 @@
   <!--==============================
     Popup Search Box
     ============================== -->
-  <div class="popup-search-box d-none d-lg-block  ">
-    <button class="searchClose"><i class="fal fa-times"></i></button>
-    <form action="#">
-      <input type="text" class="border-theme" placeholder="What are you looking for">
-      <button type="submit"><i class="fal fa-search"></i></button>
-    </form>
-  </div>
+
   <!--==============================
         Header Area
     ==============================-->
@@ -563,7 +557,7 @@
 
       <div class="jbs-stats">
         <div class="jbs-stat">
-          <div class="jbs-stat-num">5</div>
+          <div class="jbs-stat-num">{{ jobs.count }}</div>
           <div class="jbs-stat-lbl">Open roles</div>
         </div>
         <div class="jbs-stat">
@@ -582,7 +576,8 @@
 
       <div class="jbs-grid">
 
-        {% for job in jobs %}
+        {% for job in jobs|slice:":5" %}
+        
         <div class="jbs-card">
 
           <div class="jbs-icon">
@@ -613,7 +608,7 @@
             </div>
           </div>
 
-          <a href="#" class="jbs-btn">Apply Now</a>
+          <a href="{% url 'job.apply' job.id %}" class="jbs-btn">Apply Now</a>
 
         </div>
         {% empty %}
@@ -624,7 +619,7 @@
 
       </div>
     </div>
-    <a href="#" class="viewall-btn">View All</a>
+    <a href="{% url 'jobs.listing' %}" class="viewall-btn">View All</a>
   </section>
   <!--==============================
     end-job postingarea 

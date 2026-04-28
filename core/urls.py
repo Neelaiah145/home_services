@@ -1,5 +1,5 @@
 from django.urls import path
-from core.views import CategoryServicesAPIView,IndexView, ServicesListView, ContactForm, ContactListView, ContactUpdateView, DeleteContact, FeedbackForm, NewsListView, CreateNews, UpdateNews, DeleteNews, CreateBanner, ListBanner, UpdateBanner, DeleteBanner, CreateCategory, ListCategory, UpdateCategory, DeleteCaregory, CreateCategoryService, ListCategoryService, UpdateCategoryService, DeleteCategoryService, ListServices, CreateService, UpdateServices, DeleteServices, ListJobs, CreateJob, UpdateJob, DeleteJob, ListFeedback, DeleteFeedback, ListFooter, CreateFooter, UpdateFooter, DeleteFooter
+from core.views import CategoryServicesAPIView,IndexView, ServicesListView, ContactForm, ContactListView, ContactUpdateView, DeleteContact, FeedbackForm, NewsListView, CreateNews, UpdateNews, DeleteNews, CreateBanner, ListBanner, UpdateBanner, DeleteBanner, CreateCategory, ListCategory, UpdateCategory, DeleteCaregory, CreateCategoryService, ListCategoryService, UpdateCategoryService, DeleteCategoryService, ListServices, CreateService, UpdateServices, DeleteServices, ListJobs, CreateJob, UpdateJob,Joblisting, DeleteJob, JobApplications, ListFeedback, DeleteFeedback, ListFooter, CreateFooter, UpdateFooter, DeleteFooter
 
 urlpatterns = [
     path("", IndexView.as_view(), name="indexpage"),
@@ -62,6 +62,10 @@ urlpatterns = [
     path('create/jobs/', CreateJob.as_view(), name='add.jobs'),
     path('update/jobs/<int:id>/', UpdateJob.as_view(), name='update.jobs'),
     path('delete/jobs/<int:id>/', DeleteJob.as_view(), name='delete.jobs'),
+
+
+    path('apply/job/<int:job_id>/', JobApplications.as_view(), name='job.apply'),
+    path('job/listing/',Joblisting.as_view(),name='jobs.listing'),
 
     path('list/feedback/', ListFeedback.as_view(), name='list.feedback'),
     path('delete/feedback/<int:id>/',

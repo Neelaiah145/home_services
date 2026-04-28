@@ -1069,3 +1069,14 @@ document.querySelector('input[name="image"]').addEventListener('change', functio
       .catch(err => console.error('Failed to load services:', err));
   });
 
+ document.getElementById('photoInput').addEventListener('change', function (event) {
+            const preview = document.getElementById('photoPreview');
+            const file = event.target.files[0];
+
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                preview.classList.add('visible');
+            } else {
+                preview.classList.remove('visible');
+            }
+        });
