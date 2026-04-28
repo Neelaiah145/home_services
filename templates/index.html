@@ -388,7 +388,7 @@
                 <p class="hero-text">
                   {{ banner.sub_heading }}
                 </p>
-                <a class="vs-btn" href="#">Book a Service</a>
+                <a class="vs-btn" href="{% url 'book_service' %}">Book a Service</a>
               </div>
             </div>
           </div>
@@ -535,7 +535,7 @@
           <div class="card-default-title">{{service.servicename }}</div>
         </div>
         <div class="card-hover">
-          <a class="hover-btn" href="#">Contact</a>
+          <a class="hover-btn" href="{% url 'book_service' %}">Book Now</a>
         </div>
       </div>
       {% empty %}

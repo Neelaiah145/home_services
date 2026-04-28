@@ -12,8 +12,6 @@ from django.http import JsonResponse
 # Create your views here.
 
 
-
-
 class CategoryServicesAPIView(View):
     def get(self, request, category_id):
         services = CategoryService.objects.filter(
@@ -88,6 +86,7 @@ class ServicesListView(View):
         return render(request, 'serviceslist.html', {
             'selected_category': selected_category,
             'category_servicess': category_servicess,
+            'category_services': CategoryService.objects.filter(category=selected_category),
             'footer': footer,
             'news': news,
         })
@@ -268,11 +267,6 @@ class DeleteFeedback(View):
         feebback.delete()
         messages.success(request, "feedback deleted")
         return redirect('list.feedback')
-
-
-class DashBoard(View):
-    def get(self, request):
-        return render(request, 'dashboardbase.html')
 
 
 class NewsListView(View):

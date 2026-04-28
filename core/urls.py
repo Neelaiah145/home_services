@@ -1,5 +1,5 @@
 from django.urls import path
-from core.views import CategoryServicesAPIView,IndexView, ServicesListView, ContactForm, ContactListView, ContactUpdateView, DeleteContact, FeedbackForm, DashBoard, NewsListView, CreateNews, UpdateNews, DeleteNews, CreateBanner, ListBanner, UpdateBanner, DeleteBanner, CreateCategory, ListCategory, UpdateCategory, DeleteCaregory, CreateCategoryService, ListCategoryService, UpdateCategoryService, DeleteCategoryService, ListServices, CreateService, UpdateServices, DeleteServices, ListJobs, CreateJob, UpdateJob, DeleteJob, ListFeedback, DeleteFeedback, ListFooter, CreateFooter, UpdateFooter, DeleteFooter
+from core.views import CategoryServicesAPIView,IndexView, ServicesListView, ContactForm, ContactListView, ContactUpdateView, DeleteContact, FeedbackForm, NewsListView, CreateNews, UpdateNews, DeleteNews, CreateBanner, ListBanner, UpdateBanner, DeleteBanner, CreateCategory, ListCategory, UpdateCategory, DeleteCaregory, CreateCategoryService, ListCategoryService, UpdateCategoryService, DeleteCategoryService, ListServices, CreateService, UpdateServices, DeleteServices, ListJobs, CreateJob, UpdateJob, DeleteJob, ListFeedback, DeleteFeedback, ListFooter, CreateFooter, UpdateFooter, DeleteFooter
 
 urlpatterns = [
     path("", IndexView.as_view(), name="indexpage"),
@@ -21,7 +21,7 @@ urlpatterns = [
 
 
     path("list/news/", NewsListView.as_view(), name="news.list"),
-    path("dashboard/", DashBoard.as_view(), name="dashboard"),
+   
     path("create/", CreateNews.as_view(), name="createnews"),
     path("update/news/<int:pk>/", UpdateNews.as_view(), name="update.news"),
     path("delete/news/<int:pk>/", DeleteNews.as_view(), name="delete.news"),

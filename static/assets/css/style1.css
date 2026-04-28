@@ -17614,7 +17614,7 @@ span.select2-selection.select2-selection--single:focus {
 
 /* BUTTON */
 .hover-btn {
-  font-size: 14px;
+  font-size: 12px;
   background: var(--secondary-color);
   color: #fff;
   padding: 2px 2px;
