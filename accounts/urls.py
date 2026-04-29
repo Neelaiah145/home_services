@@ -43,7 +43,7 @@ urlpatterns = [
 
 
     # services
-#     path('', ServiceListView.as_view(), name='service_list'),
+    #     path('', ServiceListView.as_view(), name='service_list'),
     path('service/<int:id>/', ServiceDetailView.as_view(), name='service_detail'),
 
     path('book_service/', BookServiceView.as_view(), name='book_service'),
@@ -94,5 +94,8 @@ urlpatterns = [
     path("vendor/booking/<int:pk>/", VendorBookingDetailView.as_view(),
          name="vendor_booking_detail"),
     path("get-services/", GetServicesView.as_view(), name="get_services"),
+
+
+
 
 ]

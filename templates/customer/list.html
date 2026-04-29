@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>Complaints</h3>
+
+{% for c in complaints %}
+<div style="border:1px solid #ddd; padding:10px; margin:10px;">
+    <p><b>Customer:</b> {{ c.user.first_name }}</p>
+    <p><b>Vendor:</b> {{ c.vendor.first_name }}</p>
+    <p><b>Booking ID:</b> {{ c.booking.id }}</p>
+    <p><b>Message:</b> {{ c.message }}</p>
+</div>
+{% empty %}
+<p>No complaints found</p>
+{% endfor %}
+
+{% endblock %}

@@ -7,7 +7,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>  Dashboard </title>
+  <title> Dashboard </title>
 
 
 
@@ -208,6 +208,16 @@
           </a>
         </li>
 
+        <li class="sidebar__item {% if request.resolver_match.url_name == 'all_users' %}active{% endif %}">
+          <a href="{% url 'all_users' %}">
+            <iconify-icon icon="mdi:account-group-outline" class="menu-icon"></iconify-icon>
+            <span>All Users</span>
+          </a>
+        </li>
+
+
+
+
         <li class="sidebar__item {% if request.resolver_match.url_name == 'create_vendor' %}active{% endif %}">
           <a href="{% url 'create_vendor' %}">
             <iconify-icon icon="mdi:account-plus-outline" class="menu-icon"></iconify-icon>
@@ -349,27 +359,29 @@
         </li>
 
         <li class="sidebar__item">
-          <a href="#">
-            <iconify-icon icon="mdi:cart-outline" class="menu-icon"></iconify-icon>
+          <a href="2">
+            <iconify-icon icon="mdi:clipboard-text-outline" class="menu-icon"></iconify-icon>
             <span>Privacy Policy</span>
+          </a>
+        </li>
+
+        <li class="sidebar__item">
+          <a href="1">
+            <iconify-icon icon="mdi:note-text-outline" class="menu-icon"></iconify-icon>
+            <span>Remarks</span>
           </a>
         </li>
 
         <li class="sidebar__item {% if request.resolver_match.url_name == 'feedbackform' %}active{% endif %}">
           <a href="{% url 'feedbackform' %}">
-            <iconify-icon icon="mdi:cart-outline" class="menu-icon"></iconify-icon>
+            <iconify-icon icon="mdi:message-text-outline" class="menu-icon"></iconify-icon>
             <span>Feedback & Suggestions</span>
           </a>
         </li>
 
-         <li class="sidebar__item">
-          <a href="#">
-            <iconify-icon icon="mdi:cart-outline" class="menu-icon"></iconify-icon>
-            <span>Remarks</span>
-          </a>
-        </li>
 
-       
+
+
         {% endif %}
         {% endif %}
 
@@ -437,7 +449,7 @@
           <div class="d-flex flex-wrap align-items-center gap-3">
             <button type="button" data-theme-toggle
               class="w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center"></button>
-            <div class="dropdown d-none d-sm-inline-block">
+            <!-- <div class="dropdown d-none d-sm-inline-block">
               <button
                 class="has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center"
                 type="button" data-bs-toggle="dropdown">
@@ -540,7 +552,8 @@
                   </div>
                 </div>
               </div>
-            </div><!-- Language dropdown end -->
+            </div> -->
+            <!-- Language dropdown end -->
 
             <div class="dropdown">
               <button
@@ -771,20 +784,21 @@
             <div class="dropdown">
               <button class="d-flex justify-content-center align-items-center rounded-circle" type="button"
                 data-bs-toggle="dropdown">
-                <img src="assets/images/user.png" alt="image" class="w-40-px h-40-px object-fit-cover rounded-circle">
+                <img src="{% static 'assets/images/tes/tes4.png' %}" alt="image"
+                  class="w-40-px h-40-px object-fit-cover rounded-circle">
               </button>
               <div class="dropdown-menu to-top dropdown-menu-sm">
                 <div class="py-12 px-16 radius-8  mb-16 d-flex align-items-center justify-content-between gap-2">
                   <div>
                     <div class="d-flex justify-content-between"> <span
-                        class="text-secondary-light fw-medium text-sm">Admin</span>
+                        class="text-secondary-light fw-medium text-sm">{{request.user.role}}</span>
                       <button type="button" class="hover-text-danger"
                         style="border: 1px solid hsl(35, 100%, 50%); color: hsl(35, 100%, 50%);">
                         <iconify-icon icon="radix-icons:cross-1" class="icon text-xl"></iconify-icon>
                       </button>
                     </div>
                     <h6 class="text-lg text-primary-light fw-semibold mb-2">{% if user.is_authenticated %}
-                      <p>{{ user.email }}</p>
+                      <p style="margin-top: 10px;">{{ request.user.email }}</p>
                       {% else %}
                       <p>Welcome, Guest</p>
                       {% endif %}

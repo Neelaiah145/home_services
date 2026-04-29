@@ -241,3 +241,24 @@ class VendorProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - VendorProfile"
+
+
+class CustomerRemark(models.Model):
+
+    STATUS_CHOICES = [
+        ("open", "Open"),
+        ("resolved", "Resolved"),
+    ]
+
+    booking = models.ForeignKey(
+        Booking, on_delete=models.CASCADE, related_name="remarks")
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="customer_remarks")
+    vendor = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="vendor_remarks")
+
+    message = models.TextField()
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default="open")
+
+    created_at = models.DateTimeField(auto_now_add=True)

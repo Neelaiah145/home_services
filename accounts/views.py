@@ -311,7 +311,7 @@ class AllUsersView(LoginRequiredMixin, View):
 
     def get(self, request):
 
-        if request.user.role != "superadmin":
+        if request.user.role not in ["superadmin", "admin"]:
             return redirect("login")
 
         users = User.objects.all().order_by('-id')
@@ -320,11 +320,18 @@ class AllUsersView(LoginRequiredMixin, View):
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
 
+        customer_count = User.objects.filter(role="customer").count()
+        admin_count = User.objects.filter(role="admin").count()
+        vendor_count = User.objects.filter(role="vendor").count()
+
         return render(request, "superadmin/all_users.html", {
             "page_obj": page_obj,
-            "active_page": "all_users"
+            "active_page": "all_users",
+            "users": users,
+            "customer_count": customer_count,
+            "admin_count": admin_count,
+            "vendor_count": vendor_count,
         })
-
 
 # ===== API (SEARCH + FILTER) =====
 class AllUsersAPI(View):
@@ -1223,3 +1230,7 @@ class VendorBookingDetailView(LoginRequiredMixin, View):
         return render(request, "vendor/vendor_booking_detail.html", {
             "booking": booking
         })
+
+
+
+
