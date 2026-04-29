@@ -20,11 +20,15 @@ from accounts.utils import verify_otp
 from accounts.utils import send_otp, can_resend
 from core.models import CategoryService
 
-
+from django.urls import reverse
 User = get_user_model()
 
 
 # login classes
+def normalize_phone(phone):
+    return phone.replace(" ", "").replace("+91", "").strip()
+
+
 class LoginView(View):
 
     def get(self, request):
@@ -33,23 +37,44 @@ class LoginView(View):
     def post(self, request):
         data = json.loads(request.body)
 
-        phone = data.get("phone")
+        phone = data.get("phone", "")
         otp = data.get("otp")
+        next_url = data.get("next")   # ✅ FIX: get from POST JSON
 
+        # normalize phone
+        phone = phone.replace(" ", "").replace("+91", "").strip()
+
+        if not phone.isdigit() or len(phone) != 10:
+            return JsonResponse({"error": "Enter valid 10 digit phone number"})
+
+        # ================= VERIFY OTP =================
         if otp:
             session_otp = request.session.get("otp")
             session_phone = request.session.get("phone")
 
-            if otp == session_otp and phone == session_phone:
+            if not session_otp or not session_phone:
+                return JsonResponse({"error": "Session expired. Try again."})
 
-                user = User.objects.filter(phone=phone).first()
+            if otp != session_otp or phone != session_phone:
+                return JsonResponse({"error": "Invalid OTP"})
 
-                if not user:
-                    return JsonResponse({"error": "User not found, please register"})
+            # match phone (handles +91)
+            user = User.objects.filter(phone__endswith=phone).first()
 
-                login(request, user)
+            if not user:
+                return JsonResponse({
+                    "error": "User not found",
+                    "redirect": f"/register/?phone={phone}"
+                })
 
-                # role-based redirect
+            login(request, user)
+
+            print("NEXT URL:", next_url)
+
+            # ✅ PRIORITY: NEXT URL
+            if next_url:
+                redirect_url = next_url
+            else:
                 if user.role == "superadmin":
                     redirect_url = "/superadmin-dashboard/"
                 elif user.role == "admin":
@@ -59,18 +84,20 @@ class LoginView(View):
                 else:
                     redirect_url = "/customer-dashboard/"
 
-                return JsonResponse({
-                    "success": True,
-                    "redirect": redirect_url
-                })
+            # ⚠️ DO NOT flush session before redirect
+            # request.session.flush() ❌ REMOVE THIS
 
-            return JsonResponse({"error": "Invalid OTP"})
+            return JsonResponse({
+                "success": True,
+                "redirect": redirect_url
+            })
 
-        user = User.objects.filter(phone=phone).first()
+        # ================= SEND OTP =================
+        user = User.objects.filter(phone__endswith=phone).first()
 
         if not user:
             return JsonResponse({
-                "error": "User not found, Please Register",
+                "error": "User not found",
                 "redirect": f"/register/?phone={phone}"
             })
 
@@ -88,6 +115,8 @@ class LoginView(View):
 
 
 # register classes
+
+
 class RegisterView(View):
 
     def get(self, request):
@@ -204,7 +233,11 @@ class SuperDashboardView(LoginRequiredMixin, RoleRequiredMixin, View):
         return render(request, "superadmin/dashboard.html", {'page_title': 'Dashboard'})
 
 
+def normalize_phone(phone):
+    return phone.replace("+91", "").replace(" ", "").strip()
 # super admin -- create admin(create admin page)
+
+
 class CreateAdminView(LoginRequiredMixin, View):
 
     def get(self, request):
@@ -231,8 +264,15 @@ class CreateAdminView(LoginRequiredMixin, View):
             password = request.POST.get("password")
             confirm_password = request.POST.get("confirm_password")
 
+            # ✅ normalize phone
+            phone = normalize_phone(phone)
+
+            # ✅ validations
             if not all([first_name, email, phone, password]):
                 return JsonResponse({"error": "All fields required"}, status=400)
+
+            if len(phone) != 10 or not phone.isdigit():
+                return JsonResponse({"error": "Invalid phone number"}, status=400)
 
             if password != confirm_password:
                 return JsonResponse({"error": "Passwords do not match"}, status=400)
@@ -240,10 +280,13 @@ class CreateAdminView(LoginRequiredMixin, View):
             if User.objects.filter(email=email).exists():
                 return JsonResponse({"error": "Email already exists"}, status=400)
 
+            if User.objects.filter(phone=phone).exists():
+                return JsonResponse({"error": "Phone already exists"}, status=400)
+
             if not request.session.get("otp_verified"):
                 return JsonResponse({"error": "Phone not verified"}, status=400)
 
-            user = User(
+            user = User.objects.create(
                 email=email,
                 first_name=first_name,
                 last_name=last_name,

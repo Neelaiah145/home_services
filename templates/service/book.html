@@ -21,7 +21,7 @@
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-                url('{% static "assets/images/bg/booking-bg.webp" %}');
+            url('{% static "assets/images/bg/booking-bg.webp" %}');
             background-size: cover;
             background-position: center;
             display: flex;
@@ -36,7 +36,7 @@
         }
 
         .card {
-            background:linear-gradient(45deg,#ffffff,#074c7d);
+            background: linear-gradient(45deg, #ffffff, #074c7d);
             padding: 30px;
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
@@ -139,12 +139,14 @@
         .register-text a:hover {
             text-decoration: underline;
         }
-        .btn-otpc{
+
+        .btn-otpc {
             background-color: #ea6e12;
             color: rgb(255, 255, 255);
             transition: 1s;
         }
-         .btn-otpc:hover{
+
+        .btn-otpc:hover {
             background-color: #074C7B;
             color: rgb(255, 255, 255);
         }
@@ -273,7 +275,6 @@
 
                 showMsg(d.error, "error");
 
-                // 🔥 SHOW TEXT LINK
                 if (d.error.toLowerCase().includes("register")) {
                     document.getElementById("registerText").style.display = "block";
                 }

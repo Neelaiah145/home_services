@@ -23,7 +23,8 @@ urlpatterns = [
     path('superadmin-dashboard/', SuperDashboardView.as_view(),
          name='superadmin_dashboard'),
 
-    path('set-user-status/<int:user_id>/<str:status>/', SetUserStatusView.as_view(), name='set_user_status'),
+    path('set-user-status/<int:user_id>/<str:status>/',
+         SetUserStatusView.as_view(), name='set_user_status'),
 
 
 
@@ -42,7 +43,7 @@ urlpatterns = [
 
 
     # services
-    # path('', ServiceListView.as_view(), name='service_list'),
+#     path('', ServiceListView.as_view(), name='service_list'),
     path('service/<int:id>/', ServiceDetailView.as_view(), name='service_detail'),
 
     path('book_service/', BookServiceView.as_view(), name='book_service'),
