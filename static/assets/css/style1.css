@@ -5195,7 +5195,7 @@ a.text-theme:hover,
 
 .footer-widget .widget_title {
   border: none;
-  font-size: 24px;
+  font-size: 24px !important;
   margin: 0 0 30px 0;
   padding: 0 0 15px 0;
   color: var(--theme-color);
@@ -17340,11 +17340,11 @@ span.select2-selection.select2-selection--single:focus {
 /* Fix position */
 .account-dropdown .dropdown-menu {
   top: 100%;
-  right: 0;
+  right: -15px;
   border-radius: 10px;
   padding: 10px 0;
   min-width: 180px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
   border: none;
 }
 
@@ -18201,7 +18201,7 @@ span.select2-selection.select2-selection--single:focus {
 }
 
 .svc-header h2 {
-  font-size: 28px;
+  font-size: 28px !important;
   font-weight: 600;
   color: #111;
   margin-bottom: 8px;

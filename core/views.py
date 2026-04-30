@@ -91,6 +91,19 @@ class ServicesListView(View):
             'news': news,
         })
 
+class Joblisting(View):
+    def get(self,request):
+        jobs = Job.objects.all().order_by('title')
+        footer = Footer.objects.first()
+        news = News.objects.all().order_by('id')
+        return render(request, 'joblisting.html', {'footer':footer,'news':news,'jobs':jobs})
+    
+class CategoryListing(View):
+    def get(self,request):
+        categories = Category.objects.all().order_by('title')
+        footer = Footer.objects.first()
+        news = News.objects.all().order_by('id')
+        return render(request, 'category_listing.html', {'footer':footer,'news':news,'categories':categories})
 
 class ContactForm(View):
 
@@ -743,12 +756,7 @@ class JobApplications(View):
         return redirect('job.apply', job_id=job.id)
 
 
-class Joblisting(View):
-    def get(self,request):
-        jobs = Job.objects.all().order_by('title')
-        footer = Footer.objects.first()
-        news = News.objects.all().order_by('id')
-        return render(request, 'joblisting.html', {'footer':footer,'news':news,'jobs':jobs})
+
 
 
 class ListFooter(View):

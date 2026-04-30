@@ -1,8 +1,9 @@
 from django.urls import path
-from core.views import CategoryServicesAPIView,IndexView, ServicesListView, ContactForm, ContactListView, ContactUpdateView, DeleteContact, FeedbackForm, NewsListView, CreateNews, UpdateNews, DeleteNews, CreateBanner, ListBanner, UpdateBanner, DeleteBanner, CreateCategory, ListCategory, UpdateCategory, DeleteCaregory, CreateCategoryService, ListCategoryService, UpdateCategoryService, DeleteCategoryService, ListServices, CreateService, UpdateServices, DeleteServices, ListJobs, CreateJob, UpdateJob,Joblisting, DeleteJob, JobApplications, ListFeedback, DeleteFeedback, ListFooter, CreateFooter, UpdateFooter, DeleteFooter
+from core.views import CategoryServicesAPIView,IndexView, ServicesListView, CategoryListing,ContactForm, ContactListView, ContactUpdateView, DeleteContact, FeedbackForm, NewsListView, CreateNews, UpdateNews, DeleteNews, CreateBanner, ListBanner, UpdateBanner, DeleteBanner, CreateCategory, ListCategory, UpdateCategory, DeleteCaregory, CreateCategoryService, ListCategoryService, UpdateCategoryService, DeleteCategoryService, ListServices, CreateService, UpdateServices, DeleteServices, ListJobs, CreateJob, UpdateJob,Joblisting, DeleteJob, JobApplications, ListFeedback, DeleteFeedback, ListFooter, CreateFooter, UpdateFooter, DeleteFooter
 
 urlpatterns = [
     path("", IndexView.as_view(), name="indexpage"),
+    path("categories/listing/",CategoryListing.as_view(),name='categoy.listings'),
     path('sridixitha/servicespagelist/<int:pk>/',
          ServicesListView.as_view(), name='category.services.listing'),
     # New AJAX endpoint
