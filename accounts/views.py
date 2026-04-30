@@ -14,7 +14,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.contrib.auth.hashers import make_password
 import json
-from .models import Booking, BookingHistory, Payment, VendorProfile
+from .models import Booking, BookingHistory, Payment, VendorProfile, CustomerRemark
 from django.core.paginator import Paginator
 from accounts.utils import verify_otp
 from accounts.utils import send_otp, can_resend
@@ -334,6 +334,8 @@ class AllUsersView(LoginRequiredMixin, View):
         })
 
 # ===== API (SEARCH + FILTER) =====
+
+
 class AllUsersAPI(View):
 
     def get(self, request):
@@ -1232,5 +1234,95 @@ class VendorBookingDetailView(LoginRequiredMixin, View):
         })
 
 
+class MyBookingsView(View):
+
+    def get(self, request):
+
+        bookings = Booking.objects.filter(user=request.user) \
+            .select_related("vendor", "service") \
+            .prefetch_related("remarks") \
+            .order_by("-id")
+
+        return render(request, "customer/my_bookings.html", {
+            "bookings": bookings
+        })
 
 
+class ComplaintCreateView(View):
+
+    def get(self, request, booking_id):
+        booking = get_object_or_404(Booking, id=booking_id)
+        return render(request, "complaints/create.html", {"booking": booking})
+
+    def post(self, request, booking_id):
+        booking = get_object_or_404(Booking, id=booking_id)
+
+        CustomerRemark.objects.create(
+            booking=booking,
+            user=request.user,
+            vendor=booking.vendor,
+            message=request.POST.get("message"),
+            priority=request.POST.get("priority", "medium")
+        )
+
+        return redirect("complaint_list")
+
+
+class ComplaintListView(View):
+
+    def get(self, request):
+
+        if request.user.is_superuser:
+            complaints = CustomerRemark.objects.all().order_by("-created_at")
+        else:
+            complaints = CustomerRemark.objects.filter(
+                user=request.user).order_by("-created_at")
+
+        return render(request, "complaints/list.html", {"complaints": complaints})
+
+
+class ComplaintDetailView(View):
+
+    def get(self, request, pk):
+        complaint = get_object_or_404(CustomerRemark, pk=pk)
+
+        return render(request, "complaints/detail.html", {
+            "complaint": complaint
+        })
+
+
+class ComplaintDeleteView(View):
+
+    def post(self, request, pk):
+
+        complaint = get_object_or_404(CustomerRemark, pk=pk)
+
+        if request.user.is_superuser or complaint.user == request.user:
+            complaint.delete()
+
+        return redirect("complaint_list")
+
+
+class ComplaintStatusAjaxUpdateView(View):
+
+    def post(self, request, pk):
+
+        complaint = get_object_or_404(CustomerRemark, pk=pk)
+
+        status = request.POST.get("status")
+
+        if status in ["open", "in_progress", "resolved"]:
+            complaint.status = status
+
+            if status == "resolved":
+                complaint.resolved_by = request.user
+
+            complaint.save()
+
+            return JsonResponse({
+                "success": True,
+                "status": complaint.status,
+                "updated_at": complaint.updated_at.strftime("%d-%m-%Y %H:%M")
+            })
+
+        return JsonResponse({"success": False})

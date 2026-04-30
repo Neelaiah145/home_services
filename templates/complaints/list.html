@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4" style="color: #fd9f08;">Complaints</h2>
+
+    {% for c in complaints %}
+
+    <div class="card shadow-sm mb-3 p-3">
+
+        <div class="d-flex justify-content-between">
+
+            <div style="padding: 20px 10px;">
+                <h5>Comlaint Description :<small style="color: rgb(89, 86, 86);">{{ c.message|truncatechars:60 }}</small> </h5>
+                <p class="mb-1">
+
+                    <div>Vendor priority : <span class="badge bg-info">{{ c.priority }}</span></div>
+                    <div>Complaint Status : <span class="badge bg-warning">{{ c.status }}</span></div>
+                </p>
+                <small>Created: {{ c.created_at }}</small>
+            </div>
+
+            <div class="text-end">
+                <a href="{% url 'complaint_detail' c.id %}" class="btn btn-sm btn-primary">View</a>
+
+                <form method="post" action="{% url 'complaint_delete' c.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+{% endblock %}

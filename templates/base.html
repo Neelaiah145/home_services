@@ -95,6 +95,13 @@
           </a>
         </li>
 
+         <li class="sidebar__item {% if request.resolver_match.url_name == 'complaint_list' %}active{% endif %}">
+          <a href="{% url 'complaint_list' %}">
+            <iconify-icon icon="mdi:note-text-outline" class="menu-icon"></iconify-icon>
+            <span>Customer Remarks</span>
+          </a>
+        </li>
+
         <li class="sidebar__item {% if request.resolver_match.url_name == 'create_admin' %}active{% endif %}">
           <a href="{% url 'create_admin' %}">
             <iconify-icon icon="mdi:account-plus-outline" class="menu-icon"></iconify-icon>
@@ -212,6 +219,13 @@
           <a href="{% url 'all_users' %}">
             <iconify-icon icon="mdi:account-group-outline" class="menu-icon"></iconify-icon>
             <span>All Users</span>
+          </a>
+        </li>
+
+         <li class="sidebar__item {% if request.resolver_match.url_name == 'complaint_list' %}active{% endif %}">
+          <a href="{% url 'complaint_list' %}">
+            <iconify-icon icon="mdi:note-text-outline" class="menu-icon"></iconify-icon>
+            <span>Remarks</span>
           </a>
         </li>
 
@@ -366,7 +380,14 @@
         </li>
 
         <li class="sidebar__item">
-          <a href="1">
+          <a href="{% url 'my_bookings' %}">
+            <iconify-icon icon="mdi:briefcase-outline" class="menu-icon"></iconify-icon>
+            <span>My Bookings</span>
+          </a>
+        </li>
+        
+        <li class="sidebar__item {% if request.resolver_match.url_name == 'complaint_list' %}active{% endif %}">
+          <a href="{% url 'complaint_list' %}">
             <iconify-icon icon="mdi:note-text-outline" class="menu-icon"></iconify-icon>
             <span>Remarks</span>
           </a>

@@ -98,4 +98,18 @@ urlpatterns = [
 
 
 
+
+    path("my-bookings/", MyBookingsView.as_view(), name="my_bookings"),
+    path("complaint/add/<int:booking_id>/",
+         ComplaintCreateView.as_view(), name="complaint_add"),
+    path("complaints/", ComplaintListView.as_view(), name="complaint_list"),
+    path("complaint/<int:pk>/", ComplaintDetailView.as_view(),
+         name="complaint_detail"),
+    path("complaint/<int:pk>/delete/",
+         ComplaintDeleteView.as_view(), name="complaint_delete"),
+    path("complaint/ajax-update/<int:pk>/",
+         ComplaintStatusAjaxUpdateView.as_view(), name="complaint_ajax_update"),
+
+
+
 ]

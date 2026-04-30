@@ -245,20 +245,52 @@ class VendorProfile(models.Model):
 
 class CustomerRemark(models.Model):
 
+    PRIORITY_CHOICES = [
+        ("low", "Low"),
+        ("medium", "Medium"),
+        ("high", "High"),
+    ]
+
     STATUS_CHOICES = [
         ("open", "Open"),
+        ("in_progress", "In Progress"),
         ("resolved", "Resolved"),
     ]
 
     booking = models.ForeignKey(
-        Booking, on_delete=models.CASCADE, related_name="remarks")
+        "Booking",
+        on_delete=models.CASCADE,
+        related_name="remarks"
+    )
+
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="customer_remarks")
+        User,
+        on_delete=models.CASCADE,
+        related_name="customer_remarks"
+    )
+
     vendor = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="vendor_remarks")
+        User,
+        on_delete=models.CASCADE,
+        related_name="vendor_remarks"
+    )
 
     message = models.TextField()
-    status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default="open")
+
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default="medium")
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="open")
+
+    resolved_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="resolved_complaints"
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.status}"

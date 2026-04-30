@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4 fw-bold" style="color: #fe9f06;">My Booked Services</h2>
+
+    {% for booking in bookings %}
+
+    <div class="card shadow-sm mb-3 border-0 rounded-3">
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+                <!-- LEFT SIDE -->
+                <div>
+                    <h5 class="mb-1" style="color: #071C78;">{{ booking.service.s_title }}</h5>
+                    <p class="mb-1 text-muted">
+                        Vendor: <b>{{ booking.vendor.first_name }}</b>
+                    </p>
+                    <small class="text-muted">
+                        Date: {{ booking.created_at|date:"d M Y, h:i A" }}
+                    </small>
+
+                    <!-- ✅ SHOW STATUS IF COMPLAINT EXISTS -->
+                    {% if booking.remarks.all %}
+                    <div class="mt-2">
+                        <span class="badge 
+                                {% if booking.remarks.first.status == 'open' %}bg-danger
+                                {% elif booking.remarks.first.status == 'in_progress' %}bg-warning text-dark
+                                {% elif booking.remarks.first.status == 'resolved' %}bg-success
+                                {% endif %}
+                            ">
+                            {{ booking.remarks.first.status|title }}
+                        </span>
+
+                        <span class="badge bg-info text-dark">
+                            {{ booking.remarks.first.priority|title }}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- RIGHT SIDE BUTTON -->
+                <div class="mt-3 mt-md-0">
+
+                    {% if booking.remarks.all %}
+                    <!-- VIEW COMPLAINT -->
+                    <a href="{% url 'complaint_detail' booking.remarks.first.id %}" class="btn btn-success btn-sm px-3">
+                        View Complaint
+                    </a>
+                    {% else %}
+                    <!-- RAISE COMPLAINT -->
+                    <a href="{% url 'complaint_add' booking.id %}" class="btn btn-danger btn-sm px-3">
+                        Raise Complaint
+                    </a>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    {% empty %}
+    <div class="alert alert-info text-center">
+        No bookings found.
+    </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

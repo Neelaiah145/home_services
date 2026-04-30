@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card shadow p-4" style="padding: 20px 30px !important;">
+
+        <h3 class="mb-3">Raise Complaint</h3>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label>Message</label>
+                <textarea name="message" class="form-control" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label>Priority</label>
+                <select name="priority" class="form-control">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary">Submit</button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}
