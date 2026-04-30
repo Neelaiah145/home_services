@@ -62,9 +62,22 @@ class LoginView(View):
 
             login(request, user)
 
+            #  ROLE BASED REDIRECT
+            if next_url:
+                redirect_url = next_url
+            else:
+                if user.role == "superadmin":
+                    redirect_url = "/superadmin-dashboard/"
+                elif user.role == "admin":
+                    redirect_url = "/admin-dashboard/"
+                elif user.role == "vendor":
+                    redirect_url = "/vendor-dashboard/"
+                else:
+                    redirect_url = "/customer-dashboard/"
+
             return JsonResponse({
                 "success": True,
-                "redirect": next_url if next_url else "/customer-dashboard/"
+                "redirect": redirect_url
             })
 
         # ===== SEND OTP =====
@@ -87,7 +100,6 @@ class LoginView(View):
             "success": True,
             "message": "OTP sent"
         })
-
 
 # register classes
 

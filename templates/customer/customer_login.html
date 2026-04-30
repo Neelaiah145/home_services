@@ -293,6 +293,7 @@
 
 
   <script>
+
     const NEXT_URL = "{{ next|default:'' }}";
 
     let step = 1;
@@ -313,12 +314,32 @@
       msg.style.color = type === "error" ? "red" : "green";
     }
 
+    // ✅ AUTO MOVE OTP
+    boxes.forEach((box, index) => {
+
+      box.addEventListener("input", function () {
+
+        this.value = this.value.replace(/[^0-9]/g, "");
+
+        if (this.value && index < boxes.length - 1) {
+          boxes[index + 1].focus();
+        }
+      });
+
+      box.addEventListener("keydown", function (e) {
+        if (e.key === "Backspace" && !this.value && index > 0) {
+          boxes[index - 1].focus();
+        }
+      });
+
+    });
+
     btn.onclick = async function () {
 
       let otp = "";
       boxes.forEach(b => otp += b.value);
 
-      // STEP 1 → SEND OTP
+      // STEP 1
       if (step === 1) {
 
         if (phoneInput.value.length !== 10) {
@@ -354,7 +375,7 @@
         }
       }
 
-      // STEP 2 → VERIFY OTP
+      // STEP 2
       else {
 
         if (otp.length !== 4) {
@@ -383,6 +404,7 @@
         }
       }
     };
+
   </script>
 </body>
 
