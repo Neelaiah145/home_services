@@ -13,7 +13,7 @@
             <div class="d-flex justify-content-between align-items-center flex-wrap">
 
                 <!-- LEFT SIDE -->
-                <div>
+                <div style="padding: 10px 0px !important;">
                     <h5 class="mb-1" style="color: #071C78;">{{ booking.service.s_title }}</h5>
                     <p class="mb-1 text-muted">
                         Vendor: <b>{{ booking.vendor.first_name }}</b>
@@ -22,9 +22,9 @@
                         Date: {{ booking.created_at|date:"d M Y, h:i A" }}
                     </small>
 
-                    <!-- ✅ SHOW STATUS IF COMPLAINT EXISTS -->
+                    <!--  SHOW STATUS IF COMPLAINT EXISTS -->
                     {% if booking.remarks.all %}
-                    <div class="mt-2">
+                    <div class="mt-2" >
                         <span class="badge 
                                 {% if booking.remarks.first.status == 'open' %}bg-danger
                                 {% elif booking.remarks.first.status == 'in_progress' %}bg-warning text-dark
