@@ -3,7 +3,18 @@
 {% block content %}
 
 <div class="container mt-4">
+  {% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success mt-3 auto-hide d-flex justify-content-between align-items-center">
 
+      <span>{{ message }}</span>
+
+      <!--  Close Button -->
+      <button type="button" class="btn-close" onclick="closeAlert(this)"></button>
+
+    </div>
+  {% endfor %}
+{% endif %}
     <div class="card shadow-sm border-0 rounded-3">
 
         <!-- Header -->

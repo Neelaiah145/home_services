@@ -287,6 +287,7 @@ class CreateNews(View):
 
         )
         news.save()
+        messages.success(request,"News created successfully")
         return redirect('news.list')
 
 
@@ -302,6 +303,7 @@ class UpdateNews(View):
         news.content = request.POST.get('update_headline')
         news.create_date = datetime.now()
         news.save()
+        messages.success(request,"News Updated successfully")
 
         return redirect('news.list')
 
@@ -310,9 +312,10 @@ class DeleteNews(View):
     def get(self, request, pk):
         news = get_object_or_404(News, pk=pk)
         news.delete()
+        messages.error(request,"News Deeleted ")
         return redirect('news.list')
 
-# hero section
+
 
 
 class ListBanner(View):
@@ -335,6 +338,7 @@ class CreateBanner(View):
             image=image
         )
         banner_save.save()
+        messages.success(request,"Created banner successfully")
 
         return redirect("list.banner")
 
@@ -356,6 +360,7 @@ class UpdateBanner(View):
             banner.image = image
 
         banner.save()
+        messages.error(request,"Updated banner successfully")
 
         return redirect('list.banner')
 
@@ -364,6 +369,7 @@ class DeleteBanner(View):
     def get(self, request, pk):
         banner = get_object_or_404(HeroBanner, pk=pk)
         banner.delete()
+        messages.error(request,"deleted banner successfully")
         return redirect('list.banner')
 
 
@@ -405,6 +411,7 @@ class CreateCategory(View):
             category_about_img=category_about_img,
             banner_image=banner_img,
         )
+        messages.success(request,"Created category successfully")
         return redirect('list.category')
 
 
@@ -438,6 +445,7 @@ class UpdateCategory(View):
             category.banner_image = request.FILES.get('banner_image')
 
         category.save()
+        messages.success(request,"Updated Category successfully")
 
         return redirect('list.category')
 
@@ -446,6 +454,7 @@ class DeleteCaregory(View):
     def get(self, request, pk):
         category = get_object_or_404(Category, pk=pk)
         category.delete()
+        messages.error(request,"Deleted Category")
         return redirect('list.category')
 
 
@@ -501,6 +510,7 @@ class CreateCategoryService(View):
             s_desc=request.POST.get('s_desc'),
             image=request.FILES.get('image')
         )
+        messages.success(request,"Created Category Services successfully")
 
         if 'save_add_more' in request.POST:
             return redirect('add.categories.service')
@@ -523,6 +533,7 @@ class UpdateCategoryService(View):
         if image:
             services.image = image
         services.save()
+        messages.success(request,"Updated Category Services successfully")
         return redirect('list.category.services')
 
 
@@ -530,6 +541,7 @@ class DeleteCategoryService(View):
     def get(self, request, id):
         service = get_object_or_404(CategoryService, id=id)
         service.delete()
+        messages.error(request,"Deleted Category Services")
         return redirect('list.category.services')
 
 
@@ -553,8 +565,10 @@ class CreateService(View):
             serviceicon=serviceicon,
             service_image=service_image,
         )
+        messages.success(request,"Created Service successfully")
         if 'save_add_more' in request.POST:
             return redirect('add.services')
+        
 
         return redirect('services.list')
 
@@ -573,6 +587,7 @@ class UpdateServices(View):
         if request.FILES.get('service_image'):
             services.service_image = request.FILES.get('service_image')
         services.save()
+        messages.success(request,"Updated Service successfully")
         return redirect('services.list')
 
 
@@ -580,6 +595,7 @@ class DeleteServices(View):
     def get(self, request, id):
         services = get_object_or_404(ServicesCards, id=id)
         services.delete()
+        messages.error(request,"Service Deleted")
         return redirect('services.list')
 
 
@@ -638,6 +654,7 @@ class UpdateJob(View):
             job.icon = request.FILES.get('icon')
 
         job.save()
+        messages.success(request, "Job Updated successfully!")
 
         return redirect('list.jobs')
 
@@ -646,6 +663,7 @@ class DeleteJob(View):
     def get(self, request, id):
         job = get_object_or_404(Job, id=id)
         job.delete()
+        messages.error(request, "Deleted Job!")
         return redirect('list.jobs')
 
 class JobApplications(View):

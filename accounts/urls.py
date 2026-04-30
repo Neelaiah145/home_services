@@ -34,6 +34,7 @@ urlpatterns = [
     path('verify-otp/', VerifyOTPView.as_view(), name='verify_otp'),
     path("superadmin/all-users/", AllUsersView.as_view(), name="all_users"),
     path("api/all-users/", AllUsersAPI.as_view(), name="api_all_users"),
+    path("user/delete/<int:id>/", DeleteUserView.as_view(), name="delete_user"),
 
     # admin create vendor
     path("create_vendor/", CreateVendorView.as_view(), name="create_vendor"),

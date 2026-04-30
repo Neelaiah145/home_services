@@ -39,7 +39,7 @@ class LoginView(View):
 
         phone = data.get("phone", "")
         otp = data.get("otp")
-        next_url = data.get("next")   # ✅ FIX: get from POST JSON
+        next_url = data.get("next")   # FIX: get from POST JSON
 
         # normalize phone
         phone = phone.replace(" ", "").replace("+91", "").strip()
@@ -71,7 +71,7 @@ class LoginView(View):
 
             print("NEXT URL:", next_url)
 
-            # ✅ PRIORITY: NEXT URL
+            #  PRIORITY: NEXT URL
             if next_url:
                 redirect_url = next_url
             else:
@@ -84,8 +84,8 @@ class LoginView(View):
                 else:
                     redirect_url = "/customer-dashboard/"
 
-            # ⚠️ DO NOT flush session before redirect
-            # request.session.flush() ❌ REMOVE THIS
+            #  DO NOT flush session before redirect
+            # request.session.flush()  REMOVE THIS
 
             return JsonResponse({
                 "success": True,
@@ -233,8 +233,7 @@ class SuperDashboardView(LoginRequiredMixin, RoleRequiredMixin, View):
         return render(request, "superadmin/dashboard.html", {'page_title': 'Dashboard'})
 
 
-def normalize_phone(phone):
-    return phone.replace("+91", "").replace(" ", "").strip()
+
 # super admin -- create admin(create admin page)
 
 
@@ -264,10 +263,10 @@ class CreateAdminView(LoginRequiredMixin, View):
             password = request.POST.get("password")
             confirm_password = request.POST.get("confirm_password")
 
-            # ✅ normalize phone
+            #  normalize phone
             phone = normalize_phone(phone)
 
-            # ✅ validations
+            #  validations
             if not all([first_name, email, phone, password]):
                 return JsonResponse({"error": "All fields required"}, status=400)
 
@@ -366,6 +365,31 @@ class AllUsersAPI(View):
         } for u in users]
 
         return JsonResponse({"users": data})
+
+
+class DeleteUserView(View):
+
+    def post(self, request, id):
+
+        user = get_object_or_404(User, id=id)
+
+       
+        if user.role == "superadmin":
+            messages.error(request, "Superadmin cannot be deleted!")
+            return redirect("all_users")
+
+       
+        if request.user == user:
+            messages.error(request, "You cannot delete yourself!")
+            return redirect("all_users")
+
+        user.delete()
+        messages.success(request, "User deleted successfully!")
+
+        return redirect("all_users")
+
+
+
 
 
 class SendOTPView(View):
@@ -1252,21 +1276,51 @@ class ComplaintCreateView(View):
 
     def get(self, request, booking_id):
         booking = get_object_or_404(Booking, id=booking_id)
-        return render(request, "complaints/create.html", {"booking": booking})
+
+        return render(request, "complaints/create.html", {
+            "booking": booking
+        })
 
     def post(self, request, booking_id):
         booking = get_object_or_404(Booking, id=booking_id)
 
+        #  Prevent other users accessing
+        if booking.user != request.user:
+            messages.error(request, "Unauthorized access!")
+            return redirect("my_bookings")
+
+        #  Prevent duplicate complaint
+        if booking.remarks.exists():
+            messages.error(request, "Complaint already raised for this booking!")
+            return redirect("my_bookings")
+
+        #  Get vendor safely
+        vendor = booking.vendor
+
+        if not vendor:
+            messages.error(request, "Vendor not assigned to this booking!")
+            return redirect("my_bookings")
+
+        message = request.POST.get("message")
+        priority = request.POST.get("priority", "medium")
+
+        #  Basic validation
+        if not message:
+            messages.error(request, "Message is required!")
+            return redirect("complaint_add", booking_id=booking.id)
+
+        #  Create complaint
         CustomerRemark.objects.create(
             booking=booking,
             user=request.user,
-            vendor=booking.vendor,
-            message=request.POST.get("message"),
-            priority=request.POST.get("priority", "medium")
+            vendor=vendor,
+            message=message,
+            priority=priority
         )
 
-        return redirect("complaint_list")
+        messages.success(request, "Complaint raised successfully!")
 
+        return redirect("complaint_list")
 
 class ComplaintListView(View):
 
