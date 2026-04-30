@@ -291,76 +291,34 @@
     </div>
   </div>
 
+
   <script>
+    const NEXT_URL = "{{ next|default:'' }}";
 
     let step = 1;
-    let countdown;
 
     const btn = document.getElementById("btn");
-    const msg = document.getElementById("msg");
     const phoneInput = document.getElementById("phone");
     const otpWrap = document.getElementById("otpWrap");
     const boxes = document.querySelectorAll(".otp-box");
-    const resendBtn = document.getElementById("resendBtn");
-    const timerVal = document.getElementById("timer");
-    const tText = document.getElementById("tText");
-    const countryMenu = document.getElementById("countryMenu");
+    const msg = document.getElementById("msg");
 
-    // ✅ GET NEXT FROM URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const next = urlParams.get("next");
-
-    // ================= CSRF =================
     function getCSRF() {
-      return document.cookie
-        .split('; ')
+      return document.cookie.split('; ')
         .find(r => r.startsWith('csrftoken='))?.split('=')[1];
     }
 
-    // ================= OTP INPUT =================
-    boxes.forEach((b, i) => {
-      b.oninput = () => { if (b.value && i < 3) boxes[i + 1].focus(); };
-      b.onkeydown = (e) => {
-        if (e.key === "Backspace" && !b.value && i > 0) {
-          boxes[i - 1].focus();
-        }
-      };
-    });
-
-    // ================= MESSAGE =================
     function showMsg(text, type) {
       msg.innerText = text;
-      msg.style.color = type === "error" ? "#ff7675" : "#00b894";
+      msg.style.color = type === "error" ? "red" : "green";
     }
 
-    // ================= TIMER =================
-    function startTimer() {
-      let time = 30;
-
-      resendBtn.style.display = "none";
-      tText.style.display = "inline";
-
-      clearInterval(countdown);
-
-      countdown = setInterval(() => {
-        time--;
-        timerVal.innerText = time;
-
-        if (time <= 0) {
-          clearInterval(countdown);
-          tText.style.display = "none";
-          resendBtn.style.display = "inline";
-        }
-      }, 1000);
-    }
-
-    // ================= BUTTON =================
     btn.onclick = async function () {
 
       let otp = "";
       boxes.forEach(b => otp += b.value);
 
-      // ===== STEP 1 =====
+      // STEP 1 → SEND OTP
       if (step === 1) {
 
         if (phoneInput.value.length !== 10) {
@@ -375,28 +333,28 @@
           },
           body: JSON.stringify({
             phone: phoneInput.value,
-            next: next   // ✅ send next
+            next: NEXT_URL
           })
         });
 
         const data = await res.json();
 
         if (data.error) {
-          showMsg(data.error, "error");
+          if (data.redirect) {
+            window.location.href = data.redirect;
+          } else {
+            showMsg(data.error, "error");
+          }
         } else {
           showMsg("OTP sent", "success");
-
           otpWrap.style.display = "block";
-          phoneInput.disabled = true;
-
           btn.innerText = "Verify OTP";
+          phoneInput.disabled = true;
           step = 2;
-
-          startTimer();
         }
       }
 
-      // ===== STEP 2 =====
+      // STEP 2 → VERIFY OTP
       else {
 
         if (otp.length !== 4) {
@@ -412,7 +370,7 @@
           body: JSON.stringify({
             phone: phoneInput.value,
             otp: otp,
-            next: next   // ✅ send again
+            next: NEXT_URL
           })
         });
 
@@ -425,7 +383,6 @@
         }
       }
     };
-
   </script>
 </body>
 

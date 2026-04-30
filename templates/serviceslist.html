@@ -483,7 +483,7 @@
                   <p class="listing-text">{{ category_service.s_desc }}</p>
 
                   <div class="btn-book">
-                    <a class="vs-btn" href="{% url 'book_service' %}">Book Now</a>
+                    <a class="vs-btn" href="{% url 'login' %}?next={% url 'book_service' %}">Book Now</a>
                   </div>
                 </div>
 

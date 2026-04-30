@@ -32,33 +32,26 @@ def normalize_phone(phone):
 class LoginView(View):
 
     def get(self, request):
-        return render(request, "customer/customer_login.html")
+        next_url = request.GET.get("next", "")
+        return render(request, "customer/customer_login.html", {
+            "next": next_url
+        })
 
     def post(self, request):
         data = json.loads(request.body)
 
-        phone = data.get("phone", "")
+        phone = data.get("phone", "").replace("+91", "").strip()
         otp = data.get("otp")
-        next_url = data.get("next")   # FIX: get from POST JSON
-
-        # normalize phone
-        phone = phone.replace(" ", "").replace("+91", "").strip()
+        next_url = data.get("next")
 
         if not phone.isdigit() or len(phone) != 10:
             return JsonResponse({"error": "Enter valid 10 digit phone number"})
 
-        # ================= VERIFY OTP =================
+        # ===== VERIFY OTP =====
         if otp:
-            session_otp = request.session.get("otp")
-            session_phone = request.session.get("phone")
-
-            if not session_otp or not session_phone:
-                return JsonResponse({"error": "Session expired. Try again."})
-
-            if otp != session_otp or phone != session_phone:
+            if otp != request.session.get("otp") or phone != request.session.get("phone"):
                 return JsonResponse({"error": "Invalid OTP"})
 
-            # match phone (handles +91)
             user = User.objects.filter(phone__endswith=phone).first()
 
             if not user:
@@ -69,30 +62,12 @@ class LoginView(View):
 
             login(request, user)
 
-            print("NEXT URL:", next_url)
-
-            #  PRIORITY: NEXT URL
-            if next_url:
-                redirect_url = next_url
-            else:
-                if user.role == "superadmin":
-                    redirect_url = "/superadmin-dashboard/"
-                elif user.role == "admin":
-                    redirect_url = "/admin-dashboard/"
-                elif user.role == "vendor":
-                    redirect_url = "/vendor-dashboard/"
-                else:
-                    redirect_url = "/customer-dashboard/"
-
-            #  DO NOT flush session before redirect
-            # request.session.flush()  REMOVE THIS
-
             return JsonResponse({
                 "success": True,
-                "redirect": redirect_url
+                "redirect": next_url if next_url else "/customer-dashboard/"
             })
 
-        # ================= SEND OTP =================
+        # ===== SEND OTP =====
         user = User.objects.filter(phone__endswith=phone).first()
 
         if not user:
@@ -103,8 +78,8 @@ class LoginView(View):
 
         otp = str(random.randint(1000, 9999))
 
-        request.session['otp'] = otp
-        request.session['phone'] = phone
+        request.session["otp"] = otp
+        request.session["phone"] = phone
 
         print("OTP:", otp)
 
@@ -231,7 +206,6 @@ class SuperDashboardView(LoginRequiredMixin, RoleRequiredMixin, View):
 
     def get(self, request):
         return render(request, "superadmin/dashboard.html", {'page_title': 'Dashboard'})
-
 
 
 # super admin -- create admin(create admin page)
@@ -373,12 +347,10 @@ class DeleteUserView(View):
 
         user = get_object_or_404(User, id=id)
 
-       
         if user.role == "superadmin":
             messages.error(request, "Superadmin cannot be deleted!")
             return redirect("all_users")
 
-       
         if request.user == user:
             messages.error(request, "You cannot delete yourself!")
             return redirect("all_users")
@@ -387,9 +359,6 @@ class DeleteUserView(View):
         messages.success(request, "User deleted successfully!")
 
         return redirect("all_users")
-
-
-
 
 
 class SendOTPView(View):
@@ -752,11 +721,11 @@ class SetUserStatusView(View):
 # booking functionality
 
 
-class BookServiceView(View):
+class BookServiceView(LoginRequiredMixin, View):
+    login_url = "/login/"
 
     def get(self, request):
         categories = Category.objects.filter(is_active=True)
-
         return render(request, "service/book.html", {
             "categories": categories
         })
@@ -1291,7 +1260,8 @@ class ComplaintCreateView(View):
 
         #  Prevent duplicate complaint
         if booking.remarks.exists():
-            messages.error(request, "Complaint already raised for this booking!")
+            messages.error(
+                request, "Complaint already raised for this booking!")
             return redirect("my_bookings")
 
         #  Get vendor safely
@@ -1321,6 +1291,7 @@ class ComplaintCreateView(View):
         messages.success(request, "Complaint raised successfully!")
 
         return redirect("complaint_list")
+
 
 class ComplaintListView(View):
 

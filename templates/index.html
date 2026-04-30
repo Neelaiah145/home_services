@@ -372,8 +372,7 @@
         <!-- Slide 1 -->
         {% for banner in banners %}
         <div class="hero-item"
-          style="background-image: url('{% if banner.image %}{{ banner.image.url }}{% else %}{% static "
-          assets/img/default-banner.jpg" %}{% endif %}');">
+          style="background-image: url('{% if banner.image %}{{ banner.image.url }}{% else %} {% static "/assets/img/default-banner.jpg" %}{% endif %}');">
 
           <div class="row g-5 gx-50 align-items-center">
             <div class="col-xl-7 col-lg-10">
@@ -416,7 +415,8 @@
               <select name="category" id="category-select" class="form-control" onchange="this.form.submit()">
                 <option value="">-- select category --</option>
                 {% for cat in categories %}
-                <option value="{{ cat.id }}" {% if selected_category and selected_category.id == cat.id %}selected{% endif %}>
+                <option value="{{ cat.id }}"
+                  {% if selected_category and selected_category.id == cat.id %}selected{% endif %}>
                   {{ cat.title }}
                 </option>
                 {% endfor %}
@@ -491,7 +491,7 @@
 
       </a>
       {% endfor %}
-      
+
 
     </div>
     <a href="{% url 'categoy.listings' %}" class="viewall-btn">View all</a>
@@ -528,7 +528,9 @@
           <div class="card-default-title">{{service.servicename }}</div>
         </div>
         <div class="card-hover">
-          <a class="hover-btn" href="{% url 'book_service' %}">Book Now</a>
+          <a class="hover-btn" href="{% url 'login' %}?next={% url 'book_service' %}">
+            Book Now
+          </a>
         </div>
       </div>
       {% empty %}
@@ -575,8 +577,8 @@
 
       <div class="jbs-grid">
 
-        {% for job in jobs|slice:":5" %}
-        
+        {% for job in jobs|slice:":4" %}
+
         <div class="jbs-card">
 
           <div class="jbs-icon">
@@ -627,7 +629,8 @@
   <!--==============================
     tesmonial area 
 	============================== -->
-  <section class="testi-layout1 space" style="background: url('{% static 'assets/images/bg/test_bg.png' %}')" id="Testimonials">
+  <section class="testi-layout1 space" style="background: url('{% static 'assets/images/bg/test_bg.png' %}')"
+    id="Testimonials">
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-xl-8">
