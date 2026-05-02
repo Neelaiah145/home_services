@@ -194,13 +194,7 @@
   <!--==============================
     Popup Search Box
     ============================== -->
-  <div class="popup-search-box d-none d-lg-block  ">
-    <button class="searchClose"><i class="fal fa-times"></i></button>
-    <form action="#">
-      <input type="text" class="border-theme" placeholder="What are you looking for">
-      <button type="submit"><i class="fal fa-search"></i></button>
-    </form>
-  </div>
+
   <!--==============================
         Header Area
     ==============================-->
@@ -378,8 +372,7 @@
         <!-- Slide 1 -->
         {% for banner in banners %}
         <div class="hero-item"
-          style="background-image: url('{% if banner.image %}{{ banner.image.url }}{% else %}{% static "
-          assets/img/default-banner.jpg" %}{% endif %}');">
+          style="background-image: url('{% if banner.image %}{{ banner.image.url }}{% else %} {% static "/assets/img/default-banner.jpg" %}{% endif %}');">
 
           <div class="row g-5 gx-50 align-items-center">
             <div class="col-xl-7 col-lg-10">
@@ -388,7 +381,7 @@
                 <p class="hero-text">
                   {{ banner.sub_heading }}
                 </p>
-                <a class="vs-btn" href="#">Book a Service</a>
+                <a class="vs-btn" href="{% url 'book_service' %}">Book a Service</a>
               </div>
             </div>
           </div>
@@ -414,49 +407,38 @@
     <div class="listing-style1">
       <div class="sub-container">
         <div class="listing-body">
-         <form method="GET" class="form-style2 search-horizontal">
+          <form method="GET" id="search-form" class="form-style2 search-horizontal">
 
-  <!-- CATEGORY -->
-  <div class="form-group">
-    <label>Category</label>
+            <!-- CATEGORY -->
+            <div class="form-group">
+              <label>Category</label>
+              <select name="category" id="category-select" class="form-control" onchange="this.form.submit()">
+                <option value="">-- select category --</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}"
+                  {% if selected_category and selected_category.id == cat.id %}selected{% endif %}>
+                  {{ cat.title }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
 
-    <select name="category" class="form-control" onchange="this.form.submit()">
+            <!-- SERVICES (populated dynamically) -->
+            <div class="form-group">
+              <label>Services</label>
+              <select name="cat_service" id="service-select" class="form-control">
+                <option value="">-- select service --</option>
+                {% for serv in cat_services %}
+                <option value="{{ serv.id }}">{{ serv.s_title }}</option>
+                {% endfor %}
+              </select>
+            </div>
 
-      <option value="">-- select category --</option>
+            <div class="form-group btn-group">
+              <button type="submit" class="vs-btn">Search</button>
+            </div>
 
-      {% for cat in categories %}
-      <option value="{{ cat.id }}"
-        {% if selected_category and selected_category.id == cat.id %}selected{% endif %}>
-        {{ cat.title }}
-      </option>
-      {% endfor %}
-
-    </select>
-  </div>
-
-  <!-- SERVICES (DEPENDENT) -->
-  <div class="form-group">
-    <label>Services</label>
-
-    <select name="cat_service" class="form-control">
-
-      <option value="">-- select service --</option>
-
-      {% for serv in cat_services %}
-      <option value="{{ serv.id }}"
-        {% if selected_category == serv.id|stringformat:"s" %}selected{% endif %}>
-        {{ serv.s_title }}
-      </option>
-      {% endfor %}
-
-    </select>
-  </div>
-
-  <div class="form-group btn-group">
-    <button type="submit" class="vs-btn">Search</button>
-  </div>
-
-</form>
+          </form>
         </div>
       </div>
     </div>
@@ -472,7 +454,7 @@
     <div class="svc-grid">
 
       <!-- B2B Services -->
-      {% for category in categories %}
+      {% for category in categories|slice:":8" %}
       <a href="{% url 'category.services.listing' category.pk  %}" class="svc-card c5">
 
         <div class="svc-arrow">
@@ -511,9 +493,8 @@
       {% endfor %}
 
 
-
-
     </div>
+    <a href="{% url 'categoy.listings' %}" class="viewall-btn">View all</a>
   </section>
 
   <!--Catrgories section ends-->
@@ -547,7 +528,9 @@
           <div class="card-default-title">{{service.servicename }}</div>
         </div>
         <div class="card-hover">
-          <a class="hover-btn" href="#">Contact</a>
+          <a class="hover-btn" href="{% url 'login' %}?next={% url 'book_service' %}">
+            Book Now
+          </a>
         </div>
       </div>
       {% empty %}
@@ -562,7 +545,7 @@
   <!-- About Area End -->
 
   <!--==============================
-    job postingarea 
+    job postings area 
 	============================== -->
 
   <section class="jbs-section" id="jobs">
@@ -575,7 +558,7 @@
 
       <div class="jbs-stats">
         <div class="jbs-stat">
-          <div class="jbs-stat-num">5</div>
+          <div class="jbs-stat-num">{{ jobs.count }}</div>
           <div class="jbs-stat-lbl">Open roles</div>
         </div>
         <div class="jbs-stat">
@@ -594,7 +577,8 @@
 
       <div class="jbs-grid">
 
-        {% for job in jobs %}
+        {% for job in jobs|slice:":4" %}
+
         <div class="jbs-card">
 
           <div class="jbs-icon">
@@ -625,7 +609,7 @@
             </div>
           </div>
 
-          <a href="#" class="jbs-btn">Apply Now</a>
+          <a href="{% url 'job.apply' job.id %}" class="jbs-btn">Apply Now</a>
 
         </div>
         {% empty %}
@@ -636,7 +620,7 @@
 
       </div>
     </div>
-    <a href="#" class="viewall-btn">View All</a>
+    <a href="{% url 'jobs.listing' %}" class="viewall-btn">View All</a>
   </section>
   <!--==============================
     end-job postingarea 
@@ -645,7 +629,7 @@
   <!--==============================
     tesmonial area 
 	============================== -->
-  <section class="testi-layout1 space" style="background: url('{% static 'assets/images/bg/test_bg.png' %}');"
+  <section class="testi-layout1 space" style="background: url('{% static 'assets/images/bg/test_bg.png' %}')"
     id="Testimonials">
     <div class="container">
       <div class="row justify-content-center">
@@ -791,7 +775,7 @@
                 </li>
                 <li><a href="#"><i style="color: #ea6e12" class="fa-brands fa-square-whatsapp">
 
-                </i>+91 {{ footer.whatsapp_num }}</a>
+                    </i>+91 {{ footer.whatsapp_num }}</a>
                 </li>
                 <li><a href="#"><i style="color: #ea6e12" class="fa-solid fa-envelope"></i>{{ footer.email }}</a>
                 </li>

@@ -11,7 +11,7 @@
         --text-main: #1e293b;
         --text-muted: #64748b;
         --border: #e2e8f0;
-        
+
         /* Status Colors */
         --pending: #f59e0b;
         --assigned: #3b82f6;
@@ -66,9 +66,20 @@
         background: #f1f5f9;
     }
 
-    .status-pending { background: #fff7ed; color: var(--pending); }
-    .status-assigned { background: #eff6ff; color: var(--assigned); }
-    .status-completed { background: #ecfdf5; color: var(--completed); }
+    .status-pending {
+        background: #fff7ed;
+        color: var(--pending);
+    }
+
+    .status-assigned {
+        background: #eff6ff;
+        color: var(--assigned);
+    }
+
+    .status-completed {
+        background: #ecfdf5;
+        color: var(--completed);
+    }
 
     .details-grid {
         display: grid;
@@ -186,69 +197,76 @@
     }
 
     @media (max-width: 600px) {
-        .order-header { flex-direction: column; gap: 10px; }
+        .order-header {
+            flex-direction: column;
+            gap: 10px;
+        }
     }
 </style>
 
 <div class="container">
-    
+
     <div class="order-card">
         <div class="order-header">
-            <div class="order-id">Order ID: #{{ booking.order_id }}</div>
+            <div class="order-id">
+                Order ID: #{{ booking.order_id }}
+            </div>
+
             <div class="status-badge status-{{ booking.status|lower }}">
-                {{ booking.status }}
+                {{ booking.status|title|cut:"_"|capfirst }}
             </div>
         </div>
-        
+
         <div class="details-grid">
             <div class="detail-item">
                 <label>Service</label>
-                <span>{{ booking.service.name }}</span>
+                <span>{{ booking.service.s_title }}</span>
             </div>
             <div class="detail-item">
                 <label>Assigned Vendor</label>
                 <span>
-                    {% if booking.vendor %}
-                        {{ booking.vendor.first_name }}
+                    {% if vendor %}
+                    {{ vendor.first_name }}
                     {% else %}
-                        <span style="color: #ef4444;">Not Assigned</span>
+                    <span style="color: #ef4444;">Not Assigned</span>
                     {% endif %}
                 </span>
             </div>
-            {% if booking.vendor %}
+            {% if vendor %}
             <div class="detail-item">
                 <label>Contact</label>
-                <span>{{ booking.vendor.phone }}</span>
+                <span>{{ vendor.phone }}</span>
             </div>
             {% endif %}
         </div>
     </div>
 
     <div class="timeline-section">
-       <h6 class="fw-semibold mb-0"> Track Order </h6>
-        
+        <h6 class="fw-semibold mb-0"> Track Order </h6>
+
         <div class="timeline">
             {# IMPORTANT: We iterate through history but only show the status if it changed #}
             {% for h in history %}
-                {% ifchanged h.status %}
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <span class="timeline-status">{{ h.status|title }}</span>
-                            <span class="timeline-time">{{ h.created_at|date:"M d, Y • h:i A" }}</span>
-                            <span class="timeline-user">Updated by {{ h.updated_by.first_name }}</span>
-                        </div>
-                    </div>
-                {% endifchanged %}
+            {% ifchanged h.status %}
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-status">{{ h.status|title }}</span>
+                    <span class="timeline-time">{{ h.created_at|date:"M d, Y • h:i A" }}</span>
+                    <span class="timeline-user">Updated by {{ h.updated_by.first_name }}</span>
+                </div>
+            </div>
+            {% endifchanged %}
             {% empty %}
-                <p style="color: var(--text-muted); font-size: 14px;">No tracking updates available.</p>
+            <p style="color: var(--text-muted); font-size: 14px;">No tracking updates available.</p>
             {% endfor %}
         </div>
     </div>
 
     <a href="javascript:history.back()" class="back-btn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            style="margin-right: 8px;">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>
         Back to Orders
     </a>

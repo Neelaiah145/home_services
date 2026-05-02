@@ -7,6 +7,7 @@ import uuid
 
 # user manager
 
+
 class UserManager(BaseUserManager):
 
     def create_user(self, email, password=None, **extra_fields):
@@ -27,15 +28,12 @@ class UserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
-      
-
-
 
 # user model table
 
 class User(AbstractUser):
 
-    username = None  
+    username = None
 
     class Role(models.TextChoices):
         SUPERADMIN = "superadmin", "Super Admin"
@@ -50,7 +48,8 @@ class User(AbstractUser):
         choices=Role.choices,
         default=Role.CUSTOMER
     )
-    services = models.ManyToManyField("core.CategoryService", blank=True, related_name="vendors")
+    services = models.ManyToManyField(
+        "core.CategoryService", blank=True, related_name="vendors")
 
     created_by = models.ForeignKey(
         "self",
@@ -69,15 +68,17 @@ class User(AbstractUser):
         return f"{self.email} ({self.role})"
 
 
-
 def generate_order_id():
     return "RCN" + uuid.uuid4().hex[:8].upper()
 
 # bookings
+
+
 class Booking(models.Model):
 
     STATUS = (
         ('pending', 'Pending'),
+        ('assigned', 'Assigned'),
         ('accepted', 'Accepted'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
@@ -132,14 +133,13 @@ class Booking(models.Model):
         return f"{self.order_id} - {self.service.s_title}"
 
 
-
 # booking history(track the order)
 class BookingHistory(models.Model):
 
     booking = models.ForeignKey(
         Booking,
         on_delete=models.CASCADE,
-        related_name="history"  
+        related_name="history"
     )
 
     status = models.CharField(max_length=20)
@@ -152,21 +152,8 @@ class BookingHistory(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-
     def __str__(self):
         return f"{self.booking.order_id} - {self.status}"
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-
 
 
 # payments
@@ -186,10 +173,10 @@ class Payment(models.Model):
     )
 
     service = models.ForeignKey(
-    CategoryService,
-    on_delete=models.CASCADE,
-    null=True,
-    blank=True
+        CategoryService,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
 
     status = models.CharField(
@@ -213,15 +200,6 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"{self.booking.order_id} - {self.status}"
-    
-    
-    
-    
-    
-    
-    
-    
-
 
 
 class VendorProfile(models.Model):
@@ -232,19 +210,15 @@ class VendorProfile(models.Model):
         related_name="vendor_profile"
     )
 
-   
     experience = models.PositiveIntegerField(help_text="Years of experience")
 
-   
     locality = models.CharField(max_length=200, db_index=True)
     street = models.CharField(max_length=200)
     city = models.CharField(max_length=100, db_index=True)
     postal_code = models.CharField(max_length=10, db_index=True)
 
-   
     company_name = models.CharField(max_length=200, blank=True)
     company_address = models.TextField(blank=True)
-
 
     category = models.ForeignKey(
         Category,
@@ -259,7 +233,6 @@ class VendorProfile(models.Model):
         related_name="vendor_profiles"
     )
 
- 
     is_verified = models.BooleanField(default=False)
     rating = models.FloatField(default=0)
     total_jobs = models.IntegerField(default=0)
@@ -268,3 +241,56 @@ class VendorProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - VendorProfile"
+
+
+class CustomerRemark(models.Model):
+
+    PRIORITY_CHOICES = [
+        ("low", "Low"),
+        ("medium", "Medium"),
+        ("high", "High"),
+    ]
+
+    STATUS_CHOICES = [
+        ("open", "Open"),
+        ("in_progress", "In Progress"),
+        ("resolved", "Resolved"),
+    ]
+
+    booking = models.ForeignKey(
+        "Booking",
+        on_delete=models.CASCADE,
+        related_name="remarks"
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="customer_remarks"
+    )
+
+    vendor = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="vendor_remarks"
+    )
+
+    message = models.TextField()
+
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default="medium")
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="open")
+
+    resolved_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="resolved_complaints"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.status}"

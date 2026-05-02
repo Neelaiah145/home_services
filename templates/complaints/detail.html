@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow border-0 rounded-3 p-4" style="padding: 30px !important;">
+
+        <h3 class="mb-3 text-warning">Complaint Details</h3>
+
+        <!-- Vendor -->
+        <p>
+            <b>Vendor:</b>
+            {{ complaint.vendor.first_name|default:complaint.vendor.username }}
+        </p>
+
+        <!-- Customer -->
+        <p>
+            <b>Customer:</b>
+            {{ complaint.user.first_name|default:complaint.user.username }}
+        </p>
+
+        <!-- Message -->
+        <p>
+            <b>Complaint Message:</b> {{ complaint.message }}
+        </p>
+
+        <!-- Priority -->
+        <p>
+            <b>Priority:</b>
+            <span class="badge bg-info text-dark">
+                {{ complaint.priority|title }}
+            </span>
+        </p>
+
+        <!-- Status -->
+        <p>
+            <b>Status:</b>
+            <span id="status-text" class="badge 
+                {% if complaint.status == 'open' %}bg-danger
+                {% elif complaint.status == 'in_progress' %}bg-warning text-dark
+                {% elif complaint.status == 'resolved' %}bg-success
+                {% endif %}
+            ">
+                {{ complaint.status|title }}
+            </span>
+        </p>
+
+        <!-- Dates -->
+        <p><b>Created:</b> {{ complaint.created_at|date:"d M Y, h:i A" }}</p>
+        <p><b>Updated:</b> {{ complaint.updated_at|date:"d M Y, h:i A" }}</p>
+
+        <hr>
+
+        <!-- Update Section -->
+        <h5 class="mb-3">Update Status</h5>
+
+        <div class="d-flex gap-2 align-items-center">
+
+            <select id="status-select" class="form-control w-25">
+                <option value="open" {% if complaint.status == "open" %}selected{% endif %}>Open</option>
+                <option value="in_progress" {% if complaint.status == "in_progress" %}selected{% endif %}>In Progress
+                </option>
+                <option value="resolved" {% if complaint.status == "resolved" %}selected{% endif %}>Resolved</option>
+            </select>
+
+            <button class="btn btn-primary" onclick="updateStatus()">
+                Update
+            </button>
+        </div>
+        <div class="d-flex justify-content-end"><a href="{% url 'complaint_list' %}"
+                style="color: white; background-color: #FCA10A;padding: 10px; border-radius: 10px;">Back</a></div>
+
+    </div>
+    <!-- Success Message -->
+    <p id="update-msg" class="mt-3 text-success fw-semibold"></p>
+
+</div>
+
+</div>
+
+<script>
+    function updateStatus() {
+
+        let status = document.getElementById("status-select").value;
+
+        fetch("{% url 'complaint_ajax_update' complaint.id %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "status=" + status
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+
+                    let badge = document.getElementById("status-text");
+
+                    // Update text
+                    badge.innerText = data.status.charAt(0).toUpperCase() + data.status.slice(1);
+
+                    // Reset classes
+                    badge.classList.remove("bg-danger", "bg-warning", "bg-success", "text-dark");
+
+                    // Apply new color
+                    if (data.status === "open") {
+                        badge.classList.add("bg-danger");
+                    }
+                    else if (data.status === "in_progress") {
+                        badge.classList.add("bg-warning", "text-dark");
+                    }
+                    else if (data.status === "resolved") {
+                        badge.classList.add("bg-success");
+                    }
+
+                    // Success message
+                    document.getElementById("update-msg").innerText = "✔ Status updated successfully!";
+                }
+            });
+
+    }
+</script>
+
+{% endblock %}

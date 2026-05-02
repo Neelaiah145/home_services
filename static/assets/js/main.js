@@ -1042,3 +1042,41 @@ document.querySelector('input[name="image"]').addEventListener('change', functio
         preview.style.display = 'block';
     }
 });
+
+
+//  categories services 
+  const categorySelect = document.getElementById('category-select');
+  const serviceSelect = document.getElementById('service-select');
+
+  categorySelect.addEventListener('change', function () {
+    const categoryId = this.value;
+
+    // Reset services
+    serviceSelect.innerHTML = '<option value="">-- select service --</option>';
+
+    if (!categoryId) return;
+
+    fetch(`/api/category/${categoryId}/services/`)
+      .then(res => res.json())
+      .then(data => {
+        data.services.forEach(service => {
+          const option = document.createElement('option');
+          option.value = service.id;
+          option.textContent = service.s_title;
+          serviceSelect.appendChild(option);
+        });
+      })
+      .catch(err => console.error('Failed to load services:', err));
+  });
+
+ document.getElementById('photoInput').addEventListener('change', function (event) {
+            const preview = document.getElementById('photoPreview');
+            const file = event.target.files[0];
+
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                preview.classList.add('visible');
+            } else {
+                preview.classList.remove('visible');
+            }
+        });

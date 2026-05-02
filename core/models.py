@@ -141,6 +141,25 @@ class Job(models.Model):
     def __str__(self):
         return self.title
 
+class JobApplication(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='applications')
+
+    name = models.CharField(max_length=150)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15)
+
+    experience = models.CharField(max_length=100)
+    expected_salary = models.DecimalField(max_digits=10, decimal_places=2)
+
+    address = models.TextField()
+
+    resume = models.FileField(upload_to='jobs/resumes/')
+    photo = models.ImageField(upload_to='jobs/photos/', null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.job.title}"
 
 class ServiceFeedback(models.Model):
 

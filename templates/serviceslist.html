@@ -483,7 +483,7 @@
                   <p class="listing-text">{{ category_service.s_desc }}</p>
 
                   <div class="btn-book">
-                    <a class="vs-btn" href="{% url 'book_service' %}">Book Now</a>
+                    <a class="vs-btn" href="{% url 'login' %}?next={% url 'book_service' %}">Book Now</a>
                   </div>
                 </div>
 
@@ -502,30 +502,22 @@
 
             <h3 class="widget_title title-shep">Search Here</h3>
 
-            <form class="form-style2 ajax-contact wow animate__fadeInUp" data-wow-delay="0.35s" action="" method="post">
+            <form class="form-style2  wow animate__fadeInUp" data-wow-delay="0.35s" action="" method="get">
 
               <div class="row gx-20">
 
-                <div class="col-md-12 form-group">
-                  <div class="input-area">
-                    <input class="form-control" type="text" name="what" placeholder="What service are you looking for?">
-                  </div>
-                </div>
+
 
                 <div class="col-md-12 form-group">
-                  <select name="category" class="category">
-                    <option value="">Select a category</option>
-                    <option value="manufacturing">Manufacturing</option>
-                    <option value="logistics">Logistics</option>
-                    <option value="it">IT Services</option>
-                  </select>
-                </div>
+                  <select name="service" class="form-control" onchange="this.form.submit()">
+                    <option value="">--Select Services--</option>
 
-                <div class="col-md-12 form-group">
-                  <select name="location" class="location">
-                    <option value="">Select Location</option>
-                    <option value="in">India</option>
-                    <option value="us">USA</option>
+                    {% for service in category_services %}
+                    <option value="{{ service.id }}"
+                     {% if request.GET.service == service.id|stringformat:"s" %}selected{% endif %}>
+                      {{ service.s_title }}
+                    </option>
+                    {% endfor %}
                   </select>
                 </div>
 
@@ -673,7 +665,7 @@
                 </li>
                 <li><a href="#"><i style="color: #ea6e12" class="fa-brands fa-square-whatsapp">
 
-                </i>+91 {{ footer.whatsapp_num }}</a>
+                    </i>+91 {{ footer.whatsapp_num }}</a>
                 </li>
                 <li><a href="#"><i style="color: #ea6e12" class="fa-solid fa-envelope"></i>{{ footer.email }}</a>
                 </li>

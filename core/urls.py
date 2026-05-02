@@ -1,22 +1,28 @@
 from django.urls import path
-from core.views import IndexView, ServicesListView, ContactForm, ContactListView,ContactUpdateView,DeleteContact,FeedbackForm, DashBoard, NewsListView, CreateNews, UpdateNews, DeleteNews, CreateBanner, ListBanner, UpdateBanner, DeleteBanner, CreateCategory, ListCategory, UpdateCategory, DeleteCaregory, CreateCategoryService, ListCategoryService, UpdateCategoryService, DeleteCategoryService, ListServices, CreateService, UpdateServices, DeleteServices, ListJobs, CreateJob, UpdateJob, DeleteJob, ListFeedback, DeleteFeedback, ListFooter, CreateFooter, UpdateFooter, DeleteFooter
+from core.views import CategoryServicesAPIView,IndexView, ServicesListView, CategoryListing,ContactForm, ContactListView, ContactUpdateView, DeleteContact, FeedbackForm, NewsListView, CreateNews, UpdateNews, DeleteNews, CreateBanner, ListBanner, UpdateBanner, DeleteBanner, CreateCategory, ListCategory, UpdateCategory, DeleteCaregory, CreateCategoryService, ListCategoryService, UpdateCategoryService, DeleteCategoryService, ListServices, CreateService, UpdateServices, DeleteServices, ListJobs, CreateJob, UpdateJob,Joblisting, DeleteJob, JobApplications, ListFeedback, DeleteFeedback, ListFooter, CreateFooter, UpdateFooter, DeleteFooter
 
 urlpatterns = [
     path("", IndexView.as_view(), name="indexpage"),
-    path('servicespagelist/<int:pk>/',
+    path("categories/listing/",CategoryListing.as_view(),name='categoy.listings'),
+    path('sridixitha/servicespagelist/<int:pk>/',
          ServicesListView.as_view(), name='category.services.listing'),
+    # New AJAX endpoint
+    path('api/category/<int:category_id>/services/',
+         CategoryServicesAPIView.as_view(), name='category.services.api'),
 
     path('sridixitha/contact/', ContactForm.as_view(), name='contact'),
-    path('list/contact/',ContactListView.as_view(),name='list.contact'),
-    path('update/conatct/<int:pk>/',ContactUpdateView.as_view(),name='update.contact'),
-    path('delete/contact/<int:pk>/',DeleteContact.as_view(),name='delete.contact'),
+    path('list/contact/', ContactListView.as_view(), name='list.contact'),
+    path('update/conatct/<int:pk>/',
+         ContactUpdateView.as_view(), name='update.contact'),
+    path('delete/contact/<int:pk>/',
+         DeleteContact.as_view(), name='delete.contact'),
 
-    
+
     path("sridixitha/feebackform/", FeedbackForm.as_view(), name='feedbackform'),
-    
+
 
     path("list/news/", NewsListView.as_view(), name="news.list"),
-    path("dashboard/", DashBoard.as_view(), name="dashboard"),
+   
     path("create/", CreateNews.as_view(), name="createnews"),
     path("update/news/<int:pk>/", UpdateNews.as_view(), name="update.news"),
     path("delete/news/<int:pk>/", DeleteNews.as_view(), name="delete.news"),
@@ -57,6 +63,10 @@ urlpatterns = [
     path('create/jobs/', CreateJob.as_view(), name='add.jobs'),
     path('update/jobs/<int:id>/', UpdateJob.as_view(), name='update.jobs'),
     path('delete/jobs/<int:id>/', DeleteJob.as_view(), name='delete.jobs'),
+
+
+    path('apply/job/<int:job_id>/', JobApplications.as_view(), name='job.apply'),
+    path('job/listing/',Joblisting.as_view(),name='jobs.listing'),
 
     path('list/feedback/', ListFeedback.as_view(), name='list.feedback'),
     path('delete/feedback/<int:id>/',

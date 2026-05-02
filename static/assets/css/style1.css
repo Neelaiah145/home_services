@@ -5195,7 +5195,7 @@ a.text-theme:hover,
 
 .footer-widget .widget_title {
   border: none;
-  font-size: 24px;
+  font-size: 24px !important;
   margin: 0 0 30px 0;
   padding: 0 0 15px 0;
   color: var(--theme-color);
@@ -5572,9 +5572,13 @@ a.text-theme:hover,
 .main-menu>ul>li>a:hover,
 .menu-style2>ul>li>a:hover {
   background: #04223E;
-  background: linear-gradient(180deg, rgba(4, 34, 62, 0) 0%, rgba(234, 130, 72, 0.32) 100%);
-  border-color: var(--theme-color);
+ background: linear-gradient(180deg, rgba(234, 234, 234, 0) 0%, rgb(55, 132, 188) 100%);
+  ;
+  border-radius: 10px;
+   border-bottom: 5px solid #00bcfa;
+  border-top: 5px solid #00bcfa;
 }
+ 
 
 .main-menu>ul>li>a .new-label,
 .menu-style2>ul>li>a .new-label {
@@ -17336,11 +17340,11 @@ span.select2-selection.select2-selection--single:focus {
 /* Fix position */
 .account-dropdown .dropdown-menu {
   top: 100%;
-  right: 0;
+  right: -15px;
   border-radius: 10px;
   padding: 10px 0;
   min-width: 180px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
   border: none;
 }
 
@@ -17614,7 +17618,7 @@ span.select2-selection.select2-selection--single:focus {
 
 /* BUTTON */
 .hover-btn {
-  font-size: 14px;
+  font-size: 12px;
   background: var(--secondary-color);
   color: #fff;
   padding: 2px 2px;
@@ -17921,7 +17925,7 @@ span.select2-selection.select2-selection--single:focus {
 /* Grid */
 .jbs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 18px;
 }
 
@@ -17984,7 +17988,7 @@ span.select2-selection.select2-selection--single:focus {
 
 /* Text */
 .jbs-name {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: #eb7d28;
   margin: 0;
@@ -18197,7 +18201,7 @@ span.select2-selection.select2-selection--single:focus {
 }
 
 .svc-header h2 {
-  font-size: 28px;
+  font-size: 28px !important;
   font-weight: 600;
   color: #111;
   margin-bottom: 8px;
@@ -18930,4 +18934,30 @@ section.contact-layout1.space-top {
 .logo_news{
   max-width: 220px !important;
   height: auto !important;
+}
+
+
+.jobs-line {
+  width: 315px;
+  height: 4px;
+  background: #074c7d;
+  margin: 10px auto;
+  border-radius: 10px;
+}
+.jobs-line {
+  width: 315px;
+  height: 4px;
+  background: #074c7d;
+  margin: 10px auto;
+  border-radius: 10px;
+
+  transform: scaleX(0);
+  transform-origin: center;
+  animation: lineGrow 1s ease-out forwards;
+}
+
+@keyframes lineGrow {
+  to {
+    transform: scaleX(1);
+  }
 }
