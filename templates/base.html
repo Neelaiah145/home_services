@@ -318,6 +318,12 @@
             <span>Footer</span>
           </a>
         </li>
+           <li class="sidebar__item">
+          <a href="{% url 'privacy_list' %}">
+            <iconify-icon icon="mdi:clipboard-text-outline" class="menu-icon"></iconify-icon>
+            <span>Privacy Policy</span>
+          </a>
+        </li>
 
 
 
@@ -373,7 +379,7 @@
         </li>
 
         <li class="sidebar__item">
-          <a href="2">
+          <a href="{% url 'privacy_policy' %}">
             <iconify-icon icon="mdi:clipboard-text-outline" class="menu-icon"></iconify-icon>
             <span>Privacy Policy</span>
           </a>
@@ -875,7 +881,7 @@
 
 
   </main>
-  {% load static %}
+
 
   <!-- jQuery library js -->
   <script src="{% static 'assets/js/lib/jquery-3.7.1.min.js' %}"></script>

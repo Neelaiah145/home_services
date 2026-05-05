@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-0 rounded-3">
+
+        <!-- Header -->
+        <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0 text-white">Update Privacy Policy</h5>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <div class="col-md-12">
+
+                        <!-- Title -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Policy Title</label>
+                            <input type="text" name="title" class="form-control"
+                                   value="{{ policy.title }}" required>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Policy Content</label>
+                            <textarea name="content" class="form-control"
+                                      rows="8" required>{{ policy.content }}</textarea>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Status</label>
+                            <select name="is_active" class="form-control">
+                                <option value="True" {% if policy.is_active %}selected{% endif %}>Active</option>
+                                <option value="False" {% if not policy.is_active %}selected{% endif %}>Inactive</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between mt-3">
+
+                    <a href="{% url 'privacy_list' %}" class="btn btn-outline-success">
+                        Back
+                    </a>
+
+                    <button type="submit" class="btn btn-warning px-4">
+                        Update Policy
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

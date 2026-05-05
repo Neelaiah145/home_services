@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+     <p class="date">Last updated: {{ policy.last_updated }}</p>
+
+    <h3>{{ policy.title }}</h3>
+   
+    {% if policy %}
+        <div>
+            {{ policy.content|linebreaks }}
+        </div>
+    {% else %}
+        <p>No privacy policy available.</p>
+    {% endif %}
+</div>
+{% endblock %}

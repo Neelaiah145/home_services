@@ -14,7 +14,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.contrib.auth.hashers import make_password
 import json
-from .models import Booking, BookingHistory, Payment, VendorProfile, CustomerRemark
+from .models import Booking, BookingHistory, Payment, VendorProfile, CustomerRemark, PrivacyPolicy
 from django.core.paginator import Paginator
 from accounts.utils import verify_otp
 from accounts.utils import send_otp, can_resend
@@ -1363,3 +1363,70 @@ class ComplaintStatusAjaxUpdateView(View):
             })
 
         return JsonResponse({"success": False})
+
+
+class PrivacyPolicyView(View):
+
+    def get(self, request):
+        policy = PrivacyPolicy.objects.filter(is_active=True).first()
+
+        return render(request, "privacy_policy/privacy_policy.html", {
+            "policy": policy
+        })
+
+
+class PrivacyPolicyListView(View):
+    def get(self, request):
+        policies = PrivacyPolicy.objects.all().order_by("-id")
+        return render(request, "pages/privacy_policy/list.html", {
+            "policies": policies
+        })
+
+
+class CreatePrivacyPolicyView(View):
+
+    def get(self, request):
+        return render(request, "pages/privacy_policy/create.html")
+
+    def post(self, request):
+        title = request.POST.get("title")
+        content = request.POST.get("content")
+        is_active = request.POST.get("is_active") == "True"
+
+        PrivacyPolicy.objects.create(
+            title=title,
+            content=content,
+            is_active=is_active
+        )
+
+        messages.success(request, "Privacy Policy created successfully")
+        return redirect("privacy_list")
+
+
+class UpdatePrivacyPolicyView(View):
+
+    def get(self, request, id):
+        policy = PrivacyPolicy.objects.get(id=id)
+        return render(request, "pages/privacy_policy/update.html", {
+            "policy": policy
+        })
+
+    def post(self, request, id):
+        policy = PrivacyPolicy.objects.get(id=id)
+
+        policy.title = request.POST.get("title")
+        policy.content = request.POST.get("content")
+        policy.is_active = request.POST.get("is_active") == "True"
+        policy.save()
+
+        messages.success(request, "Privacy Policy updated successfully")
+        return redirect("privacy_list")
+
+class DeletePrivacyPolicyView(View):
+
+    def get(self, request, id):
+        policy = get_object_or_404(PrivacyPolicy, id=id)
+        policy.delete()
+
+        messages.success(request, "Privacy Policy deleted successfully")
+        return redirect("privacy_list")

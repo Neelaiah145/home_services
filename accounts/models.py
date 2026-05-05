@@ -277,9 +277,11 @@ class CustomerRemark(models.Model):
 
     message = models.TextField()
 
-    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default="medium")
+    priority = models.CharField(
+        max_length=10, choices=PRIORITY_CHOICES, default="medium")
 
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="open")
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default="open")
 
     resolved_by = models.ForeignKey(
         User,
@@ -294,3 +296,15 @@ class CustomerRemark(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.status}"
+
+
+class PrivacyPolicy(models.Model):
+    title = models.CharField(max_length=200, default="Privacy Policy")
+    content = models.TextField()
+    last_updated = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
+    
+

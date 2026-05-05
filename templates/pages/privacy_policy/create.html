@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-0 rounded-3">
+
+        <!-- Header -->
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0 text-white">Create Privacy Policy</h5>
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <div class="col-md-12">
+
+                        <!-- TITLE -->
+                        <div class="mb-3">
+                            <label class="form-label">Policy Title</label>
+                            <input type="text" name="title" class="form-control"
+                                   placeholder="Enter policy title" >
+                        </div>
+
+                        <!-- CONTENT -->
+                        <div class="mb-3">
+                            <label class="form-label">Policy Content</label>
+                            <textarea name="content" class="form-control"
+                                      rows="8"
+                                      placeholder="Write full privacy policy..." required></textarea>
+                        </div>
+
+                        <!-- STATUS -->
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select name="is_active" class="form-control">
+                                <option value="True">Active</option>
+                                <option value="False">Inactive</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between mt-3">
+                    <a href="{% url 'privacy_list' %}" class="btn btn-outline-success">Back</a>
+
+                    <button type="submit" class="btn btn-primary px-4">
+                        Save Policy
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

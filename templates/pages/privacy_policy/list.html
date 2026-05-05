@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success mt-3 auto-hide d-flex justify-content-between align-items-center">
+        <span>{{ message }}</span>
+        <button type="button" class="btn-close" onclick="closeAlert(this)"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="card shadow-sm border-0 rounded-3">
+
+        <!-- Header -->
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 text-white">Privacy Policy</h5>
+
+            <a href="{% url 'add.privacy' %}" class="btn btn-sm btn-light">
+                <i class="bi bi-plus-circle-fill"></i> Add Policy
+            </a>
+        </div>
+
+        <!-- Table -->
+        <div class="card-body table-responsive">
+
+            <table class="table table-hover table-bordered align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Content</th>
+                        <th>Status</th>
+                        <th>Last Updated</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for policy in policies %}
+                    <tr>
+
+                        <td>{{ forloop.counter }}</td>
+
+                        <!-- Title -->
+                        <td>{{ policy.title }}</td>
+
+                        <!-- Content -->
+                        <td style="max-width:300px;">
+                            {{ policy.content|truncatechars:80 }}
+                        </td>
+
+                        <!-- Status -->
+                        <td>
+                            {% if policy.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Date -->
+                        <td>{{ policy.last_updated|date:"d M Y" }}</td>
+
+                        <!-- Actions -->
+                        <td class="text-center">
+
+                            <a href="{% url 'update.privacy' policy.id %}" class="text-warning me-2" title="Edit">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+
+                            <a href="{% url 'delete.privacy' policy.id %}" 
+                               class="text-danger" 
+                               title="Delete"
+                               onclick="return confirm('Are you sure you want to delete this policy?')">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            No privacy policy available
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -111,6 +111,11 @@ urlpatterns = [
     path("complaint/ajax-update/<int:pk>/",
          ComplaintStatusAjaxUpdateView.as_view(), name="complaint_ajax_update"),
 
+    path("privacy-policy/", PrivacyPolicyView.as_view(), name="privacy_policy"),
 
+    path("privacy-list/", PrivacyPolicyListView.as_view(), name="privacy_list"),
+    path("privacy-create/", CreatePrivacyPolicyView.as_view(), name="add.privacy"),
+    path("privacy-update/<int:id>/", UpdatePrivacyPolicyView.as_view(), name="update.privacy"),
+    path("privacy-delete/<int:id>/", DeletePrivacyPolicyView.as_view(), name="delete.privacy"),
 
 ]
