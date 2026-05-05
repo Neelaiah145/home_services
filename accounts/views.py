@@ -1366,12 +1366,10 @@ class ComplaintStatusAjaxUpdateView(View):
 
 
 class PrivacyPolicyView(View):
-
     def get(self, request):
-        policy = PrivacyPolicy.objects.filter(is_active=True).first()
-
+        policies = PrivacyPolicy.objects.filter(is_active=True)
         return render(request, "privacy_policy/privacy_policy.html", {
-            "policy": policy
+            "policies": policies
         })
 
 

@@ -2,16 +2,23 @@
 
 {% block content %}
 <div class="container">
-     <p class="date">Last updated: {{ policy.last_updated }}</p>
+    <p>
+        We value your privacy and are committed to protecting your personal information.
+        This Privacy Policy explains how we collect, use, and safeguard your data when you use our services.
+    </p>
 
-    <h3>{{ policy.title }}</h3>
-   
-    {% if policy %}
-        <div>
+    {% for policy in policies %}
+
+    <div class="mb-4" style="padding: 15px 0px;">
+        <h5>{{ forloop.counter }} . {{ policy.title }}</h5>
+        <div style="padding: 0px 0px 0px 40px;">
             {{ policy.content|linebreaks }}
         </div>
-    {% else %}
-        <p>No privacy policy available.</p>
-    {% endif %}
+    </div>
+    <hr>
+    {% empty %}
+    <p>No privacy policy available.</p>
+    {% endfor %}
+
 </div>
 {% endblock %}
