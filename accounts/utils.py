@@ -28,3 +28,5 @@ def verify_otp(phone, otp):
 
 def can_resend(phone):
     return not cache.get(f"otp_lock_{phone}")
+
+

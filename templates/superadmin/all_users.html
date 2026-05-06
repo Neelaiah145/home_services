@@ -342,16 +342,16 @@
 <div class="page-wrap">
   {% if messages %}
   {% for message in messages %}
-    <div class="alert alert-success mt-3 auto-hide d-flex justify-content-between align-items-center">
+  <div class="alert alert-success mt-3 auto-hide d-flex justify-content-between align-items-center">
 
-      <span>{{ message }}</span>
+    <span>{{ message }}</span>
 
-      <!--  Close Button -->
-      <button type="button" class="btn-close" onclick="closeAlert(this)"></button>
+    <!--  Close Button -->
+    <button type="button" class="btn-close" onclick="closeAlert(this)"></button>
 
-    </div>
+  </div>
   {% endfor %}
-{% endif %}
+  {% endif %}
   <!-- HEADER -->
   <div class="page-header">
     <div>
@@ -459,31 +459,55 @@
               {{ user.date_joined|date:"d M Y" }}
             </td>
             <td>
-              {% if user.role != "superadmin" %}
 
+              {% if request.user.role == "superadmin" %}
+
+              <!-- SUPERADMIN CAN CONTROL ALL (except self optional) -->
+              {% if user.id != request.user.id %}
               <div class="status-group">
 
-                <!-- ON (Active) -->
                 <a href="{% url 'set_user_status' user.id 'active' %}"
                   class="status-btn {% if user.is_active %}active{% endif %}" title="Activate">
-
                   <iconify-icon icon="mdi:power"></iconify-icon>
                 </a>
 
-                <!-- OFF (Inactive) -->
                 <a href="{% url 'set_user_status' user.id 'inactive' %}"
                   class="status-btn {% if not user.is_active %}inactive{% endif %}" title="Deactivate">
-
                   <iconify-icon icon="mdi:power"></iconify-icon>
                 </a>
 
               </div>
+              {% else %}
+              <span>Self</span>
+              {% endif %}
+
+              {% elif request.user.role == "admin" %}
+
+              <!-- ADMIN CAN CONTROL ONLY CUSTOMER & VENDOR -->
+              {% if user.role in "customer,vendor" %}
+              <div class="status-group">
+
+                <a href="{% url 'set_user_status' user.id 'active' %}"
+                  class="status-btn {% if user.is_active %}active{% endif %}">
+                  <iconify-icon icon="mdi:power"></iconify-icon>
+                </a>
+
+                <a href="{% url 'set_user_status' user.id 'inactive' %}"
+                  class="status-btn {% if not user.is_active %}inactive{% endif %}">
+                  <iconify-icon icon="mdi:power"></iconify-icon>
+                </a>
+
+              </div>
+              {% else %}
+              <span style="color:gray;">No Access</span>
+              {% endif %}
 
               {% else %}
-              <span class="status active">
-                <iconify-icon icon="mdi:shield-crown-outline"></iconify-icon>
-              </span>
+
+              <span style="color:gray;">No Access</span>
+
               {% endif %}
+
             </td>
 
             <td class="actions">

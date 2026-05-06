@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,38 +21,134 @@
       box-sizing: border-box;
     }
 
+    /*  BACKGROUND BASE */
     body {
       font-family: 'Inter', -apple-system, sans-serif;
-      background: #f8f9fd;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       min-height: 100vh;
       margin: 0;
       padding: 20px;
-      /* Prevents card from touching edges on mobile */
+      overflow: hidden;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+       background:
+    linear-gradient(rgba(15,32,39,0.75), rgba(44,83,100,0.75)),
+    url("{% static 'assets/images/bg/login_bg.webp' %}");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+      background-size: 300% 300%;
+      animation: aurora 10s ease infinite;
     }
 
+
+
+    @keyframes float {
+      0% {
+        transform: translateY(0px) translateX(0px);
+      }
+
+      50% {
+        transform: translateY(40px) translateX(30px);
+      }
+
+      100% {
+        transform: translateY(0px) translateX(0px);
+      }
+    }
+
+    /*  GLASS CARD */
     .card {
+      position: relative;
+      z-index: 1;
+
       width: 100%;
       max-width: 400px;
-      background: #fff;
-      padding: 30px;
+
+      padding: 35px;
+
       border-radius: 24px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
-      transition: all 0.3s ease;
+
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+
+      border: 1px solid rgba(255, 255, 255, 0.2);
+
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.2),
+        inset 0 0 10px rgba(255, 255, 255, 0.1);
+
+      transition: 0.3s ease;
     }
+
+    /*  HOVER LIFT */
+    .card:hover {
+      transform: translateY(-5px) scale(1.01);
+    }
+
+    /* 🧾 TEXT */
+    h2 {
+      color: #fff;
+      text-align: center;
+    }
+
+    .subtitle {
+      color: #dfe6e9;
+    }
+
+    /*  INPUT */
+    .phone-container,
+    input,
+    .otp-box {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+    }
+
+    input::placeholder {
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    /*  BUTTON */
+    #btn {
+      width: 100%;
+      padding: 16px;
+
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: #fff;
+
+      border: none;
+      border-radius: 14px;
+
+      font-size: 16px;
+      font-weight: 600;
+
+      cursor: pointer;
+
+      box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4);
+      transition: 0.3s;
+    }
+
+    #btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 114, 255, 0.6);
+    }
+
 
     h2 {
       text-align: center;
       margin: 0 0 10px;
-      color: var(--text);
+      color: black;
       font-size: clamp(20px, 5vw, 24px);
     }
 
     p.subtitle {
       text-align: center;
-      color: var(--gray);
+      color: #ffffff;
       margin-bottom: 30px;
       font-size: 14px;
     }
@@ -60,7 +157,7 @@
     .input-label {
       font-size: 13px;
       font-weight: 600;
-      color: var(--gray);
+      color: #ffffff;
       margin-bottom: 8px;
       display: block;
     }
@@ -138,6 +235,7 @@
       outline: none;
       background: transparent;
       width: 100%;
+      color: black !important;
     }
 
     /* OTP Section */
@@ -221,7 +319,7 @@
     }
 
     .footer a {
-      color: var(--primary);
+      color: black;
       text-decoration: none;
       font-weight: 700;
     }
@@ -240,7 +338,7 @@
   </style>
 </head>
 
-<body>
+<body >
 
   <div class="card">
     <form method="POST" style="display:none;">
@@ -254,20 +352,20 @@
     <label class="input-label">Mobile Number</label>
     <div class="phone-container">
       <div class="selected-country" id="dropdownTrigger">
-        <img src="https://flagcdn.com/w40/in.png" class="flag-img" id="mainFlag">
-        <span id="mainCode">+91</span>
+        <img src="/static/assets/images/india_flg.webp" class="flag-img" id="mainFlag">
+        <span id="mainCode " style="color: black;">+91</span>
       </div>
 
       <div class="country-dropdown" id="countryMenu">
-        <div class="country-item" onclick="selectCountry('in', '+91')"><img src="https://flagcdn.com/w40/in.png"
+        <div class="country-item" onclick="selectCountry('in', '+91')"><img src=""
             class="flag-img"> India (+91)</div>
-        <div class="country-item" onclick="selectCountry('us', '+1')"><img src="https://flagcdn.com/w40/us.png"
+        <div class="country-item" onclick="selectCountry('us', '+1')"><img src=""
             class="flag-img"> USA (+1)</div>
-        <div class="country-item" onclick="selectCountry('gb', '+44')"><img src="https://flagcdn.com/w40/gb.png"
+        <div class="country-item" onclick="selectCountry('gb', '+44')"><img src=""
             class="flag-img"> UK (+44)</div>
       </div>
 
-      <input id="phone" type="tel" placeholder="10 Digit Number" maxlength="10">
+      <input id="phone" type="tel" placeholder="10 Digit Number"  maxlength="10">
     </div>
 
     <div class="otp-wrap" id="otpWrap">
@@ -287,7 +385,7 @@
     <button id="btn">Send OTP</button>
 
     <div class="footer">
-      New here? <a href="/register/">Create Account</a>
+      <span style="color: #fff;">New here? </span><a href="/register/">Create Account</a>
     </div>
   </div>
 

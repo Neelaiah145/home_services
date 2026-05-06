@@ -2,6 +2,7 @@
 
 {% block content %}
 <div class="container">
+    <h1 style="color: #fea007;">Privacy Policy</h1>
     <p>
         We value your privacy and are committed to protecting your personal information.
         This Privacy Policy explains how we collect, use, and safeguard your data when you use our services.
@@ -10,7 +11,7 @@
     {% for policy in policies %}
 
     <div class="mb-4" style="padding: 15px 0px;">
-        <h5>{{ forloop.counter }} . {{ policy.title }}</h5>
+        <h5 style="color: #132676;">{{ forloop.counter }} . {{ policy.title }}</h5>
         <div style="padding: 0px 0px 0px 40px;">
             {{ policy.content|linebreaks }}
         </div>

@@ -1,14 +1,11 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
 from django.contrib import messages
 from core.models import Category, CategoryService
 from django.views import View
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import get_user_model,authenticate, login, logout as auth_logout
 from django.http import JsonResponse, HttpResponse
 from .models import User
 import random
-from django.contrib.auth import logout as auth_logout
-from django.contrib.auth import get_user_model
 from accounts.mixins import RoleRequiredMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
@@ -19,8 +16,9 @@ from django.core.paginator import Paginator
 from accounts.utils import verify_otp
 from accounts.utils import send_otp, can_resend
 from core.models import CategoryService
-
 from django.urls import reverse
+from django.db.models import Count, Q
+
 User = get_user_model()
 
 
@@ -299,25 +297,40 @@ class AllUsersView(LoginRequiredMixin, View):
         if request.user.role not in ["superadmin", "admin"]:
             return redirect("login")
 
-        users = User.objects.all().order_by('-id')
+        #  BASE QUERY (EXCLUDE SELF)
+        base_queryset = User.objects.exclude(id=request.user.id)
 
+        #  ROLE-BASED FILTER
+        if request.user.role == "admin":
+            users = base_queryset.filter(
+                role__in=["customer", "vendor"]
+            ).order_by('-id')
+        else:
+            # superadmin → see all except self
+            users = base_queryset.order_by('-id')
+
+        #  PAGINATION
         paginator = Paginator(users, 10)
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
 
-        customer_count = User.objects.filter(role="customer").count()
-        admin_count = User.objects.filter(role="admin").count()
-        vendor_count = User.objects.filter(role="vendor").count()
+        #  COUNTS (EXCLUDE SELF ALSO)
+        if request.user.role == "admin":
+            customer_count = User.objects.filter(role="customer").exclude(id=request.user.id).count()
+            admin_count = 0
+            vendor_count = User.objects.filter(role="vendor").exclude(id=request.user.id).count()
+        else:
+            customer_count = User.objects.filter(role="customer").exclude(id=request.user.id).count()
+            admin_count = User.objects.filter(role="admin").exclude(id=request.user.id).count()
+            vendor_count = User.objects.filter(role="vendor").exclude(id=request.user.id).count()
 
         return render(request, "superadmin/all_users.html", {
             "page_obj": page_obj,
-            "active_page": "all_users",
             "users": users,
             "customer_count": customer_count,
             "admin_count": admin_count,
             "vendor_count": vendor_count,
         })
-
 # ===== API (SEARCH + FILTER) =====
 
 
@@ -455,7 +468,39 @@ class AdminDashboardView(LoginRequiredMixin, RoleRequiredMixin, View):
     allowed_roles = ['admin']
 
     def get(self, request):
-        return render(request, "admin/dashboard.html")
+
+        # USERS
+        total_customers = User.objects.filter(role="customer").count()
+        total_vendors = User.objects.filter(role="vendor").count()
+
+        # BOOKINGS
+        total_bookings = Booking.objects.count()
+        active_bookings = Booking.objects.filter(status="active").count()
+        completed_bookings = Booking.objects.filter(status="completed").count()
+
+        # PAYMENTS
+        pending_payments = Payment.objects.filter(status="pending").count()
+        completed_payments = Payment.objects.filter(status="completed").count()
+
+        # COMPLAINTS
+        complaints = CustomerRemark.objects.count()
+
+        # RECENT BOOKINGS
+        recent_bookings = Booking.objects.select_related(
+            "user", "vendor", "service"
+        ).order_by("-id")[:5]
+
+        return render(request, "admin/dashboard.html", {
+            "total_customers": total_customers,
+            "total_vendors": total_vendors,
+            "total_bookings": total_bookings,
+            "active_bookings": active_bookings,
+            "completed_bookings": completed_bookings,
+            "pending_payments": pending_payments,
+            "completed_payments": completed_payments,
+            "complaints": complaints,
+            "recent_bookings": recent_bookings,
+        })
 
 
 # admin create vendor
@@ -588,7 +633,7 @@ def get_services(request):
 
     try:
         category_id = int(category_id)
-    except:
+    except Exception  as e:
         return JsonResponse({"services": []})
 
     services = CategoryService.objects.filter(
@@ -638,13 +683,49 @@ class VendorDashboardView(LoginRequiredMixin, RoleRequiredMixin, View):
         # bookings = Booking.objects.filter(vendor=request.user)
         return render(request, "vendor/dashboard.html")
 
+from django.db.models import Count
 
 class CustomerDashboardView(LoginRequiredMixin, RoleRequiredMixin, View):
     allowed_roles = ['customer']
 
     def get(self, request):
 
-        return render(request, "customer/dashboard.html",)
+        user = request.user
+
+        # 🔹 Latest 5 bookings
+        bookings = Booking.objects.filter(
+            user=user
+        ).select_related('service', 'vendor').order_by('-id')[:5]
+
+        # 🔹 Stats
+        total_bookings = Booking.objects.filter(
+            user=user
+        ).count()
+
+        active_services = Booking.objects.filter(
+            user=user,
+            status="active"
+        ).count()
+
+        #  FIXED (Payment linked via booking)
+        pending_payments = Payment.objects.filter(
+            booking__user=user,
+            status="pending"
+        ).count()
+
+        complaints = CustomerRemark.objects.filter(
+            user=user
+        ).count()
+
+        context = {
+            "bookings": bookings,
+            "total_bookings": total_bookings,
+            "active_services": active_services,
+            "pending_payments": pending_payments,
+            "complaints": complaints,
+        }
+
+        return render(request, "customer/dashboard.html", context)
 
 
 # ===================================================================================
