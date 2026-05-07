@@ -1,8 +1,9 @@
 {% extends "base.html" %}
-{% block content %}
 
-<!-- ✅ CHART JS -->
+{% block content %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!--  CHART JS -->
+
 
 <style>
     .dashboard-main-body {
@@ -101,7 +102,7 @@
 
     <h4>Admin Dashboard</h4>
 
-    <!-- 🔹 STATS -->
+    <!--  STATS -->
     <div class="grid">
         <div class="card blue">
             <div class="stat">{{ total_customers }}</div>
@@ -124,7 +125,7 @@
         </div>
     </div>
 
-    <!-- 🔹 SECOND ROW -->
+    <!--  SECOND ROW -->
     <div class="grid">
         <div class="card blue">
             <div class="stat">{{ active_bookings }}</div>
@@ -147,7 +148,7 @@
         </div>
     </div>
 
-    <!-- 🔹 CHARTS -->
+    <!--  CHARTS -->
     <div class="grid">
 
         <div class="card">
@@ -162,7 +163,7 @@
 
     </div>
 
-    <!-- 🔹 RECENT BOOKINGS -->
+    <!--  RECENT BOOKINGS -->
     <div class="card">
         <h5>Recent Bookings</h5>
 
@@ -207,12 +208,13 @@
                 data: [
                     {{ active_bookings }},
             {{ completed_bookings }},
-                    {{ pending_payments }}
-                    ],
+        {{ pending_payments }}
+      ],
         backgroundColor: ["#10b981", "#6366f1", "#f59e0b"]
-            }]
-            }
-            });
+    }]
+  }
+});
+
     new Chart(document.getElementById("userChart"), {
         type: "doughnut",
         data: {
@@ -221,13 +223,11 @@
                 data: [
                     {{ total_customers }},
             {{ total_vendors }}
-        ],
+      ],
         backgroundColor: ["#2563eb", "#10b981"]
     }]
-     }
-        });
-
-
+  }
+});
 
 </script>
 

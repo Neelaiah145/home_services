@@ -33,13 +33,12 @@
       align-items: center;
       justify-content: center;
 
-       background:
-    linear-gradient(rgba(15,32,39,0.75), rgba(44,83,100,0.75)),
-    url("{% static 'assets/images/bg/login_bg.webp' %}");
+      background: linear-gradient(rgba(15, 32, 39, 0.75), rgba(44, 83, 100, 0.75)),
+      url("{% static 'assets/images/bg/login_bg.webp' %}");
 
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       background-size: 300% 300%;
       animation: aurora 10s ease infinite;
     }
@@ -277,7 +276,7 @@
 
     .otp-box:focus {
       border-color: var(--primary);
-      background: var(--primary-light);
+      background: orange;
     }
 
     /* Actions */
@@ -338,7 +337,7 @@
   </style>
 </head>
 
-<body >
+<body>
 
   <div class="card">
     <form method="POST" style="display:none;">
@@ -347,7 +346,7 @@
     <h2>Sign In</h2>
     <p class="subtitle">Access your account securely</p>
 
-    <p id="msg" class="msg"></p>
+    <p id="msg" class="msg" style="font-weight: 700"></p>
 
     <label class="input-label">Mobile Number</label>
     <div class="phone-container">
@@ -357,15 +356,12 @@
       </div>
 
       <div class="country-dropdown" id="countryMenu">
-        <div class="country-item" onclick="selectCountry('in', '+91')"><img src=""
-            class="flag-img"> India (+91)</div>
-        <div class="country-item" onclick="selectCountry('us', '+1')"><img src=""
-            class="flag-img"> USA (+1)</div>
-        <div class="country-item" onclick="selectCountry('gb', '+44')"><img src=""
-            class="flag-img"> UK (+44)</div>
+        <div class="country-item" onclick="selectCountry('in', '+91')"><img src="" class="flag-img"> India (+91)</div>
+        <div class="country-item" onclick="selectCountry('us', '+1')"><img src="" class="flag-img"> USA (+1)</div>
+        <div class="country-item" onclick="selectCountry('gb', '+44')"><img src="" class="flag-img"> UK (+44)</div>
       </div>
 
-      <input id="phone" type="tel" placeholder="10 Digit Number"  maxlength="10">
+      <input id="phone" type="tel" placeholder="10 Digit Number" maxlength="10">
     </div>
 
     <div class="otp-wrap" id="otpWrap">

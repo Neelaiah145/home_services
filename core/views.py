@@ -169,12 +169,28 @@ class ContactForm(View):
 
 
 class ContactListView(View):
+
     def get(self, request):
+
         contacts = Contact.objects.all().order_by('-created_at')
 
-        return render(request, 'pages/contact/list.html', {
-            'contacts': contacts
-        })
+        # Pagination
+        paginator = Paginator(contacts, 5)   # 5 contacts per page
+
+        page_number = request.GET.get('page')
+
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'contacts': page_obj,
+            'page_obj': page_obj
+        }
+
+        return render(
+            request,
+            'pages/contact/list.html',
+            context
+        )
 
 
 class ContactUpdateView(View):
@@ -267,11 +283,28 @@ class FeedbackForm(View):
 
 
 class ListFeedback(View):
+
     def get(self, request):
+
         feedbacks = ServiceFeedback.objects.all().order_by('-created_at')
-        return render(request, 'pages/feedback/list.html', {
-            'feedbacks': feedbacks
-        })
+
+        # Pagination
+        paginator = Paginator(feedbacks, 5)   # 5 feedbacks per page
+
+        page_number = request.GET.get('page')
+
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'feedbacks': page_obj,
+            'page_obj': page_obj
+        }
+
+        return render(
+            request,
+            'pages/feedback/list.html',
+            context
+        )
 
 
 class DeleteFeedback(View):
@@ -282,10 +315,30 @@ class DeleteFeedback(View):
         return redirect('list.feedback')
 
 
+
 class NewsListView(View):
+
     def get(self, request):
+
         news = News.objects.all().order_by('-created_at')
-        return render(request, 'pages/news/list_news.html', {'news': news})
+
+        # Pagination
+        paginator = Paginator(news, 5)   # 5 news per page
+
+        page_number = request.GET.get('page')
+
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'news': page_obj,
+            'page_obj': page_obj
+        }
+
+        return render(
+            request,
+            'pages/news/list_news.html',
+            context
+        )
 
 
 class CreateNews(View):
@@ -332,9 +385,28 @@ class DeleteNews(View):
 
 
 class ListBanner(View):
+
     def get(self, request):
-        banner = HeroBanner.objects.all()
-        return render(request, 'pages/hero_section/list_banner.html', {'banner': banner})
+
+        banner = HeroBanner.objects.all().order_by('-created_at')
+
+        # Pagination
+        paginator = Paginator(banner, 5)   # 5 banners per page
+
+        page_number = request.GET.get('page')
+
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'banner': page_obj,
+            'page_obj': page_obj
+        }
+
+        return render(
+            request,
+            'pages/hero_section/list_banner.html',
+            context
+        )
 
 
 class CreateBanner(View):
@@ -558,10 +630,26 @@ class DeleteCategoryService(View):
         return redirect('list.category.services')
 
 
+
 class ListServices(View):
+
     def get(self, request):
-        services = ServicesCards.objects.all()
-        return render(request, 'pages/services/list.html', {'services': services})
+
+        services = ServicesCards.objects.all().order_by('-created_at')
+
+        # Pagination
+        paginator = Paginator(services, 5)   # 5 services per page
+
+        page_number = request.GET.get('page')
+
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'services': page_obj,
+            'page_obj': page_obj
+        }
+
+        return render(request, 'pages/services/list.html', context)
 
 
 class CreateService(View):
@@ -612,10 +700,27 @@ class DeleteServices(View):
         return redirect('services.list')
 
 
+
+
 class ListJobs(View):
+
     def get(self, request):
+
         jobs = Job.objects.all().order_by('-created_at')
-        return render(request, 'pages/jobs/list.html', {'jobs': jobs})
+
+        # Pagination
+        paginator = Paginator(jobs, 5)   # 5 jobs per page
+
+        page_number = request.GET.get('page')
+
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'jobs': page_obj,
+            'page_obj': page_obj
+        }
+
+        return render(request, 'pages/jobs/list.html', context)
 
 
 class CreateJob(View):
@@ -760,9 +865,28 @@ class JobApplications(View):
 
 
 class ListFooter(View):
+
     def get(self, request):
+
         footers = Footer.objects.all().order_by('-id')
-        return render(request, 'pages/footer/list.html', {'footers': footers})
+
+        # Pagination
+        paginator = Paginator(footers, 5)   # 5 footers per page
+
+        page_number = request.GET.get('page')
+
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'footers': page_obj,
+            'page_obj': page_obj
+        }
+
+        return render(
+            request,
+            'pages/footer/list.html',
+            context
+        )
 
 
 class CreateFooter(View):
