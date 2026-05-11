@@ -2,115 +2,263 @@
 
 {% block content %}
 
-<div class="container mt-4">
-  {% if messages %}
-  {% for message in messages %}
-    <div class="alert alert-success mt-3 auto-hide d-flex justify-content-between align-items-center">
 
-      <span>{{ message }}</span>
 
-      <!--  Close Button -->
-      <button type="button" class="btn-close" onclick="closeAlert(this)"></button>
+<div class="job-page">
 
-    </div>
-  {% endfor %}
-{% endif %}
-    <div class="card shadow-sm border-0 rounded-3">
+    {% if messages %}
 
-        <!-- Header -->
-        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0 text-white">Job / Career List</h5>
+        {% for message in messages %}
 
-            <a href="{% url 'add.jobs' %}" class="btn btn-sm btn-light">
-                <i class="bi bi-plus-circle-fill"></i> Add Job
-            </a>
+        <div class="alert alert-success mt-3 auto-hide d-flex justify-content-between align-items-center">
+
+            <span>{{ message }}</span>
+
+            <button type="button"
+                    class="btn-close"
+                    onclick="closeAlert(this)"></button>
+
         </div>
 
-        <!-- Table -->
-        <div class="card-body table-responsive">
+        {% endfor %}
 
-            <table class="table table-hover table-bordered align-middle">
+    {% endif %}
 
-                <thead class="table-light">
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h5 class="fw-bold mb-0">
+
+                Job Management
+
+            </h5>
+
+            <p class="page-subtitle">
+
+                Create and manage all job postings
+
+            </p>
+
+        </div>
+
+        <a href="{% url 'add.jobs' %}"
+           class="add-btn">
+
+            <i class="bi bi-plus-circle-fill"></i>
+
+            Add Job
+
+        </a>
+
+    </div>
+
+    <!-- CARD -->
+
+    <div class="job-card">
+
+        <!-- CARD TOP -->
+
+        <div class="card-top">
+
+            <div>
+
+                <h5 class="card-title">
+
+                    Job / Career List
+
+                </h5>
+
+                <p class="card-desc">
+
+                    View and manage all available jobs
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- TABLE -->
+
+        <div class="table-wrap">
+
+            <table class="job-table">
+
+                <thead>
+
                     <tr>
-                        <th>#</th>
 
+                        <th>Sl.No</th>
                         <th>Icon</th>
                         <th>Title</th>
                         <th>Status</th>
                         <th>Description</th>
                         <th>Job Type</th>
-                        <th>Work mode</th>
-
-                        <th>Created At</th>
+                        <th>Work Mode</th>
+                        <th>Created Date</th>
                         <th class="text-center">Actions</th>
+
                     </tr>
+
                 </thead>
 
                 <tbody>
 
                     {% for job in jobs %}
+
                     <tr>
 
-                        <td>{{ forloop.counter }}</td>
+                        <!-- SL NO -->
 
-
-                        <!-- Icon -->
                         <td>
+
+                            <div class="sl-no">
+
+                                {{ forloop.counter }}
+
+                            </div>
+
+                        </td>
+
+                        <!-- ICON -->
+
+                        <td>
+
                             {% if job.icon %}
-                            <img src="{{ job.icon.url }}" width="60" height="60" style="object-fit:cover;">
+
+                            <div class="img-box">
+
+                                <img src="{{ job.icon.url }}">
+
+                            </div>
+
                             {% else %}
+
                             -
+
                             {% endif %}
+
                         </td>
 
-                        <!-- Title -->
-                        <td>{{ job.title }}</td>
+                        <!-- TITLE -->
 
-                        <!-- Badge -->
                         <td>
+
+                            <div class="job-title">
+
+                                {{ job.title }}
+
+                            </div>
+
+                        </td>
+
+                        <!-- STATUS -->
+
+                        <td>
+
                             {% if job.status == "urgent" %}
-                            <span class="badge bg-danger">Urgent</span>
+
+                            <span class="status-badge badge-urgent">
+
+                                Urgent
+
+                            </span>
+
                             {% else %}
-                            <span class="badge bg-success">Hiring</span>
+
+                            <span class="status-badge badge-hiring">
+
+                                Hiring
+
+                            </span>
+
                             {% endif %}
+
                         </td>
 
-                        <!-- Description -->
-                        <td style="max-width:250px;">
-                            {{ job.description|truncatechars:60 }}
+                        <!-- DESCRIPTION -->
+
+                        <td>
+
+                            <div class="job-desc">
+
+                                {{ job.description|truncatechars:60 }}
+
+                            </div>
+
                         </td>
 
-                        <!-- Job Type -->
-                        <td>{{ job.job_type }}</td>
+                        <!-- JOB TYPE -->
 
-                        <!-- Location -->
-                        <td>{{ job.work_mode }}</td>
+                        <td>
 
+                            {{ job.job_type }}
 
-                        <!-- Date -->
-                        <td>{{ job.created_at|date:"d M Y" }}</td>
+                        </td>
 
-                        <!-- Actions -->
-                        <td class="text-center">
-                            <a href="{% url 'update.jobs' job.id %}" class="text-warning me-2" title="Edit">
-                               <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
+                        <!-- WORK MODE -->
 
-                            <a href="{% url 'delete.jobs' job.id %}" class="text-danger" title="Delete"
-                                onclick="return confirm('Are you sure you want to delete this job?')">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
+                        <td>
+
+                            {{ job.work_mode }}
+
+                        </td>
+
+                        <!-- DATE -->
+
+                        <td>
+
+                            <div class="date-text">
+
+                                {{ job.created_at|date:"d M Y" }}
+
+                            </div>
+
+                        </td>
+
+                        <!-- ACTIONS -->
+
+                        <td>
+
+                            <div class="action-wrap">
+
+                                <a href="{% url 'update.jobs' job.id %}"
+                                   class="action-btn edit-btn">
+
+                                    <i class="fa-solid fa-pen-to-square"></i>
+
+                                </a>
+
+                                <a href="{% url 'delete.jobs' job.id %}"
+                                   class="action-btn delete-btn"
+                                   onclick="return confirm('Are you sure you want to delete this job?')">
+
+                                    <i class="fa-solid fa-trash"></i>
+
+                                </a>
+
+                            </div>
+
                         </td>
 
                     </tr>
 
                     {% empty %}
+
                     <tr>
-                        <td colspan="10" class="text-center text-muted py-4">
+
+                        <td colspan="9"
+                            class="empty-row">
+
                             No jobs available
+
                         </td>
+
                     </tr>
+
                     {% endfor %}
 
                 </tbody>
@@ -119,40 +267,61 @@
 
         </div>
 
+        <!-- PAGINATION -->
+
+        {% if page_obj %}
+
+        <div class="tbl-footer">
+
+            <div class="page-btns">
+
+                {% if page_obj.has_previous %}
+
+                <a class="pg-btn"
+                   href="?page={{ page_obj.previous_page_number }}">
+
+                    ‹
+
+                </a>
+
+                {% endif %}
+
+                <span class="pg-btn active">
+
+                    {{ page_obj.number }}
+
+                </span>
+
+                {% if page_obj.has_next %}
+
+                <a class="pg-btn"
+                   href="?page={{ page_obj.next_page_number }}">
+
+                    {{ page_obj.next_page_number }}
+
+                </a>
+
+                {% endif %}
+
+                {% if page_obj.has_next %}
+
+                <a class="pg-btn"
+                   href="?page={{ page_obj.next_page_number }}">
+
+                    ›
+
+                </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
     </div>
 
 </div>
-{% if page_obj %}
-<div class="d-flex justify-content-center mt-4">
-    <ul class="pagination custom-pagination">
-
-        <!-- Prev -->
-        {% if page_obj.has_previous %}
-        <li>
-            <a href="?page={{ page_obj.previous_page_number }}">←</a>
-        </li>
-        {% endif %}
-
-        <!-- Numbers -->
-        {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
-                <li class="active"><span>{{ num }}</span></li>
-            {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
-                <li>
-                    <a href="?page={{ num }}">{{ num }}</a>
-                </li>
-            {% endif %}
-        {% endfor %}
-
-        <!-- Next -->
-        {% if page_obj.has_next %}
-        <li>
-            <a href="?page={{ page_obj.next_page_number }}">→</a>
-        </li>
-        {% endif %}
-
-    </ul>
-</div>
-{% endif %}
 
 {% endblock %}

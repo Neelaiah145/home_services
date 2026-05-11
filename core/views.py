@@ -282,10 +282,24 @@ class DeleteFeedback(View):
         return redirect('list.feedback')
 
 
+from accounts.utils import paginate_queryset
+
+
 class NewsListView(View):
+
     def get(self, request):
+
         news = News.objects.all().order_by('-created_at')
-        return render(request, 'pages/news/list_news.html', {'news': news})
+
+        # PAGINATION
+        page_obj = paginate_queryset(request, news, 10)
+
+        return render(request,'pages/news/list_news.html',
+            {
+                'news': page_obj,
+                'page_obj': page_obj
+            }
+        )
 
 
 class CreateNews(View):
@@ -332,9 +346,16 @@ class DeleteNews(View):
 
 
 class ListBanner(View):
+
     def get(self, request):
-        banner = HeroBanner.objects.all()
-        return render(request, 'pages/hero_section/list_banner.html', {'banner': banner})
+        banner = HeroBanner.objects.all().order_by("-id")
+        page_obj = paginate_queryset(request, banner, 10)
+        return render(request,'pages/hero_section/list_banner.html',
+            {
+                'banner': page_obj,
+                'page_obj': page_obj
+            }
+        )
 
 
 class CreateBanner(View):

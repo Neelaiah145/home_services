@@ -1,275 +1,564 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-    :root {
-        --bg-color: #f5f7fb;
-        --card-bg: #ffffff;
-        --primary: #0070eb;
-        --text-main: #1e293b;
-        --text-muted: #64748b;
-        --border: #e2e8f0;
 
-        /* Status Colors */
-        --pending: #f59e0b;
-        --assigned: #3b82f6;
-        --completed: #10b981;
+:root{
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --border:#e5e7eb;
+    --text:#111827;
+    --muted:#6b7280;
+
+    --pending-bg:#fff7ed;
+    --pending-text:#f59e0b;
+
+    --progress-bg:#eff6ff;
+    --progress-text:#2563eb;
+
+    --completed-bg:#ecfdf5;
+    --completed-text:#10b981;
+
+    --danger:#ef4444;
+}
+
+/* BASE */
+
+body{
+    background:var(--bg);
+    font-family:'Inter',sans-serif;
+    color:var(--text);
+}
+
+.page-container{
+    max-width:1100px;
+    margin:30px auto;
+    padding:0 15px;
+}
+
+/* MAIN CARD */
+
+.main-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    overflow:hidden;
+    margin-bottom:20px;
+}
+
+/* HEADER */
+
+.order-header{
+    padding:22px 24px;
+    border-bottom:1px solid #f1f5f9;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.order-id{
+    font-size:14px;
+    color:var(--muted);
+    font-weight:600;
+}
+
+.page-title{
+    font-size:24px;
+    font-weight:700;
+    margin-top:6px;
+}
+
+/* STATUS */
+
+.status-badge{
+    padding:8px 16px;
+    border-radius:30px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.status-badge.pending{
+    background:var(--pending-bg);
+    color:var(--pending-text);
+}
+
+.status-badge.in_progress{
+    background:var(--progress-bg);
+    color:var(--progress-text);
+}
+
+.status-badge.completed{
+    background:var(--completed-bg);
+    color:var(--completed-text);
+}
+
+/* DETAILS */
+
+.details-section{
+    padding:24px;
+}
+
+.section-title{
+    font-size:17px;
+    font-weight:700;
+    margin-bottom:18px;
+}
+
+.details-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:18px;
+}
+
+.detail-box{
+    border:1px solid #eef2f7;
+    border-radius:14px;
+    padding:16px;
+    background:#fafbfd;
+}
+
+.detail-label{
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:7px;
+    font-weight:600;
+    text-transform:uppercase;
+}
+
+.detail-value{
+    font-size:14px;
+    font-weight:600;
+    color:var(--text);
+    line-height:1.7;
+}
+
+/* SIMPLE SUMMARY */
+
+.summary-box{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    overflow:hidden;
+    margin-bottom:20px;
+}
+
+.summary-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:16px 20px;
+    border-bottom:1px solid #f1f5f9;
+}
+
+.summary-item:last-child{
+    border-bottom:none;
+}
+
+.summary-label{
+    font-size:14px;
+    color:var(--muted);
+    font-weight:500;
+}
+
+.summary-value{
+    font-size:15px;
+    font-weight:700;
+}
+
+.paid{
+    color:#10b981;
+}
+
+.due{
+    color:#ef4444;
+}
+
+/* TIMELINE */
+
+.timeline-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:24px;
+}
+
+.timeline-title{
+    font-size:17px;
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+.timeline{
+    position:relative;
+    padding-left:26px;
+}
+
+.timeline::before{
+    content:'';
+    position:absolute;
+    left:6px;
+    top:0;
+    width:2px;
+    height:100%;
+    background:#dbe4f0;
+}
+
+.timeline-item{
+    position:relative;
+    padding-bottom:25px;
+}
+
+.timeline-item:last-child{
+    padding-bottom:0;
+}
+
+.timeline-dot{
+    position:absolute;
+    left:-25px;
+    top:5px;
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    background:#2563eb;
+    border:3px solid #dbeafe;
+}
+
+.timeline-content{
+    background:#f9fafb;
+    border:1px solid #eef2f7;
+    border-radius:14px;
+    padding:14px 16px;
+}
+
+.timeline-status{
+    font-size:14px;
+    font-weight:700;
+    margin-bottom:5px;
+}
+
+.timeline-time{
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:4px;
+}
+
+.timeline-user{
+    font-size:12px;
+    color:#2563eb;
+    font-weight:600;
+}
+
+/* BACK */
+
+.back-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-top:20px;
+    text-decoration:none;
+    color:var(--muted);
+    font-size:14px;
+    font-weight:600;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .order-header{
+        align-items:flex-start;
     }
 
-    body {
-        background-color: var(--bg-color);
-        font-family: 'Inter', sans-serif;
-        color: var(--text-main);
+    .details-grid{
+        grid-template-columns:1fr;
     }
 
-    .container {
-        max-width: 800px;
-        margin: 40px auto;
-        padding: 0 20px;
-    }
+}
 
-    /* ── HEADER CARD ── */
-    .order-card {
-        background: var(--card-bg);
-        border-radius: 12px;
-        padding: 24px;
-        border: 1px solid var(--border);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        margin-bottom: 24px;
-    }
-
-    .order-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        border-bottom: 1px solid var(--border);
-        padding-bottom: 16px;
-        margin-bottom: 16px;
-    }
-
-    .order-id {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .status-badge {
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        background: #f1f5f9;
-    }
-
-    .status-pending {
-        background: #fff7ed;
-        color: var(--pending);
-    }
-
-    .status-assigned {
-        background: #eff6ff;
-        color: var(--assigned);
-    }
-
-    .status-completed {
-        background: #ecfdf5;
-        color: var(--completed);
-    }
-
-    .details-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 20px;
-    }
-
-    .detail-item label {
-        display: block;
-        font-size: 12px;
-        color: var(--text-muted);
-        margin-bottom: 4px;
-    }
-
-    .detail-item span {
-        font-weight: 600;
-        font-size: 15px;
-    }
-
-    /* ── TIMELINE ── */
-    .timeline-section {
-        background: var(--card-bg);
-        border-radius: 12px;
-        padding: 30px;
-        border: 1px solid var(--border);
-    }
-
-    .timeline-title {
-        font-size: 18px;
-        font-weight: 700;
-        margin-bottom: 25px;
-    }
-
-    .timeline {
-        position: relative;
-        padding-left: 30px;
-    }
-
-    /* Vertical Line */
-    .timeline::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 5px;
-        height: 100%;
-        width: 2px;
-        background: var(--border);
-    }
-
-    .timeline-item {
-        position: relative;
-        margin-bottom: 35px;
-    }
-
-    .timeline-item:last-child {
-        margin-bottom: 0;
-    }
-
-    /* Timeline Dots */
-    .timeline-dot {
-        position: absolute;
-        left: -35px;
-        top: 5px;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: var(--border);
-        border: 2px solid white;
-        z-index: 1;
-    }
-
-    /* Highlight latest node */
-    .timeline-item:first-child .timeline-dot {
-        background: var(--primary);
-        box-shadow: 0 0 0 4px rgba(0, 112, 235, 0.15);
-    }
-
-    .timeline-content {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .timeline-status {
-        font-weight: 700;
-        font-size: 15px;
-        color: var(--text-main);
-    }
-
-    .timeline-time {
-        font-size: 13px;
-        color: var(--text-muted);
-        margin: 2px 0;
-    }
-
-    .timeline-user {
-        font-size: 12px;
-        color: var(--primary);
-        font-weight: 500;
-    }
-
-    /* ── BUTTONS ── */
-    .back-btn {
-        display: inline-flex;
-        align-items: center;
-        margin-top: 24px;
-        color: var(--text-muted);
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 500;
-        transition: color 0.2s;
-    }
-
-    .back-btn:hover {
-        color: var(--primary);
-    }
-
-    @media (max-width: 600px) {
-        .order-header {
-            flex-direction: column;
-            gap: 10px;
-        }
-    }
 </style>
 
-<div class="container">
+<div class="page-container">
 
-    <div class="order-card">
+    <!-- ORDER DETAILS -->
+
+    <div class="main-card">
+
         <div class="order-header">
-            <div class="order-id">
-                Order ID: #{{ booking.order_id }}
+
+            <div>
+
+                <div class="order-id">
+
+                    Order #{{ booking.order_id }}
+
+                </div>
+
+                <div class="page-title">
+
+                    Service Tracking
+
+                </div>
+
             </div>
 
-            <div class="status-badge status-{{ booking.status|lower }}">
-                {{ booking.status|title|cut:"_"|capfirst }}
+            <div class="status-badge {{ booking.status }}">
+
+                {{ booking.status|title }}
+
             </div>
+
         </div>
 
-        <div class="details-grid">
-            <div class="detail-item">
-                <label>Service</label>
-                <span>{{ booking.service.s_title }}</span>
+        <div class="details-section">
+
+            <div class="section-title">
+
+                Booking Details
+
             </div>
-            <div class="detail-item">
-                <label>Assigned Vendor</label>
-                <span>
-                    {% if vendor %}
-                    {{ vendor.first_name }}
-                    {% else %}
-                    <span style="color: #ef4444;">Not Assigned</span>
-                    {% endif %}
-                </span>
+
+            <div class="details-grid">
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Customer
+                    </div>
+
+                    <div class="detail-value">
+                        {{ booking.user.first_name }}
+                    </div>
+
+                </div>
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Phone
+                    </div>
+
+                    <div class="detail-value">
+                        {{ booking.phone }}
+                    </div>
+
+                </div>
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Service
+                    </div>
+
+                    <div class="detail-value">
+                        {{ booking.service.s_title }}
+                    </div>
+
+                </div>
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Scheduled Date
+                    </div>
+
+                    <div class="detail-value">
+                        {{ booking.scheduled_date }}
+                    </div>
+
+                </div>
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Scheduled Time
+                    </div>
+
+                    <div class="detail-value">
+                        {{ booking.scheduled_time }}
+                    </div>
+
+                </div>
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Vendor
+                    </div>
+
+                    <div class="detail-value">
+
+                        {% if booking.vendor %}
+
+                            {{ booking.vendor.first_name }}
+
+                        {% else %}
+
+                            <span style="color:#ef4444;">
+                                Not Assigned
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Address
+                    </div>
+
+                    <div class="detail-value">
+                        {{ booking.address }}
+                    </div>
+
+                </div>
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Problem
+                    </div>
+
+                    <div class="detail-value">
+                        {{ booking.problem }}
+                    </div>
+
+                </div>
+
             </div>
-            {% if vendor %}
-            <div class="detail-item">
-                <label>Contact</label>
-                <span>{{ vendor.phone }}</span>
-            </div>
-            {% endif %}
+
         </div>
+
     </div>
 
-    <div class="timeline-section">
-        <h6 class="fw-semibold mb-0"> Track Order </h6>
+    <!-- PAYMENT SUMMARY -->
+
+    <div class="summary-box">
+
+        <div class="summary-item">
+
+            <div class="summary-label">
+                Total Services
+            </div>
+
+            <div class="summary-value">
+                {{ total_services }}
+            </div>
+
+        </div>
+
+        <div class="summary-item">
+
+            <div class="summary-label">
+                Total Amount
+            </div>
+
+            <div class="summary-value">
+                ₹ {{ total_amount }}
+            </div>
+
+        </div>
+
+        <div class="summary-item">
+
+            <div class="summary-label">
+                Paid Amount
+            </div>
+
+            <div class="summary-value paid">
+                ₹ {{ paid_amount }}
+            </div>
+
+        </div>
+
+        <div class="summary-item">
+
+            <div class="summary-label">
+                Due Amount
+            </div>
+
+            <div class="summary-value due">
+                ₹ {{ due_amount }}
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TIMELINE -->
+
+    <div class="timeline-card">
+
+        <div class="timeline-title">
+
+            Order Timeline
+
+        </div>
 
         <div class="timeline">
-            {# IMPORTANT: We iterate through history but only show the status if it changed #}
+
             {% for h in history %}
-            {% ifchanged h.status %}
+
             <div class="timeline-item">
+
                 <div class="timeline-dot"></div>
+
                 <div class="timeline-content">
-                    <span class="timeline-status">{{ h.status|title }}</span>
-                    <span class="timeline-time">{{ h.created_at|date:"M d, Y • h:i A" }}</span>
-                    <span class="timeline-user">Updated by {{ h.updated_by.first_name }}</span>
+
+                    <div class="timeline-status">
+
+                        {{ h.status|title }}
+
+                    </div>
+
+                    <div class="timeline-time">
+
+                        {{ h.created_at|date:"M d, Y • h:i A" }}
+
+                    </div>
+
+                    <div class="timeline-user">
+
+                        Updated by {{ h.updated_by.first_name }}
+
+                    </div>
+
                 </div>
+
             </div>
-            {% endifchanged %}
+
             {% empty %}
-            <p style="color: var(--text-muted); font-size: 14px;">No tracking updates available.</p>
+
+            <div style="color:#64748b;font-size:14px;">
+
+                No timeline updates available.
+
+            </div>
+
             {% endfor %}
+
         </div>
+
     </div>
 
-    <a href="javascript:history.back()" class="back-btn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            style="margin-right: 8px;">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-        </svg>
-        Back to Orders
+    <!-- BACK -->
+
+    <a
+        href="javascript:history.back()"
+        class="back-btn"
+    >
+
+        ← Back
+
     </a>
+
 </div>
 
 {% endblock %}

@@ -3,65 +3,162 @@
 {% block content %}
 
 
-<div class="container mt-4">
 
-    <div class="card shadow-sm border-0 rounded-3">
+<div class="banner-page">
 
-        <!-- Header -->
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0 text-white" > Add Banner</h5>
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h5 class="fw-bold mb-0">
+
+                Banner Management
+
+            </h5>
+
+            <p class="page-subtitle">
+
+                Create and manage homepage banners
+
+            </p>
+
         </div>
 
-        <!-- Body -->
-        <div class="card-body">
+        <div class="badge-count">
 
-            <form method="POST" enctype="multipart/form-data">
+            Add Banner
+
+        </div>
+
+    </div>
+
+    <!-- CARD -->
+
+    <div class="banner-card">
+
+        <!-- TOP -->
+
+        <div class="card-top">
+
+            <div>
+
+                <h5 class="card-title">
+
+                    Banner Information
+
+                </h5>
+
+                <p class="card-desc">
+
+                    Upload banner image and enter banner details
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="card-body-custom">
+
+            <form method="POST"
+                  enctype="multipart/form-data">
+
                 {% csrf_token %}
 
-                <div class="row">
+                <div class="row g-4">
 
-                    <!--  Image Upload -->
-                    <div class="col-md-4 text-center">
-                        <label class="form-label fw-semibold">Upload Image</label>
+                    <!-- IMAGE -->
 
-                        <div class="border rounded p-3 mb-3"
-                            style="height:200px; display:flex; align-items:center; justify-content:center;">
-                            <img id="preview" src=""
-                                style="max-height: 100%; max-width:100%; object-fit:cover;">
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+
+                            Upload Image
+
+                        </label>
+
+                        <div class="image-upload-box">
+
+                            <img id="preview"
+                                 src=""
+                                 alt="Preview">
+
                         </div>
 
-                        <input type="file" name="image" class="form-control" onchange="previewImage(event)" required>
+                        <input type="file"
+                               name="image"
+                               class="file-input"
+                               onchange="previewImage(event)"
+                               required>
+
                     </div>
 
-                    <!-- Content Fields -->
+                    <!-- CONTENT -->
+
                     <div class="col-md-8">
 
-                        <!-- Heading -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Heading</label>
-                            <input type="text" name="heading" class="form-control" placeholder="Enter main heading..."
-                                required>
+                        <!-- HEADING -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Heading
+
+                            </label>
+
+                            <input type="text"
+                                   name="heading"
+                                   class="form-control-custom"
+                                   placeholder="Enter main heading..."
+                                   required>
+
                         </div>
 
-                        <!-- Sub Heading -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Sub Heading</label>
-                            <input type="text" name="sub_heading" class="form-control"
-                                placeholder="Enter sub heading..." required>
+                        <!-- SUB HEADING -->
+
+                        <div>
+
+                            <label class="form-label">
+
+                                Sub Heading
+
+                            </label>
+
+                            <input type="text"
+                                   name="sub_heading"
+                                   class="form-control-custom"
+                                   placeholder="Enter sub heading..."
+                                   required>
+
                         </div>
+
                     </div>
 
                 </div>
 
-                <!-- Buttons -->
-                <div class="d-flex justify-content-between mt-3">
-                    <a href="{% url 'list.banner' %}" class="btn btn-outline-success">
-                         Back
+                <!-- BUTTONS -->
+
+                <div class="form-actions">
+
+                    <a href="{% url 'list.banner' %}"
+                       class="back-btn">
+
+                        Back
+
                     </a>
 
-                    <button type="submit" class="btn btn-primary px-4">
-                         Save
+                    <button type="submit"
+                            class="save-btn">
+
+                        Save Banner
+
                     </button>
+
                 </div>
 
             </form>
@@ -72,15 +169,28 @@
 
 </div>
 
-<!--  Image Preview Script -->
+<!-- IMAGE PREVIEW -->
+
 <script>
-    function previewImage(event) {
-        const reader = new FileReader();
-        reader.onload = function () {
-            document.getElementById('preview').src = reader.result;
-        }
-        reader.readAsDataURL(event.target.files[0]);
+
+function previewImage(event){
+
+    const reader = new FileReader();
+
+    reader.onload = function(){
+
+        document.getElementById(
+            'preview'
+        ).src = reader.result;
+
     }
+
+    reader.readAsDataURL(
+        event.target.files[0]
+    );
+
+}
+
 </script>
 
 {% endblock %}

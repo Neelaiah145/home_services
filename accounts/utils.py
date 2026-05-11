@@ -28,3 +28,25 @@ def verify_otp(phone, otp):
 
 def can_resend(phone):
     return not cache.get(f"otp_lock_{phone}")
+
+
+
+
+
+
+from django.core.paginator import Paginator
+
+def paginate_queryset(request, queryset, per_page=10):
+
+    paginator = Paginator(
+        queryset,
+        per_page
+    )
+
+    page_number = request.GET.get("page")
+
+    page_obj = paginator.get_page(
+        page_number
+    )
+
+    return page_obj

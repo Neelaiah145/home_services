@@ -83,6 +83,7 @@ urlpatterns = [
     # profile links
     path("profile/", ProfileView.as_view(), name="profile"),
 
+    path("superadmin-payments/", SuperAdminPaymentsView.as_view(), name="superadmin_payments"),
     path("admin-payments/", AdminPaymentsView.as_view(), name="admin_payments"),
 
 
@@ -92,11 +93,12 @@ urlpatterns = [
     path("invoice/<int:pk>/", PaymentInvoiceView.as_view(), name="payment_invoice"),
 
     path('vendor/payments/', VendorPaymentsView.as_view(), name='vendor_payments'),
+     path('vendor/payments_show/', VendorPaymentsShowView.as_view(), name='vendor_payment_show'),
     path("vendor/booking/<int:pk>/", VendorBookingDetailView.as_view(),
          name="vendor_booking_detail"),
     path("get-services/", GetServicesView.as_view(), name="get_services"),
 
-
+     path("get-services/", get_services, name="get_services"),
 
 
 
@@ -110,6 +112,109 @@ urlpatterns = [
          ComplaintDeleteView.as_view(), name="complaint_delete"),
     path("complaint/ajax-update/<int:pk>/",
          ComplaintStatusAjaxUpdateView.as_view(), name="complaint_ajax_update"),
+
+
+
+     path("vendors-approve/", AdminVendorApprovalView.as_view(), name="vendor_approval"),
+     path("vendor-action/", VendorActionView.as_view(), name="vendor_action"),
+     
+     path("get-services/", get_services, name="get_services"),
+
+
+
+
+     path("admin-booking/<int:booking_id>/", AdminBookingEditView.as_view(), name="admin_booking_edit"),
+
+      path("renew-service/<int:booking_id>/", renew_service, name="renew_service"),
+
+path(
+    "vendor/payment/<int:booking_id>/",
+    VendorPaymentPageView.as_view(),
+    name="vendor_payment_page"
+),
+
+path(
+    "vendor/profile/<int:id>/",
+    VendorProfileView.as_view(),
+    name="vendor_profile"
+),
+
+
+
+    path(
+        "user/all-users/",
+        AdminUsersView.as_view(),
+        name="admin_all_users"
+    ),
+
+
+path(
+    "customer/tracking/",
+    CustomerTrackingView.as_view(),
+    name="customer_tracking"
+),
+path(
+    "customer/tracking/<int:id>/",
+    CustomerTrackingDetailView.as_view(),
+    name="customer_tracking_detail"
+),
+path(
+    "customer/payments/",
+    CustomerPaymentsView.as_view(),
+    name="customer_payments"
+),
+
+
+
+
+path(
+    "vendor/payment/<int:booking_id>/",
+    VendorPaymentPageView.as_view(),
+    name="vendor_payment_page"
+),
+
+path(
+    "renew-booking/<int:booking_id>/",
+    RenewBookingPageView.as_view(),
+    name="renew_booking_page"
+),
+
+
+path("admin-leads/",AdminLeadsView.as_view(),name="admin_leads"),
+
+path(
+    "admin-renewal-dashboard/",
+    AdminRenewalDashboardView.as_view(),
+    name="admin_renewal_dashboard"
+),
+path(
+    "customer-invoice/<int:booking_id>/",
+    CustomerInvoiceView.as_view(),
+    name="customer_invoice"
+),
+
+
+path(
+    "vendor-verify/<int:id>/",
+    AdminVendorVerifyView.as_view(),
+    name="admin_vendor_verify"
+),
+
+path(
+    "user-profile/<int:id>/",
+    UserProfileView.as_view(),
+    name="user_profile"
+),
+
+
+
+
+
+
+
+
+
+
 
 
 

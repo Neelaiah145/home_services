@@ -1,102 +1,248 @@
 {% extends 'base.html' %}
+
 {% block content %}
 
-<div class="container mt-4">
 
-    <div class="card shadow-sm border-0 rounded-3">
 
-        <!-- Header -->
-        <div class="card-header bg-warning text-dark">
-            <h5 class="mb-0">Update Category</h5>
+<div class="category-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h5 class="fw-bold mb-0">
+
+                Category Management
+
+            </h5>
+
+            <p class="page-subtitle">
+
+                Create and manage service categories
+
+            </p>
+
         </div>
 
-        <!-- Body -->
-        <div class="card-body">
+        <a href="{% url 'list.category' %}"
+           class="list-btn">
 
-            <form method="POST" enctype="multipart/form-data">
+            <i class="bi bi-grid"></i>
+
+            Category List
+
+        </a>
+
+    </div>
+
+    <!-- CARD -->
+
+    <div class="category-card">
+
+        <!-- TOP -->
+
+        <div class="card-top">
+
+            <div>
+
+                <h5 class="card-title">
+
+                    Update Category
+
+                </h5>
+
+                <p class="card-desc">
+
+                    Edit category details, descriptions and images
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="card-body-custom">
+
+            <form method="POST"
+                  enctype="multipart/form-data">
+
                 {% csrf_token %}
 
-                <div class="row">
+                <div class="row g-4">
 
-                    <!-- Icon Upload -->
-                    <div class="col-md-4 text-center">
-                        <label class="form-label fw-semibold">Category Icon</label>
+                    <!-- ICON -->
 
-                        <div class="border rounded p-3 mb-3"
-                            style="height:200px; display:flex; align-items:center; justify-content:center;">
-                            <img id="icon_preview" src="{% if category.icon %}{{ category.icon.url }}{% endif %}"
-                                style="max-height: 100%; max-width:100%; object-fit:cover;">
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+
+                            Category Icon
+
+                        </label>
+
+                        <div class="image-box">
+
+                            <img id="icon_preview"
+                                 src="{% if category.icon %}{{ category.icon.url }}{% endif %}">
+
                         </div>
 
-                        <input type="file" name="icon" onchange="previewImage(event, 'preview')">
-                        <small class="text-muted">Leave empty to keep existing image</small>
+                        <input type="file"
+                               name="icon"
+                               class="file-input"
+                               onchange="previewImage(event, 'icon_preview')">
+
+                        <small class="small-text">
+
+                            Leave empty to keep existing image
+
+                        </small>
+
                     </div>
 
-                    <!-- Content Fields -->
+                    <!-- CONTENT -->
+
                     <div class="col-md-8">
 
-                        <!-- Title -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Category Title</label>
-                            <input type="text" name="title" class="form-control" value="{{ category.title }}" required>
+                        <!-- TITLE -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Category Title
+
+                            </label>
+
+                            <input type="text"
+                                   name="title"
+                                   class="form-control-custom"
+                                   value="{{ category.title }}"
+                                   required>
+
                         </div>
 
-                        <!-- Description -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Description</label>
-                            <textarea name="description" class="form-control" rows="3"
-                                required>{{ category.description }}</textarea>
+                        <!-- DESCRIPTION -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Description
+
+                            </label>
+
+                            <textarea name="description"
+                                      class="textarea-custom"
+                                      rows="3"
+                                      required>{{ category.description }}</textarea>
+
                         </div>
 
-                        <!-- Badge -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Badge</label>
-                            <input type="text" name="badge" class="form-control" value="{{ category.badge }}">
+                        <!-- BADGE -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Badge
+
+                            </label>
+
+                            <input type="text"
+                                   name="badge"
+                                   class="form-control-custom"
+                                   value="{{ category.badge }}">
+
                         </div>
 
-                        <!-- Tags -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Tags</label>
-                            <input type="text" name="tags" class="form-control" value="{{ category.tags }}">
+                        <!-- TAGS -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Tags
+
+                            </label>
+
+                            <input type="text"
+                                   name="tags"
+                                   class="form-control-custom"
+                                   value="{{ category.tags }}">
+
                         </div>
 
-                        <!-- Service Description -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Service Description</label>
-                            <textarea name="category_about_des" class="form-control"
-                                rows="2">{{ category.category_about_des }}</textarea>
+                        <!-- SERVICE DESCRIPTION -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Service Description
+
+                            </label>
+
+                            <textarea name="category_about_des"
+                                      class="textarea-custom"
+                                      rows="3">{{ category.category_about_des }}</textarea>
+
                         </div>
 
-                        <!-- Images Row -->
-                        <div class="row">
+                        <!-- IMAGES -->
 
-                            <!-- Service About Image -->
-                            <div class="col-md-6 text-center">
-                                <label class="form-label fw-semibold">Service About Image</label>
+                        <div class="row g-4">
 
-                                <div class="border rounded p-3 mb-3"
-                                    style="height:180px; display:flex; align-items:center; justify-content:center;">
+                            <!-- ABOUT IMAGE -->
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+
+                                    Service About Image
+
+                                </label>
+
+                                <div class="small-image-box">
+
                                     <img id="about_preview"
-                                        src="{% if category.category_about_img %}{{ category.category_about_img.url }}{% endif %}"
-                                        style="max-height: 100%; max-width:100%; object-fit:cover;">
+                                         src="{% if category.category_about_img %}{{ category.category_about_img.url }}{% endif %}">
+
                                 </div>
 
-                                <input type="file" name="category_about_img"
-                                    onchange="previewImage(event, 'about_preview')">
+                                <input type="file"
+                                       name="category_about_img"
+                                       class="file-input"
+                                       onchange="previewImage(event, 'about_preview')">
+
                             </div>
 
-                            <!-- Banner Image -->
-                            <div class="col-md-6 text-center">
-                                <label class="form-label fw-semibold">Banner Image</label>
+                            <!-- BANNER IMAGE -->
 
-                                <div class="border rounded p-3 mb-3"
-                                    style="height:180px; display:flex; align-items:center; justify-content:center;">
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+
+                                    Banner Image
+
+                                </label>
+
+                                <div class="small-image-box">
+
                                     <img id="banner_preview"
-                                        src="{% if category.banner_image %}{{ category.banner_image.url }}{% endif %}"
-                                        style="max-height: 100%; max-width:100%; object-fit:cover;">
+                                         src="{% if category.banner_image %}{{ category.banner_image.url }}{% endif %}">
+
                                 </div>
 
-                                <input type="file" name="banner_image" onchange="previewImage(event, 'banner_preview')">
+                                <input type="file"
+                                       name="banner_image"
+                                       class="file-input"
+                                       onchange="previewImage(event, 'banner_preview')">
+
                             </div>
 
                         </div>
@@ -105,15 +251,24 @@
 
                 </div>
 
-                <!-- Buttons -->
-                <div class="d-flex justify-content-between mt-3">
-                    <a href="{% url 'list.category' %}" class="btn btn-outline-success">
+                <!-- BUTTONS -->
+
+                <div class="form-actions">
+
+                    <a href="{% url 'list.category' %}"
+                       class="back-btn">
+
                         Back
+
                     </a>
 
-                    <button type="submit" class="btn btn-warning px-4">
+                    <button type="submit"
+                            class="update-btn">
+
                         Update Category
+
                     </button>
+
                 </div>
 
             </form>
@@ -122,19 +277,30 @@
 
     </div>
 
-
 </div>
 
-<!-- Image Preview Script -->
+<!-- IMAGE PREVIEW -->
 
 <script>
-    function previewImage(event, previewId = 'preview') {
-        const reader = new FileReader();
-        reader.onload = function () {
-            document.getElementById(previewId).src = reader.result;
-        }
-        reader.readAsDataURL(event.target.files[0]);
+
+function previewImage(event, previewId = 'preview') {
+
+    const reader = new FileReader();
+
+    reader.onload = function () {
+
+        document.getElementById(
+            previewId
+        ).src = reader.result;
+
     }
+
+    reader.readAsDataURL(
+        event.target.files[0]
+    );
+
+}
+
 </script>
 
 {% endblock %}

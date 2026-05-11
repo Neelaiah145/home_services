@@ -1,79 +1,204 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
 
-<div class="container mt-4">
 
-    <div class="card shadow-sm border-0 rounded-3">
 
-        <!-- Header -->
-        <div class="card-header bg-dark text-white">
-            <h5 class="mb-0 text-white"> Update Service</h5>
+<div class="service-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h5 class="fw-bold mb-0">
+
+                Service Management
+
+            </h5>
+
+            <p class="page-subtitle">
+
+                Update and manage service information
+
+            </p>
+
         </div>
 
-        <!-- Body -->
-        <div class="card-body">
+        <div class="header-right">
 
-            <form method="POST" enctype="multipart/form-data">
+            <div class="service-badge">
+
+                Update Service
+
+            </div>
+
+            <a href="{% url 'list.category.services' %}"
+               class="list-btn">
+
+                <i class="bi bi-grid"></i>
+
+                Service List
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- CARD -->
+
+    <div class="service-card">
+
+        <!-- TOP -->
+
+        <div class="card-top">
+
+            <div>
+
+                <h5 class="card-title">
+
+                    Update Service Information
+
+                </h5>
+
+                <p class="card-desc">
+
+                    Edit and update service details and images
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="card-body-custom">
+
+            <form method="POST"
+                  enctype="multipart/form-data">
+
                 {% csrf_token %}
 
-                <div class="row">
+                <div class="row g-4">
 
-                    <!--  Image Upload -->
-                    <div class="col-md-4 text-center">
-                        <label class="form-label fw-semibold">Upload Image</label>
+                    <!-- IMAGE -->
 
-                        <div class="border rounded p-3 mb-3"
-                            style="height:200px; display:flex; align-items:center; justify-content:center;">
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+
+                            Upload Image
+
+                        </label>
+
+                        <div class="image-box">
 
                             {% if services.image %}
-                            <img id="preview" src="{{ services.image.url }}"
-                                style="max-height:100%; max-width:100%; object-fit:cover;">
+
+                            <img id="preview"
+                                 src="{{ services.image.url }}">
+
                             {% else %}
-                            <img id="preview" src="" style="max-height:100%; max-width:100%; object-fit:cover;">
+
+                            <img id="preview"
+                                 src="">
+
                             {% endif %}
 
                         </div>
 
-                        <input type="file" name="image" class="form-control" onchange="previewImage(event)">
-                        <small class="text-muted">Leave empty to keep old image</small>
+                        <input type="file"
+                               name="image"
+                               class="file-input"
+                               onchange="previewImage(event)">
+
+                        <small class="small-text">
+
+                            Leave empty to keep old image
+
+                        </small>
+
                     </div>
 
-                    <!--  Content Fields -->
+                    <!-- CONTENT -->
+
                     <div class="col-md-8">
 
-                        <!-- tag -->
-                          <div class="mb-3">
-                            <label class="form-label fw-semibold">Update Service Tag</label>
-                            <input type="text" name="s_tag" class="form-control" value="{{ services.s_tag }}" >
+                        <!-- TAG -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Update Service Tag
+
+                            </label>
+
+                            <input type="text"
+                                   name="s_tag"
+                                   class="form-control-custom"
+                                   value="{{ services.s_tag }}">
+
                         </div>
 
-                        <!-- title -->
-                          <div class="mb-3">
-                            <label class="form-label fw-semibold">Update Service Title</label>
-                            <input type="text" name="s_title" class="form-control" value="{{ services.s_title }}" >
+                        <!-- TITLE -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Update Service Title
+
+                            </label>
+
+                            <input type="text"
+                                   name="s_title"
+                                   class="form-control-custom"
+                                   value="{{ services.s_title }}">
+
                         </div>
 
-                         <!-- Description -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Update Short Description</label>
-                            <textarea name="s_desc" class="form-control" rows="3" >{{ services.s_desc }}</textarea>
+                        <!-- DESCRIPTION -->
+
+                        <div>
+
+                            <label class="form-label">
+
+                                Update Short Description
+
+                            </label>
+
+                            <textarea name="s_desc"
+                                      rows="4"
+                                      class="textarea-custom">{{ services.s_desc }}</textarea>
+
                         </div>
 
                     </div>
 
                 </div>
 
-                <!-- Buttons -->
-                <div class="d-flex justify-content-between mt-3">
-                    <a href="" class="btn btn-outline-success">
+                <!-- BUTTONS -->
+
+                <div class="form-actions">
+
+                    <a href="{% url 'list.category.services' %}"
+                       class="back-btn">
+
                         Back
+
                     </a>
 
-                    <button type="submit" class="btn btn-success text-white px-4">
-                        Update
+                    <button type="submit"
+                            class="update-btn">
+
+                        Update Service
+
                     </button>
+
                 </div>
 
             </form>
@@ -84,15 +209,28 @@
 
 </div>
 
-<!--  Image Preview Script -->
+<!-- IMAGE PREVIEW -->
+
 <script>
-    function previewImage(event) {
-        const reader = new FileReader();
-        reader.onload = function () {
-            document.getElementById('preview').src = reader.result;
-        }
-        reader.readAsDataURL(event.target.files[0]);
+
+function previewImage(event){
+
+    const reader = new FileReader();
+
+    reader.onload = function(){
+
+        document.getElementById(
+            "preview"
+        ).src = reader.result;
+
     }
+
+    reader.readAsDataURL(
+        event.target.files[0]
+    );
+
+}
+
 </script>
 
 {% endblock %}
