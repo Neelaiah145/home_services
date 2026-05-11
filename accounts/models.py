@@ -4,7 +4,9 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.conf import settings
 from core.models import Category, CategoryService
 import uuid
+from datetime import date
 
+from django.utils import timezone
 # user manager
 
 
@@ -58,6 +60,55 @@ class User(AbstractUser):
         blank=True,
         related_name="created_users"
     )
+    state = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    district = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    city = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    area = models.CharField(
+        max_length=150,
+        blank=True,
+        null=True
+    )
+
+    pincode = models.CharField(
+        max_length=10,
+        blank=True,
+        null=True
+    )
+
+    address = models.TextField(
+        blank=True,
+        null=True
+    )
+    profile_image = models.ImageField(
+        upload_to="profile_images/",
+        null=True,
+        blank=True
+    )
+    BEHAVIOUR = (
+    ("good", "Good"),
+    ("average", "Average"),
+    ("bad", "Bad"),
+    ("normal", "Normal"),
+)
+
+    behaviour = models.CharField(max_length=20,choices=BEHAVIOUR,default="normal")
+
+    behaviour_note = models.TextField(blank=True,null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "phone"]
@@ -66,6 +117,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.email} ({self.role})"
+
 
 
 def generate_order_id():
@@ -123,15 +175,63 @@ class Booking(models.Model):
         choices=STATUS,
         default='pending'
     )
+    city = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+    # single day 
+    scheduled_date = models.DateField(null=True,blank=True)
+    scheduled_time = models.CharField(max_length=50,null=True,blank=True)
+    
+    # multiple day service 
+    start_date = models.DateField(null=True,blank=True)
 
-    scheduled_date = models.DateField()
-    scheduled_time = models.CharField(max_length=50)
+    end_date = models.DateField(null=True,blank=True)
+    renewal_requested = models.BooleanField(default=False)
 
+
+    is_renewed = models.BooleanField(
+        default=False
+    )
+
+    previous_total_days = models.IntegerField(
+     null=True,
+        blank=True
+    )
+
+    renewal_count = models.IntegerField(
+        default=0
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.order_id} - {self.service.s_title}"
+    # show the booking services in days wise if the multiple services booking
+    @property
+    def total_days(self):
 
+        if self.start_date and self.end_date:
+
+            return (
+                self.end_date - self.start_date
+            ).days + 1
+
+        return 0
+    # notify the services ending beofre 3 days
+    @property
+    def show_renew_button(self):
+
+        if self.end_date:
+
+            remaining_days = (
+                self.end_date - date.today()
+            ).days
+
+            return remaining_days <= 3
+
+        return False
+    
 
 # booking history(track the order)
 class BookingHistory(models.Model):
@@ -149,7 +249,7 @@ class BookingHistory(models.Model):
         on_delete=models.SET_NULL,
         null=True
     )
-
+    service_days = models.IntegerField(default=30)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -183,61 +283,70 @@ class Payment(models.Model):
         max_length=20,
         choices=[
             ("pending", "Pending"),
+            ("partial_paid","Partial_Paid"),
             ("paid", "Paid"),
         ],
         default="pending"
     )
-
+        
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    paid_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     transaction_id = models.CharField(max_length=100, blank=True, null=True)
-
-    screenshot = models.ImageField(
-        upload_to="payments/",
-        blank=True,
-        null=True
-    )
-
+    remaining_amount = models.DecimalField(max_digits=10,decimal_places=2,default=0)
+    screenshot = models.ImageField(upload_to="payments/",blank=True,null=True)
+    PAYMENT_METHOD = (
+    ('Cash', 'Cash'),
+    ('Card', 'Card'),
+    ('Online', 'Online'),
+    ('UPI', 'UPI'),
+)
+    payment_request = models.TextField(blank=True,null=True)
+    due_date = models.DateField(blank=True,null=True)
+    reminder_sent = models.BooleanField(default=False)
+    payment_method = models.CharField(max_length=20,choices=PAYMENT_METHOD,default='Cash')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def due_amount(self):
+        return self.amount - self.paid_amount
+
+    def is_due_soon(self):
+        return (timezone.now().date() - self.created_at.date()).days >= 25
     def __str__(self):
         return f"{self.booking.order_id} - {self.status}"
 
 
-class VendorProfile(models.Model):
 
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="vendor_profile"
+    def save(self, *args, **kwargs):
+
+        self.remaining_amount = (
+        self.total_amount - self.paid_amount
     )
-
+        super().save(*args, **kwargs)
+        
+        
+        
+class VendorProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="vendor_profile")
     experience = models.PositiveIntegerField(help_text="Years of experience")
-
     locality = models.CharField(max_length=200, db_index=True)
     street = models.CharField(max_length=200)
     city = models.CharField(max_length=100, db_index=True)
     postal_code = models.CharField(max_length=10, db_index=True)
-
     company_name = models.CharField(max_length=200, blank=True)
     company_address = models.TextField(blank=True)
-
-    category = models.ForeignKey(
-        Category,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name="vendor_profiles"
-    )
-
-    services = models.ManyToManyField(
-        CategoryService,
-        blank=True,
-        related_name="vendor_profiles"
-    )
-
+    category = models.ForeignKey(Category,on_delete=models.SET_NULL,null=True,related_name="vendor_profiles")
+    services = models.ManyToManyField(CategoryService,blank=True,related_name="vendor_profiles")
     is_verified = models.BooleanField(default=False)
     rating = models.FloatField(default=0)
     total_jobs = models.IntegerField(default=0)
-
     created_at = models.DateTimeField(auto_now_add=True)
+    pan_number = models.CharField(max_length=30,null=True,blank=True)
+    pan_card = models.FileField(upload_to="vendor/pan/",null=True,blank=True)
+    license_number = models.CharField(max_length=50,null=True,blank=True)
+    license_file = models.FileField(upload_to="vendor/license/",null=True,blank=True)
+    is_verified = models.BooleanField(default=False)
+    verified_at = models.DateTimeField(null=True,blank=True)
 
     def __str__(self):
         return f"{self.user.email} - VendorProfile"

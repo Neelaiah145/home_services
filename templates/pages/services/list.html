@@ -2,93 +2,231 @@
 
 {% block content %}
 
-<div class="container mt-4">
-  {% if messages %}
-  {% for message in messages %}
-    <div class="alert alert-success mt-3 auto-hide d-flex justify-content-between align-items-center">
 
-      <span>{{ message }}</span>
 
-      <!--  Close Button -->
-      <button type="button" class="btn-close" onclick="closeAlert(this)"></button>
+<div class="service-page">
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+        <div class="alert alert-success mt-3 auto-hide d-flex justify-content-between align-items-center">
+
+            <span>
+
+                {{ message }}
+
+            </span>
+
+            <button type="button"
+                    class="btn-close"
+                    onclick="closeAlert(this)"></button>
+
+        </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+
+        <div>
+
+            <h5 class="fw-bold mb-0">
+
+                Service Management
+            </h5>
+
+            <p class="page-subtitle">
+
+                Add and manage all service information
+
+            </p>
+
+        </div>
+
+        <a href="{% url 'add.services' %}"
+           class="add-btn">
+
+            <i class="bi bi-plus-circle-fill"></i>
+
+            Add Service
+
+        </a>
 
     </div>
-  {% endfor %}
-{% endif %}
-    <div class="card shadow-sm border-0 rounded-3">
 
-        <!-- HEADER -->
-        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0 text-white">Service List</h5>
+    <!-- CARD -->
 
-            <a href="{% url 'add.services' %}" class="btn btn-sm btn-success">
-                <i class="bi bi-plus-circle-fill"></i> Add Services
-            </a>
+    <div class="service-card">
+
+        <!-- CARD TOP -->
+
+        <div class="card-top">
+
+            <div>
+
+                <h5 class="card-title">
+
+                    Service List
+
+                </h5>
+
+                <p class="card-desc">
+
+                    View and manage all available services
+
+                </p>
+
+            </div>
+
         </div>
 
         <!-- TABLE -->
-        <div class="card-body table-responsive">
 
-            <table class="table table-hover align-middle">
+        <div class="table-wrap">
 
-                <thead class="table-light">
+            <table class="service-table">
+
+                <thead>
+
                     <tr>
-                        <th>#</th>
+
+                        <th>Sl.No</th>
                         <th>Service Name</th>
                         <th>Service Icon</th>
                         <th>Service Image</th>
                         <th>Created Date</th>
                         <th class="text-center">Actions</th>
+
                     </tr>
+
                 </thead>
 
                 <tbody>
 
                     {% for service in services %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
 
-                        <td>{{ service.servicename }}</td>
+                    <tr>
+
+                        <!-- SL NO -->
+
+                        <td>
+
+                            <div class="sl-no">
+
+                                {{ forloop.counter }}
+
+                            </div>
+
+                        </td>
+
+                        <!-- NAME -->
+
+                        <td>
+
+                            <div class="service-name">
+
+                                {{ service.servicename }}
+
+                            </div>
+
+                        </td>
 
                         <!-- ICON -->
+
                         <td>
+
                             {% if service.serviceicon %}
-                                <img src="{{ service.serviceicon.url }}"
-                                     width="80" height="80" style="object-fit:cover;">
+
+                            <div class="img-box">
+
+                                <img src="{{ service.serviceicon.url }}">
+
+                            </div>
+
                             {% else %}
-                                -
+
+                            -
+
                             {% endif %}
+
                         </td>
 
                         <!-- IMAGE -->
+
                         <td>
+
                             {% if service.service_image %}
-                                <img src="{{ service.service_image.url }}"
-                                     width="80" height="80" style="object-fit:cover;">
+
+                            <div class="img-box">
+
+                                <img src="{{ service.service_image.url }}">
+
+                            </div>
+
                             {% else %}
-                                -
+
+                            -
+
                             {% endif %}
+
                         </td>
 
-                        <td>{{ service.created_at|date:"d M Y" }}</td>
+                        <!-- DATE -->
 
-                        <td class="text-center">
-                            <a href="{% url 'update.services' service.id %}" class="btn btn-sm btn-warning">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
+                        <td>
 
-                            <a href="{% url 'delete.services' service.id %}" class="btn btn-sm btn-danger">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
+                            <div class="date-text">
+
+                                {{ service.created_at|date:"d M Y" }}
+
+                            </div>
+
                         </td>
+
+                        <!-- ACTIONS -->
+
+                        <td>
+
+                            <div class="action-wrap">
+
+                                <a href="{% url 'update.services' service.id %}"
+                                   class="action-btn edit-btn">
+
+                                    <i class="fa-solid fa-pen-to-square"></i>
+
+                                </a>
+
+                                <a href="{% url 'delete.services' service.id %}"
+                                   class="action-btn delete-btn">
+
+                                    <i class="fa-solid fa-trash"></i>
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
                     </tr>
 
                     {% empty %}
+
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                            No Service available
+
+                        <td colspan="6"
+                            class="empty-row">
+
+                            No Service Available
+
                         </td>
+
                     </tr>
+
                     {% endfor %}
 
                 </tbody>
@@ -97,40 +235,61 @@
 
         </div>
 
+        <!-- PAGINATION -->
+
+        {% if page_obj %}
+
+        <div class="tbl-footer">
+
+            <div class="page-btns">
+
+                {% if page_obj.has_previous %}
+
+                <a class="pg-btn"
+                   href="?page={{ page_obj.previous_page_number }}">
+
+                    ‹
+
+                </a>
+
+                {% endif %}
+
+                <span class="pg-btn active">
+
+                    {{ page_obj.number }}
+
+                </span>
+
+                {% if page_obj.has_next %}
+
+                <a class="pg-btn"
+                   href="?page={{ page_obj.next_page_number }}">
+
+                    {{ page_obj.next_page_number }}
+
+                </a>
+
+                {% endif %}
+
+                {% if page_obj.has_next %}
+
+                <a class="pg-btn"
+                   href="?page={{ page_obj.next_page_number }}">
+
+                    ›
+
+                </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
     </div>
 
 </div>
-{% if page_obj %}
-<div class="d-flex justify-content-center mt-4">
-    <ul class="pagination custom-pagination">
-
-        <!-- Prev -->
-        {% if page_obj.has_previous %}
-        <li>
-            <a href="?page={{ page_obj.previous_page_number }}">←</a>
-        </li>
-        {% endif %}
-
-        <!-- Numbers -->
-        {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
-                <li class="active"><span>{{ num }}</span></li>
-            {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
-                <li>
-                    <a href="?page={{ num }}">{{ num }}</a>
-                </li>
-            {% endif %}
-        {% endfor %}
-
-        <!-- Next -->
-        {% if page_obj.has_next %}
-        <li>
-            <a href="?page={{ page_obj.next_page_number }}">→</a>
-        </li>
-        {% endif %}
-
-    </ul>
-</div>
-{% endif %}
 
 {% endblock %}

@@ -2,34 +2,92 @@
 
 {% block content %}
 
-<div class="container mt-4">
 
-    <div class="card shadow-sm border-0 rounded-3">
 
-        <!-- Header -->
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"></h5>Add News</h5>
+<div class="news-create-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h6 class="fw-semibold mb-0">
+
+                Add News
+
+            </h6>
+
+            <p class="page-subtitle">
+
+                Create and publish latest news updates
+
+            </p>
+
         </div>
 
-        <!-- Body -->
-        <div class="card-body">
+    </div>
+
+    <!-- CARD -->
+
+    <div class="news-card">
+
+        <!-- CARD TOP -->
+
+        <div class="card-top">
+
+            <h5 class="card-title">
+
+                News Information
+
+            </h5>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="card-body-custom">
+
             <form method="POST">
+
                 {% csrf_token %}
 
-                <!-- Content -->
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Headlines</label>
-                    <textarea name="news_headline" class="form-control" rows="4"
-                        placeholder="Enter news headlines here" required></textarea>
+                <!-- HEADLINE -->
+
+                <div class="form-group">
+
+                    <label class="form-label">
+
+                        Headlines
+
+                    </label>
+
+                    <textarea name="news_headline"
+                              class="form-control-custom"
+                              rows="6"
+                              placeholder="Enter news headlines here"
+                              required></textarea>
+
                 </div>
-                <!-- Buttons -->
-                <div class="d-flex justify-content-between">
-                    <a href="{% url 'news.list' %}" class="btn btn-outline-success">
+
+                <!-- BUTTONS -->
+
+                <div class="form-actions">
+
+                    <a href="{% url 'news.list' %}"
+                       class="back-btn">
+
                         Back
+
                     </a>
-                    <button type="submit" class="btn btn-primary px-4">
+
+                    <button type="submit"
+                            class="save-btn">
+
                         Save News
+
                     </button>
+
                 </div>
 
             </form>

@@ -2,113 +2,260 @@
 
 {% block content %}
 
-<div class="container mt-4">
 
-    <div class="card shadow-sm border-0 rounded-3">
+<div class="footer-page">
 
-        <!-- Header -->
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0 text-white">Add Footer</h5>
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+
+        <div>
+            <h5 class="fw-bold mb-0">
+                Footer Management
+
+            </h5>
+
+            <p class="page-subtitle">
+
+                Add footer details, logo and social media links
+
+            </p>
+
         </div>
 
-        <!-- Body -->
-        <div class="card-body">
-            {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-danger">
-                {{ message }}
+        <a href="{% url 'list.footer' %}" class="list-btn">
+
+            <i class="bi bi-grid"></i>
+
+            Footer List
+
+        </a>
+
+    </div>
+
+    <!-- CARD -->
+
+    <div class="footer-card">
+
+        <!-- CARD TOP -->
+
+        <div class="card-top">
+
+            <div>
+
+                <h5 class="card-title">
+
+                    Add Footer
+
+                </h5>
+
+                <p class="card-desc">
+
+                    Create footer details and contact information
+
+                </p>
+
             </div>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="card-body-custom">
+
+            {% if messages %}
+
+            {% for message in messages %}
+
+            <div class="alert alert-danger">
+
+                {{ message }}
+
+            </div>
+
             {% endfor %}
+
             {% endif %}
 
             <form method="POST" enctype="multipart/form-data">
+
                 {% csrf_token %}
 
-                <div class="row">
+                <div class="row g-4">
 
                     <!-- LOGO -->
-                    <div class="col-md-4 text-center">
-                        <label class="form-label fw-semibold">Footer Logo</label>
 
-                        <div class="border rounded p-3 mb-3"
-                            style="height:200px; display:flex; align-items:center; justify-content:center;">
-                            <img id="preview" style="max-height:100%; max-width:100%; object-fit:cover;">
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+
+                            Footer Logo
+
+                        </label>
+
+                        <div class="image-box">
+
+                            <img id="preview">
+
                         </div>
 
-                        <input type="file" name="logo_image" class="form-control" onchange="previewImage(event)">
+                        <input type="file" name="logo_image" class="file-input" onchange="previewImage(event)">
+
                     </div>
 
                     <!-- DETAILS -->
+
                     <div class="col-md-8">
 
-                        <!-- Description -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Footer Description</label>
-                            <textarea name="footer_description" class="form-control" rows="3" required></textarea>
+                        <!-- DESCRIPTION -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Footer Description
+
+                            </label>
+
+                            <textarea name="footer_description" class="textarea-custom" rows="4" required></textarea>
+
                         </div>
 
-                        <!-- Phone -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Phone Number</label>
-                            <input type="text" name="phone_num" class="form-control" required>
+                        <!-- PHONE -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Phone Number
+
+                            </label>
+
+                            <input type="text" name="phone_num" class="form-control-custom" required>
+
                         </div>
 
-                        <!-- WhatsApp -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">WhatsApp Number</label>
-                            <input type="text" name="whatsapp_num" class="form-control" required>
+                        <!-- WHATSAPP -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                WhatsApp Number
+
+                            </label>
+
+                            <input type="text" name="whatsapp_num" class="form-control-custom" required>
+
                         </div>
 
-                        <!-- Email -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Email</label>
-                            <input type="email" name="email" class="form-control" required>
+                        <!-- EMAIL -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Email
+
+                            </label>
+
+                            <input type="email" name="email" class="form-control-custom" required>
+
                         </div>
 
-                        <!-- Address -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Address</label>
-                            <textarea name="address" class="form-control" rows="2" required></textarea>
+                        <!-- ADDRESS -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Address
+
+                            </label>
+
+                            <textarea name="address" class="textarea-custom" rows="3" required></textarea>
+
                         </div>
 
                     </div>
 
                     <!-- SOCIAL LINKS -->
+
                     <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Facebook URL</label>
-                            <input type="url" name="facebook" class="form-control">
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Facebook URL
+
+                            </label>
+
+                            <input type="url" name="facebook" class="form-control-custom">
+
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Instagram URL</label>
-                            <input type="url" name="instagram" class="form-control">
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Instagram URL
+
+                            </label>
+
+                            <input type="url" name="instagram" class="form-control-custom">
+
                         </div>
+
                     </div>
 
                     <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Twitter URL</label>
-                            <input type="url" name="twitter" class="form-control">
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Twitter URL
+
+                            </label>
+
+                            <input type="url" name="twitter" class="form-control-custom">
+
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">WhatsApp Link</label>
-                            <input type="url" name="whatsapp" class="form-control">
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                WhatsApp Link
+
+                            </label>
+
+                            <input type="url" name="whatsapp" class="form-control-custom">
+
                         </div>
+
                     </div>
 
                 </div>
 
                 <!-- BUTTONS -->
-                <div class="d-flex justify-content-between mt-3">
-                    <a href="{% url 'list.footer' %}" class="btn btn-outline-secondary">
+
+                <div class="form-actions">
+
+                    <a href="{% url 'list.footer' %}" class="back-btn">
+
                         Back
+
                     </a>
 
-                    <button type="submit" class="btn btn-primary px-4">
+                    <button type="submit" class="save-btn">
+
                         Save Footer
+
                     </button>
+
                 </div>
 
             </form>
@@ -120,14 +267,27 @@
 </div>
 
 <!-- IMAGE PREVIEW -->
+
 <script>
+
     function previewImage(event) {
+
         const reader = new FileReader();
+
         reader.onload = function () {
-            document.getElementById('preview').src = reader.result;
+
+            document.getElementById(
+                'preview'
+            ).src = reader.result;
+
         }
-        reader.readAsDataURL(event.target.files[0]);
+
+        reader.readAsDataURL(
+            event.target.files[0]
+        );
+
     }
+
 </script>
 
 {% endblock %}

@@ -2,606 +2,917 @@
 <!doctype html>
 <html class="no-js" lang="zxx">
 
-
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-  <title>SriDixitha Contact</title>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-  <!-- Favicons -->
+    <title>SriDixitha Contact</title>
 
+    <!-- GOOGLE FONTS -->
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel/slick/slick.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css/animate.min.css" />
-  <!--==============================
-	  Google Fonts
-	============================== -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Miranda+Sans:ital,wght@0,400..700;1,400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playwrite+AU+NSW+Guides&family=Playwrite+NZ+Guides&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
-    rel="stylesheet">
-  <!--==============================
-	    All CSS File
-	============================== -->
-  <!-- Bootstrap -->
-  <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
-  <!-- Fontawesome Icon -->
-  <link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css' %}">
-  <!-- Magnific Popup -->
-  <link rel="stylesheet" href="{% static 'assets/css/magnific-popup.min.css' %}">
-  <!-- Slick Slider -->
-  <link rel="stylesheet" href="{% static 'assets/css/slick.min.css' %}">
-  <!-- nice-select -->
-  <link rel="stylesheet" href="{% static 'assets/css/nice-select.min.css' %}">
-  <!-- animate js -->
-  <link rel="stylesheet" href="{% static 'assets/css/animate.min.css' %}">
-  <!-- nouislider js -->
-  <link rel="stylesheet" href="{% static 'assets/css/nouislider.css' %}">
-  <!-- Theme Custom CSS -->
-  <link rel="stylesheet" href="{% static 'assets/css/style1.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS FILES -->
+
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style1.css' %}">
+
+    <style>
+
+        body{
+            font-family:'Poppins',sans-serif;
+            background:#f4f7fb;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header-top{
+            background:#074c7d;
+            padding:10px 0;
+        }
+
+        .contact-item{
+            color:#fff;
+            font-size:13px;
+            font-weight:500;
+            margin-right:20px;
+        }
+
+        .contact-item a{
+            color:#fff;
+            text-decoration:none;
+        }
+
+        .header-social a{
+            width:34px;
+            height:34px;
+            border-radius:50%;
+            background:rgba(255,255,255,.15);
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            margin-left:8px;
+            transition:.2s ease;
+        }
+
+        .header-social a:hover{
+            background:#ea6e12;
+        }
+
+        /* =========================
+           NEWS BAR
+        ========================= */
+
+        .news-ticker{
+            background:#ea6e12;
+            color:#fff;
+            padding:10px 0;
+            overflow:hidden;
+            white-space:nowrap;
+        }
+
+        .news-track{
+            display:inline-block;
+            animation:scrollNews 25s linear infinite;
+            font-size:13px;
+            font-weight:500;
+        }
+
+        .news-track span{
+            margin-right:60px;
+        }
+
+        @keyframes scrollNews{
+            from{
+                transform:translateX(100%);
+            }
+            to{
+                transform:translateX(-100%);
+            }
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .sticky-wrapper{
+            background:#fff;
+            box-shadow:0 2px 20px rgba(0,0,0,.05);
+        }
+
+        .main-menu ul li a{
+            font-size:14px;
+            font-weight:600;
+            color:#111827;
+            transition:.2s ease;
+        }
+
+        .main-menu ul li a:hover{
+            color:#ea6e12;
+        }
+
+        .vs-btn{
+            height:44px;
+            border:none;
+            border-radius:12px;
+            padding:0 22px;
+            background:#2563eb;
+            color:#fff;
+            font-size:13px;
+            font-weight:700;
+            transition:.2s ease;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+        }
+
+        .vs-btn:hover{
+            background:#1d4ed8;
+            color:#fff;
+        }
+
+        .logo_news{
+            max-height:70px;
+        }
+
+        /* =========================
+           BREADCRUMB
+        ========================= */
+
+        .breadcumb-wrapper{
+            position:relative;
+            padding:120px 0;
+            background-position:center;
+            background-size:cover;
+            overflow:hidden;
+        }
+
+        .breadcumb-wrapper::before{
+            content:"";
+            position:absolute;
+            inset:0;
+            background:linear-gradient(
+                135deg,
+                rgba(7,76,125,.85),
+                rgba(0,0,0,.65)
+            );
+        }
+
+        .breadcumb-content{
+            position:relative;
+            z-index:2;
+            text-align:center;
+        }
+
+        .breadcumb-title{
+            font-size:52px;
+            font-weight:800;
+            color:#fff;
+            margin-bottom:18px;
+        }
+
+        .breadcumb-menu{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:14px;
+            flex-wrap:wrap;
+        }
+
+        .breadcumb-menu span{
+            color:#fff;
+            font-size:15px;
+            font-weight:500;
+        }
+
+        .breadcumb-menu a{
+            color:#fff;
+            text-decoration:none;
+            transition:.2s ease;
+        }
+
+        .breadcumb-menu a:hover{
+            color:#ea6e12;
+        }
+
+        /* =========================
+           CONTACT SECTION
+        ========================= */
+
+        .contact-layout1{
+            padding:90px 0;
+        }
+
+        .contact-form{
+            background:#fff;
+            border-radius:28px;
+            overflow:hidden;
+            box-shadow:0 10px 40px rgba(15,23,42,.08);
+            padding:40px;
+        }
+
+        .contact-img{
+            border-radius:24px;
+            overflow:hidden;
+            height:100%;
+            min-height:620px;
+            box-shadow:0 8px 30px rgba(0,0,0,.10);
+        }
+
+        .contact-img img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        .sec-title{
+            font-size:38px;
+            font-weight:800;
+            color:#111827;
+            margin-bottom:12px;
+        }
+
+        .title-area{
+            margin-bottom:34px;
+        }
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .form-style1 label{
+            font-size:13px;
+            font-weight:700;
+            color:#111827;
+            margin-bottom:10px;
+            display:block;
+        }
+
+        .form-style1 .form-control{
+            height:54px;
+            border:1px solid #dbe1ea;
+            border-radius:16px;
+            padding:0 18px;
+            font-size:14px;
+            color:#111827;
+            background:#fff;
+            transition:.2s ease;
+            box-shadow:none;
+        }
+
+        .form-style1 textarea.form-control{
+            min-height:150px;
+            padding-top:16px;
+            resize:none;
+        }
+
+        .form-style1 .form-control:focus{
+            border-color:#2563eb;
+            box-shadow:0 0 0 4px rgba(37,99,235,.08);
+        }
+
+        .form-style1 .vs-btn{
+            width:100%;
+            margin-top:10px;
+        }
+
+        .form-style1 span{
+            font-size:12px;
+            margin-top:6px;
+            display:block;
+            font-weight:500;
+        }
+
+        /* =========================
+           ALERT
+        ========================= */
+
+        .auto-hide{
+            border:none;
+            border-radius:16px;
+            padding:14px 20px;
+            font-size:14px;
+            font-weight:600;
+            box-shadow:0 8px 24px rgba(0,0,0,.08);
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .footer-layout1{
+            background:#fff;
+            padding-top:70px;
+        }
+
+        .footer-text{
+            color:#6b7280;
+            font-size:14px;
+            line-height:1.8;
+        }
+
+        .footer-social-media a{
+            width:40px;
+            height:40px;
+            border-radius:12px;
+            background:#f4f7fb;
+            color:#111827;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            margin-right:8px;
+            transition:.2s ease;
+        }
+
+        .footer-social-media a:hover{
+            background:#2563eb;
+            color:#fff;
+        }
+
+        .widget_title{
+            font-size:20px;
+            font-weight:700;
+            color:#111827;
+            margin-bottom:22px;
+        }
+
+        .footer-widget .menu li{
+            margin-bottom:12px;
+        }
+
+        .footer-widget .menu li a{
+            color:#6b7280;
+            text-decoration:none;
+            font-size:14px;
+            transition:.2s ease;
+        }
+
+        .footer-widget .menu li a:hover{
+            color:#2563eb;
+            padding-left:4px;
+        }
+
+        .copyright-wrap{
+            border-top:1px solid #e5e7eb;
+            margin-top:50px;
+            padding:22px 0;
+            text-align:center;
+        }
+
+        .copyright-text{
+            margin:0;
+            font-size:14px;
+            color:#6b7280;
+        }
+
+        .copyright-text a{
+            color:#2563eb;
+            text-decoration:none;
+            font-weight:700;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media(max-width:991px){
+
+            .breadcumb-wrapper{
+                padding:90px 0;
+            }
+
+            .breadcumb-title{
+                font-size:38px;
+            }
+
+            .contact-form{
+                padding:24px;
+            }
+
+            .contact-img{
+                min-height:400px;
+            }
+
+        }
+
+        @media(max-width:768px){
+
+            .breadcumb-title{
+                font-size:30px;
+            }
+
+            .sec-title{
+                font-size:28px;
+            }
+
+            .contact-layout1{
+                padding:60px 0;
+            }
+
+            .contact-form{
+                border-radius:20px;
+                padding:18px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
 <body>
 
-  <!--********************************
-   		Code Start From Here 
-	******************************** -->
-  <!--==============================
-	Preloader
-	==============================-->
+    <!-- HEADER -->
 
-  <button class="back-to-top" id="backToTop" aria-label="Back to Top">
-    <span class="progress-circle">
-      <svg viewBox="0 0 100 100">
-        <circle class="bg" cx="50" cy="50" r="40"></circle>
-        <circle class="progress" cx="50" cy="50" r="40"></circle>
-      </svg>
-      <span class="progress-percentage" id="progressPercentage">0%</span>
-    </span>
-  </button>
-  <!--==============================
-    	Mobile Menu
-  	============================== -->
-  <div class="vs-menu-wrapper">
-    <div class="vs-menu-area text-center">
-      <div class="mobile-logo">
-        <a href="#"><img
-            src="{% if footer.logo_image %} {{ footer.logo_image.url }} {% else %} {% static 'assets/img/new_image/sridixitha-logo.gif' %} {% endif %}"
-            alt="Sridixitha" class="logo logo_news"></a>
-        <button class="vs-menu-toggle"><i class="fal fa-times"></i></button>
-      </div>
-      <div class="vs-mobile-menu">
-        <ul>
-          <li class="">
-            <a href="{% url 'indexpage' %}">Home</a>
+    <header class="vs-header header-layout2">
 
-          <li class="">
-            <a href="#categories">Categories</a>
-            <a href="#services">Services</a>
+        <!-- TOP BAR -->
 
-          </li>
-          <li class="menu-item-has-children mega-menu-wrap">
-            <a href="#services">Services</a>
+        <div class="header-top">
 
-          </li>
-          <li>
-            <a href="#jobs">Careers</a>
-          </li>
-          <li>
-            <a href="#Testimonials">Testimonials</a>
-          </li>
-          <li>
-            <a href="{% url 'feedbackform' %}">FeedBack</a>
-          </li>
-          <li>
-            <a href="{% url 'contact' %}">Contact</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <!--==============================
-	Sidemenu
-	============================== -->
-  <!-- <div class="sidemenu-wrapper d-none d-lg-block">
-    <div class="sidemenu-content">
-      <button class="closeButton sideMenuCls"><i class="far fa-times"></i></button>
-      <div class="widget">
-        <div class="vs-widget-about">
-          <div class="mb-4">
-            <a href="#"><img src="assets/img/new_image/sridixitha-logo.gif" alt="DIREX" class="logo"></a>
-          </div>
-          <p class="sidemenu-text">
-            Welcome to Hoerseno, your ultimate for destination all things equestrian! Whether you're a seasoned
-            rider.
-          </p>
-          <ul class="social-links">
-            <li><a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
-            <li><a href="#" target="_blank"><i class="fa-brands fa-x-twitter"></i></a></li>
-            <li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
-            <li><a href="#" target="_blank"><i class="fab fa-dribbble"></i></a></li>
-          </ul>
+            <div class="container">
 
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
 
-        </div>
-      </div>
-      <div class="widget  ">
-        <h4 class="widget_title">Recent Posts</h4>
-        <div class="widget footer-widget">
-          <div class="recent-post-wrap">
-            <div class="recent-post">
-              <div class="media-img">
-                <a href="blog-details.html"><img src="assets/img/blog/recent-post-1-1.jpg" alt="Blog Image"></a>
-              </div>
-              <div class="media-body">
-                <h4 class="post-title"><a href="blog-details.html">How to Improve Your Riding...</a>
-                </h4>
-                <div class="recent-post-meta">
-                  <i class="fas fa-calendar-alt"></i> 09 Aug, 2025
-                </div>
-              </div>
-            </div>
-            <div class="recent-post">
-              <div class="media-img">
-                <a href="blog-details.html"><img src="assets/img/blog/recent-post-1-2.jpg" alt="Blog Image"></a>
-              </div>
-              <div class="media-body">
-                <h4 class="post-title"><a href="blog-details.html">Choosing the Right Gear...</a>
-                </h4>
-                <div class="recent-post-meta">
-                  <i class="fas fa-calendar-alt"></i> 09 Aug, 2025
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="widget  ">
-        <h3 class="widget_title">Office Maps</h3>
-        <div class="footer-map">
-          <iframe title="office location map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d163720.11965853968!2d8.496481908353967!3d50.121347879150306!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47bd096f477096c5%3A0x422435029b0c600!2sFrankfurt%2C%20Germany!5e0!3m2!1sen!2sbd!4v1651732317319!5m2!1sen!2sbd"
-            width="200" height="150" style="border:0;" allowfullscreen="" loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
-      </div>
-    </div>
-  </div> -->
-  <!--==============================
-    Popup Search Box
-    ============================== -->
-  <div class="popup-search-box d-none d-lg-block  ">
-    <button class="searchClose"><i class="fal fa-times"></i></button>
-    <form action="#">
-      <input type="text" class="border-theme" placeholder="What are you looking for">
-      <button type="submit"><i class="fal fa-search"></i></button>
-    </form>
-  </div>
-  <!--==============================
-        Header Area
-    ==============================-->
-  <header class="vs-header header-layout2">
-    <!--contact numbers-->
-    <div class="header-top">
-      <div class="top-container">
-        <div class="social-media-header">
-          <div class="">
-            <div class="header-links ">
-              <ul>
-                <li class="contact-info">
+                    <div>
 
-                  <span class="contact-item">
-                    <i class="fas fa-phone"></i>
-                    <a href="tel:+919876543210">+91 {{ footer.phone_num }}</a>
-                  </span>
+                        <span class="contact-item">
 
-                  <span class="contact-item">
-                    <i class="fab fa-whatsapp"></i>
-                    <a href="https://wa.me/919876543210" target="_blank">+91 {{ footer.whatsapp_num }}</a>
-                  </span>
+                            <i class="fas fa-phone"></i>
 
-                </li>
+                            +91 {{ footer.phone_num }}
 
-              </ul>
-            </div>
-          </div>
-          <div class="">
-            <div class="header-right">
+                        </span>
 
-              <div class="header-social">
-                {% if footer.facebook %}
-                <a href="{{ footer.facebook }}"><i class="fab fa-facebook-f"></i></a>
-                {% else %}
-                <a href=""><i class="fab fa-facebook-f"></i></a>
-                {% endif %}
-                {% if footer.twitter %}
-                <a href="{% url 'footer.twitter' %}"><i class="fa-brands fa-x-twitter"></i></a>
-                {% else %}
-                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
-                {% endif %}
-                {% if footer.instagram %}
-                <a href="{% url 'footer.instagram' %}"><i class="fab fa-instagram"></i></a>
-                {% else %}
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                {% endif %}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!--news area-->
-    <div class="news-ticker">
-      <div class="news-track">
-        {% for i in news %}
-        <span> <i class="fa-solid fa-circle dot-icon"></i> {{ i.content }}</span>
-        {% empty %}
-        <span>No latest updates available</span>
-        {% endfor %}
+                        <span class="contact-item">
 
-      </div>
-    </div>
+                            <i class="fab fa-whatsapp"></i>
 
-    <!-nav area->
-      <div class="sticky-wrapper">
-        <div class="sticky-active">
-          <div class="container-fluid">
-            <div class="row justify-content-between align-items-center gx-sm-0">
-              <div class="col-auto">
-                <div class="header-logo">
-                  <a href="{% url 'indexpage' %}">
+                            +91 {{ footer.whatsapp_num }}
 
-                    {% if footer.logo_image %}
-                    <img src="{{ footer.logo_image.url }}" alt="Logo" class="logo logo_news">
-                    {% else %}
-                    <span>No Image</span>
-                    {% endif %}
+                        </span>
 
-                  </a>
-                </div>
-              </div>
-              <div class="col-auto d-inline-flex align-items-center">
-                <nav class="main-menu menu-style1 d-none d-lg-block">
-                  <ul>
+                    </div>
 
-                    <li>
-                      <a href="{% url 'indexpage' %}">Home</a>
-                    </li>
+                    <div class="header-social">
 
-                    <li>
-                      <a href="#categories">categories </a>
+                        <a href="{{ footer.facebook }}"><i class="fab fa-facebook-f"></i></a>
 
-                    </li>
-                    <li>
-                      <a href="#services">Services </a>
-                    </li>
+                        <a href="{{ footer.instagram }}"><i class="fab fa-instagram"></i></a>
 
-                    <li>
-                      <a href="#jobs">Careers </a>
-                    </li>
-                    <li>
-                      <a href="#Testimonials">Testimonials </a>
-                    </li>
-                    <li>
-                      <a href="{% url 'feedbackform' %}" style="color: #ea6e12;">Feedback & Suggestions</a>
-                    </li>
-                    <li>
-                      <a href="{% url 'contact' %}">Contact</a>
-                    </li>
+                        <a href="{{ footer.twitter }}"><i class="fa-brands fa-x-twitter"></i></a>
 
-                  </ul>
-                </nav>
-                <div class="header-buttons d-inline-block d-xl-none me-2 dropdown">
-
-                  <button class="vs-btn dropdown-toggle" data-bs-toggle="dropdown">
-                    Account
-                  </button>
-
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Login</a></li>
-                    <li><a class="dropdown-item" href="#">Register</a></li>
-                  </ul>
+                    </div>
 
                 </div>
-                <button class="vs-menu-toggle d-inline-block d-lg-none"><i class="fal fa-bars"></i></button>
 
-              </div>
-              <div class="col-auto d-xl-block d-none">
-                <div class="header-buttons dropdown account-dropdown">
+            </div>
 
-                  <!-- Search Icon -->
-                  <!-- <a href="#" class="vs-icon searchBoxTggler">
-                  <i class="fas fa-search"></i>
-                </a> -->
+        </div>
 
-                  <!-- Account Button -->
-                  <button class="vs-btn dropdown-toggle">
-                    Account
-                  </button>
+        <!-- NEWS -->
 
-                  <!-- Dropdown -->
-                  <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                      <a class="dropdown-item" href="{% url 'login' %}">
-                        <i class="fa-regular fa-user me-2"></i> Login
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="{% url 'register' %}">
-                        <i class="fa-regular fa-user-plus me-2"></i> Register
-                      </a>
-                    </li>
-                  </ul>
+        <div class="news-ticker">
+
+            <div class="news-track">
+
+                {% for i in news %}
+
+                <span>
+
+                    {{ i.content }}
+
+                </span>
+
+                {% empty %}
+
+                <span>
+
+                    No latest updates available
+
+                </span>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- BREADCRUMB -->
+
+    <div class="breadcumb-wrapper"
+         data-bg-src="{% static 'assets/images/bg/contact_us_banner.webp' %}">
+
+        <div class="container">
+
+            <div class="breadcumb-content">
+
+                <h1 class="breadcumb-title">
+
+                    Contact Us
+
+                </h1>
+
+                <div class="breadcumb-menu">
+
+                    <span>
+
+                        <a href="{% url 'indexpage' %}">
+
+                            Home
+
+                        </a>
+
+                    </span>
+
+                    <span>
+
+                        Contact Us
+
+                    </span>
 
                 </div>
-              </div>
+
             </div>
-          </div>
+
         </div>
-      </div>
-  </header>
-  <!--==============================
-    Breadcrumb
-  ============================== -->
-  <div class="breadcumb-wrapper" data-bg-src="{% static 'assets/images/bg/contact_us_banner.webp' %}">
-    <div class="container z-index-common">
-      <div class="breadcumb-content">
-        <h1 class="breadcumb-title text-center">Contact Us</h1>
-        <div class="breadcumb-menu-wrap">
-          <div class="breadcumb-menu">
-            <span><a href="{% url 'indexpage' %}">Home</a></span>
-            <span>Contact Us</span>
-          </div>
-        </div>
-      </div>
+
     </div>
-  </div>
 
-  {% if messages %}
-  {% for message in messages %}
-  <div style="color:green;" class="mt-4 mb-4">{{ message }}</div>
-  {% endfor %}
-  {% endif %}
+    <!-- ALERTS -->
 
-  <section class="contact-layout1 space-top">
     <div class="container">
 
-      <div class="contact-form">
-        <div class="row g-5 gx-60 align-items-center">
-          <div class="col-xl-4 d-none d-xl-block">
-            <div class="contact-img"
-              style="box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;; border-radius: 12px; overflow: hidden;">
-              <img src="{% static 'assets/images/bg/contact_us_02.webp' %}" alt="Contact Image">
+        {% if messages %}
+
+            {% for message in messages %}
+
+            <div class="alert alert-success auto-hide mt-4 d-flex justify-content-between align-items-center">
+
+                <span>
+
+                    {{ message }}
+
+                </span>
+
+                <button type="button"
+                        class="btn-close"></button>
+
             </div>
-          </div>
-          <div class="col-xl-8">
-            <form class="form-style1 wow animate__fadeInUp" data-wow-delay="0.35s" method="POST">
-              {% csrf_token %}
-              <div class="title-area animation-style1 title-anime">
-                <h2 class="sec-title text-title title-anime__title">Reach Out to Us</h2>
-              </div>
-              <div class="row gx-20">
-                <div class="col-md-6 form-group">
-                  <label>Your Name*</label>
-                  <div class="input-area">
-                    <input class="form-control" type="text" name="name" value="{{ old.name }}"
-                      placeholder="enter your full name">
-                    <span style="color:red;">{{ errors.name }}</span>
-                  </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    </div>
+
+    <!-- CONTACT -->
+
+    <section class="contact-layout1">
+
+        <div class="container">
+
+            <div class="contact-form">
+
+                <div class="row g-5 align-items-center">
+
+                    <!-- IMAGE -->
+
+                    <div class="col-xl-4 d-none d-xl-block">
+
+                        <div class="contact-img">
+
+                            <img src="{% static 'assets/images/bg/contact_us_02.webp' %}"
+                                 alt="Contact Image">
+
+                        </div>
+
+                    </div>
+
+                    <!-- FORM -->
+
+                    <div class="col-xl-8">
+
+                        <form class="form-style1"
+                              method="POST">
+
+                            {% csrf_token %}
+
+                            <div class="title-area">
+
+                                <h2 class="sec-title">
+
+                                    Reach Out to Us
+
+                                </h2>
+
+                            </div>
+
+                            <div class="row gx-20">
+
+                                <!-- NAME -->
+
+                                <div class="col-md-6 form-group">
+
+                                    <label>
+
+                                        Your Name*
+
+                                    </label>
+
+                                    <input class="form-control"
+                                           type="text"
+                                           name="name"
+                                           value="{{ old.name }}"
+                                           placeholder="Enter your full name">
+
+                                    <span style="color:red;">
+
+                                        {{ errors.name }}
+
+                                    </span>
+
+                                </div>
+
+                                <!-- EMAIL -->
+
+                                <div class="col-md-6 form-group">
+
+                                    <label>
+
+                                        Email Address*
+
+                                    </label>
+
+                                    <input class="form-control"
+                                           type="email"
+                                           name="email"
+                                           value="{{ old.email }}"
+                                           placeholder="example@gmail.com">
+
+                                    <span style="color:red;">
+
+                                        {{ errors.email }}
+
+                                    </span>
+
+                                </div>
+
+                                <!-- PHONE -->
+
+                                <div class="col-md-6 form-group">
+
+                                    <label>
+
+                                        Phone Number*
+
+                                    </label>
+
+                                    <input class="form-control"
+                                           type="text"
+                                           name="phone"
+                                           value="{{ old.phone }}"
+                                           placeholder="Enter phone number">
+
+                                    <span style="color:red;">
+
+                                        {{ errors.phone }}
+
+                                    </span>
+
+                                </div>
+
+                                <!-- CITY -->
+
+                                <div class="col-md-6 form-group">
+
+                                    <label>
+
+                                        City*
+
+                                    </label>
+
+                                    <input class="form-control"
+                                           type="text"
+                                           name="city"
+                                           value="{{ old.city }}"
+                                           placeholder="Enter city">
+
+                                    <span style="color:red;">
+
+                                        {{ errors.city }}
+
+                                    </span>
+
+                                </div>
+
+                                <!-- MESSAGE -->
+
+                                <div class="col-md-12 form-group">
+
+                                    <label>
+
+                                        Message*
+
+                                    </label>
+
+                                    <textarea name="message"
+                                              class="form-control"
+                                              placeholder="Message Here...">{{ old.message }}</textarea>
+
+                                    <span style="color:red;">
+
+                                        {{ errors.message }}
+
+                                    </span>
+
+                                </div>
+
+                                <!-- BUTTON -->
+
+                                <div class="col-md-12 form-group">
+
+                                    <button class="vs-btn"
+                                            type="submit">
+
+                                        Submit
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
                 </div>
 
-                <div class="col-md-6 form-group">
-                  <label>Email Address*</label>
-                  <div class="input-area">
-                    <input class="form-control" type="email" name="email" value="{{ old.email }}"
-                      placeholder="example@gmail.com">
-                    <span style="color:red;">{{ errors.email }}</span>
-                  </div>
-                </div>
-
-                <div class="col-md-6 form-group">
-                  <label>Phone Number*</label>
-                  <div class="input-area">
-                    <input class="form-control" type="text" name="phone" value="{{ old.phone }}"
-                      placeholder="enter Phone Number">
-                    <span style="color:red;">{{ errors.phone }}</span>
-                  </div>
-                </div>
-
-                <div class="col-md-6 form-group">
-                  <label>City*</label>
-                  <div class="input-area">
-                    <input class="form-control" type="text" name="city" value="{{ old.city }}" placeholder="enter city">
-                    <span style="color:red;">{{ errors.city }}</span>
-                  </div>
-                </div>
-
-                <div class="col-md-12 form-group">
-                  <label>Message*</label>
-                  <textarea name="message" class="form-control"
-                    placeholder="Message Here...">{{ old.message }}</textarea>
-                  <span style="color:red;">{{ errors.message }}</span>
-                </div>
-                <div class="col-md-12 form-group">
-                  <button class="vs-btn justify-content-center" type="submit">Submit</button>
-                </div>
-              </div>
-            </form>
-            <p class="form-messages mb-0 mt-3"></p>
-          </div>
+            </div>
 
         </div>
-      </div>
-    </div>
-  </section>
-  <!--==============================
-  Map Area
-  ============================== -->
-  <!-- <div class="map-layout1">
-    <div class="ratio ratio-21x9 wow animate__fadeInUp" data-wow-delay="0.35s" style="height:742px">
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d163720.11965853968!2d8.496481908353967!3d50.121347879150306!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47bd096f477096c5%3A0x422435029b0c600!2sFrankfurt%2C%20Germany!5e0!3m2!1sen!2sbd!4v1665403058628!5m2!1sen!2sbd"
-        width="800" height="720" style="border:0;" allowfullscreen="" loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade">
-      </iframe>
-    </div>
-  </div> -->
-  <!--==============================
-	  Footer Area
-	============================== -->
-  <footer class="footer-layout1 bg-body z-index-common" data-bg-src="assets/img/bg/">
-    <!-- Cta Area -->
 
-    <!-- Cta Area End -->
-    <div class="footer-top">
-      <div class="container">
-        <div class="row g-5 justify-content-between">
-          <div class="col-md-6 col-lg-6 col-xl-auto">
-            <div class="newsletter-area">
-              <div class="footer-logo">
-                <a href="{% url 'indexpage' %}">
-                  <img
-                    src="{% if footer.logo_image  %} {{ footer.logo_image.url }} {% else %} {% static 'assets/img/new_image/sridixitha-logo.gif' %} {% endif %}"
-                    alt="Sridixitha" class="logo logo_news">
-                </a>
-              </div>
-              <p class="footer-text">{{ footer.footer_description }}</p>
-              <div class="footer-social-media">
-                {% if footer.whatsapp %}
-                <a href="{{ footer.whatsapp }}"><i class="fa-brands fa-whatsapp"></i></a>
-                {% else %}
-                <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
-                {% endif %}
-                {% if footer.facebook %}
-                <a href="{{ footer.facebook }}"><i class="fa-brands fa-facebook-f"></i></a>
-                {% else %}
-                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                {% endif %}
-                {% if footer.instagram %}
-                <a href="{{ footer.instagram }}"><i class="fa-brands fa-instagram"></i></a>
-                {% else %}
-                <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                {% endif %}
-                {% if footer.twitter %}
-                <a href="{{ footer.twitter }}"><i class="fa-brands fa-x-twitter"></i></a>
-                {% else %}
-                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
-                {% endif %}
+    </section>
 
-              </div>
+    <!-- FOOTER -->
+
+    <footer class="footer-layout1">
+
+        <div class="container">
+
+            <div class="row g-5 justify-content-between">
+
+                <!-- LOGO -->
+
+                <div class="col-lg-4">
+
+                    <div class="footer-logo mb-4">
+
+                        <img src="{{ footer.logo_image.url }}"
+                             alt="Logo"
+                             class="logo_news">
+
+                    </div>
+
+                    <p class="footer-text">
+
+                        {{ footer.footer_description }}
+
+                    </p>
+
+                    <div class="footer-social-media mt-4">
+
+                        <a href="{{ footer.facebook }}">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+
+                        <a href="{{ footer.instagram }}">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+
+                        <a href="{{ footer.twitter }}">
+                            <i class="fa-brands fa-x-twitter"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- COMPANY -->
+
+                <div class="col-lg-3">
+
+                    <div class="widget footer-widget">
+
+                        <h3 class="widget_title">
+
+                            Company
+
+                        </h3>
+
+                        <ul class="menu">
+
+                            <li><a href="#">Our Services</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Join as Vendor</a></li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+                <!-- CONTACT -->
+
+                <div class="col-lg-3">
+
+                    <div class="widget footer-widget">
+
+                        <h3 class="widget_title">
+
+                            Need Help?
+
+                        </h3>
+
+                        <ul class="menu">
+
+                            <li>
+                                <a href="#">
+                                    +91 {{ footer.phone_num }}
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#">
+                                    +91 {{ footer.whatsapp_num }}
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#">
+                                    {{ footer.email }}
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#">
+                                    {{ footer.address }}
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
             </div>
-          </div>
-          <div class="col-md-6 col-lg-6 col-xl-auto">
-            <div class="widget widget_nav_menu footer-widget">
-              <h3 class="widget_title">Company<span class="title-shape"><img
-                    src="{% static 'assets/images/shapes/footer-line-shape.svg' %}" alt="Shape Image"></span></h3>
-              <ul class="menu">
-                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i>Our Services</a></li>
-                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i>Careers</a></li>
-                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i> Contact Us</a></li>
-                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i>Join as Vendor</a></li>
-                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i> Client Reviews</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-6 col-xl-auto">
-            <div class="widget widget_nav_menu footer-widget">
-              <h3 class="widget_title"> Our Services <span class="title-shape"><img
-                    src="{% static 'assets/images/shapes/footer-line-shape.svg' %}" alt="Shape Image"></span></h3>
-              <ul class="menu">
-                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i>Female Cook</a></li>
-                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i> Brahmin Cook</a></li>
-                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i> Baby Care</a></li>
-                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i>Patient Care</a></li>
-                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i> Japa Maid</a></li>
-                <li><a href="#"><i style="color: #074c7d;" class="far fa-angle-right"></i>Catering Services</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-6 col-xl-auto">
-            <div class="widget widget_nav_menu footer-widget">
-              <h3 class="widget_title"> Need Help?<span class="title-shape"><img
-                    src="{% static 'assets/images/shapes/footer-line-shape.svg' %}" alt="line footer"></span></h3>
-              <ul class="menu footer-menu">
 
-                <li><a href="#"><i style="color: #ea6e12" class="fa-solid fa-phone"></i>+91 {{ footer.phone_num }}</a>
-                </li>
-                <li><a href="#"><i style="color: #ea6e12" class="fa-brands fa-square-whatsapp"></i>+91 {{
-                    footer.whatsapp_num }}</a>
-                </li>
-                <li><a href="#"><i style="color: #ea6e12" class="fa-solid fa-envelope"></i>{{ footer.email }}</a>
-                </li>
-                <li><a href="#"><i style="color: #ea6e12" class="fa-solid fa-location-dot"></i>{{ footer.address }}</a>
-                </li>
+            <!-- COPYRIGHT -->
 
+            <div class="copyright-wrap">
 
-              </ul>
+                <p class="copyright-text">
+
+                    Copyright ©
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script>
+
+                    <a href="{% url 'indexpage' %}">
+
+                        Sri Dixitha
+
+                    </a>
+
+                    . All Rights Reserved.
+
+                </p>
+
             </div>
-          </div>
 
         </div>
-      </div>
-    </div>
 
-    <div class="container">
-      <div class="copyright-wrap">
-        <div class="row g-2  justify-content-center">
-          <div class="col-xl-6">
-            <p class="copyright-text">
-              Copyright <i class="fal fa-copyright"></i>
-              <script>
-                document.write(new Date().getFullYear())
-              </script>
-              <a href="{% url 'indexpage' %}">Sri Dixitha </a>.
-              All Rights Reserved.
-            </p>
-          </div>
+    </footer>
 
-        </div>
-      </div>
-    </div>
-  </footer>
-  <!--********************************
-			Code End  Here 
-	******************************** -->
-  <!--==============================
-        All Js File
-    ============================== -->
-  <!-- Jquery -->
-  <script src="{% static 'assets/js/vendor/jquery-3.7.1.min.js' %}"></script>
-  <!-- Bootstrap -->
-  <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
-  <!-- Slick Slider -->
-  <script src="{% static 'assets/js/slick.min.js' %}"></script>
-  <!-- Magnific Popup -->
-  <script src="{% static 'assets/js/jquery.magnific-popup.min.js' %}"></script>
-  <!-- imagesloaded -->
-  <script src="{% static 'assets/js/imagesloaded.pkgd.min.js' %}"></script>
-  <!-- Isotope Filter -->
-  <script src="{% static 'assets/js/isotope.pkgd.min.js' %}"></script>
-  <!-- Gsap -->
-  <script src="{% static 'assets/js/gsap.min.js' %}"></script>
-  <!-- ScrollTrigger -->
-  <script src="{% static 'assets/js/ScrollTrigger.min.js' %}"></script>
-  <!-- Gsap ScrollTo Plugin -->
-  <script src="{% static 'assets/js/gsap-scroll-to-plugin.js' %}"></script>
-  <!-- Split Text -->
-  <script src="{% static 'assets/js/SplitText.js' %}"></script>
-  <!-- lenis -->
-  <script src="{% static 'assets/js/lenis.min.js' %}"></script>
-  <!-- wow js -->
-  <script src="{% static 'assets/js/wow.min.js' %}"></script>
-  <!-- nice-select -->
-  <script src="{% static 'assets/js/jquery.nice-select.min.js' %}"></script>
-  <!-- nouislider -->
-  <script src="{% static 'assets/js/nouislider.min.js' %}"></script>
+    <!-- JS -->
 
-  <!-- Main Js File -->
-  <script src="{% static 'assets/js/main.js' %}"></script>
+    <script src="{% static 'assets/js/vendor/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+
 </body>
-
 
 </html>

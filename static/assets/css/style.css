@@ -16887,7 +16887,7 @@ td {
 
   .actions button {
     font-size: 11px;
-    padding: 5px 6px;
+    padding: 5px 30px;
   }
 
 }
@@ -17383,3 +17383,8 @@ tbody td {
 .auto-hide {
   transition: opacity 0.5s ease;
 }
+
+
+/* style for hero section */
+
+

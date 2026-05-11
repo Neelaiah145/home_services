@@ -55,6 +55,8 @@
 
   <!-- main css -->
   <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+   <link rel="stylesheet" href="{% static 'assets/css/dashboards.css' %}">
+
 </head>
 
 <body>
@@ -95,12 +97,7 @@
           </a>
         </li>
 
-         <li class="sidebar__item {% if request.resolver_match.url_name == 'complaint_list' %}active{% endif %}">
-          <a href="{% url 'complaint_list' %}">
-            <iconify-icon icon="mdi:note-text-outline" class="menu-icon"></iconify-icon>
-            <span>Customer Remarks</span>
-          </a>
-        </li>
+
 
         <li class="sidebar__item {% if request.resolver_match.url_name == 'create_admin' %}active{% endif %}">
           <a href="{% url 'create_admin' %}">
@@ -118,12 +115,7 @@
 
         <li class="sidebar-menu-group-title">Manage</li>
 
-        <li class="sidebar__item {% if request.resolver_match.url_name == 'create_service' %}active{% endif %}">
-          <a href="{% url 'create_service' %}">
-            <iconify-icon icon="mdi:briefcase-outline" class="menu-icon"></iconify-icon>
-            <span>Services</span>
-          </a>
-        </li>
+
 
         <li class="sidebar__item {% if request.resolver_match.url_name == 'superadmin_orders' %}active{% endif %}">
           <a href="{% url 'superadmin_orders' %}">
@@ -132,10 +124,25 @@
           </a>
         </li>
 
-        <li class="sidebar__item {% if request.resolver_match.url_name == 'admin_payments' %}active{% endif %}">
-          <a href="{% url 'admin_payments' %}">
+        <li class="sidebar__item {% if request.resolver_match.url_name == 'admin_renewal_dashboard' %}active{% endif %}">
+          <a href="{% url 'admin_renewal_dashboard' %}">
+            <iconify-icon icon="mdi:cart-outline"  class="menu-icon"></iconify-icon>
+            <span> Renewal Leads</span>
+          </a>
+        </li>
+
+        <li class="sidebar__item {% if request.resolver_match.url_name == 'superadmin_payments' %}active{% endif %}">
+          <a href="{% url 'superadmin_payments' %}">
             <iconify-icon icon="mdi:credit-card-outline" class="menu-icon"></iconify-icon>
             <span>Payments</span>
+          </a>
+        </li>
+
+
+        <li class="sidebar__item {% if request.resolver_match.url_name == 'complaint_list' %}active{% endif %}">
+          <a href="{% url 'complaint_list' %}">
+            <iconify-icon icon="mdi:note-text-outline" class="menu-icon"></iconify-icon>
+            <span>Customer Remarks</span>
           </a>
         </li>
 
@@ -215,29 +222,49 @@
           </a>
         </li>
 
+        <!-- 
         <li class="sidebar__item {% if request.resolver_match.url_name == 'all_users' %}active{% endif %}">
           <a href="{% url 'all_users' %}">
             <iconify-icon icon="mdi:account-group-outline" class="menu-icon"></iconify-icon>
             <span>All Users</span>
           </a>
-        </li>
-
-         <li class="sidebar__item {% if request.resolver_match.url_name == 'complaint_list' %}active{% endif %}">
-          <a href="{% url 'complaint_list' %}">
-            <iconify-icon icon="mdi:note-text-outline" class="menu-icon"></iconify-icon>
-            <span>Remarks</span>
-          </a>
-        </li>
+        </li> -->
 
 
 
 
+
+        <!-- 
         <li class="sidebar__item {% if request.resolver_match.url_name == 'create_vendor' %}active{% endif %}">
           <a href="{% url 'create_vendor' %}">
             <iconify-icon icon="mdi:account-plus-outline" class="menu-icon"></iconify-icon>
             <span>Create Vendor</span>
           </a>
+        </li> -->
+
+        <li class="sidebar__item {% if request.resolver_match.url_name == 'vendor_approval' %}active{% endif %}">
+          <a href="{% url 'vendor_approval' %}">
+            <iconify-icon icon="mdi:account-plus-outline" class="menu-icon"></iconify-icon>
+            <span>Approve Vendor</span>
+          </a>
         </li>
+
+        <li class="sidebar__item {% if request.resolver_match.url_name == 'admin_all_users' %}active{% endif %}">
+
+          <a href="{% url 'admin_all_users' %}">
+
+            <iconify-icon icon="mdi:account-group-outline" class="menu-icon">
+            </iconify-icon>
+
+            <span>
+              All Users
+            </span>
+
+          </a>
+
+        </li>
+
+
 
         <li class="sidebar-menu-group-title">Manage</li>
 
@@ -248,12 +275,36 @@
           </a>
         </li>
 
+
+
+
+          <li class="sidebar__item {% if request.resolver_match.url_name == 'admin_renewal_dashboard' %}active{% endif %}">
+          <a href="{% url 'admin_renewal_dashboard' %}">
+            <iconify-icon icon="mdi:cart-outline"  class="menu-icon"></iconify-icon>
+            <span> Renewal Leads</span>
+          </a>
+        </li>
+
         <li class="sidebar__item {% if request.resolver_match.url_name == 'admin_payments' %}active{% endif %}">
           <a href="{% url 'admin_payments' %}">
             <iconify-icon icon="mdi:credit-card-outline" class="menu-icon"></iconify-icon>
             <span>Payments</span>
           </a>
         </li>
+
+        <li class="sidebar__item {% if request.resolver_match.url_name == 'complaint_list' %}active{% endif %}">
+          <a href="{% url 'complaint_list' %}">
+            <iconify-icon icon="mdi:note-text-outline" class="menu-icon"></iconify-icon>
+            <span>Remarks</span>
+          </a>
+        </li>
+
+
+        
+
+
+
+
         <li class="sidebar-menu-group-title">Dashboard</li>
 
         <li class="sidebar__item {% if request.resolver_match.url_name == 'news.list' %}active{% endif %}">
@@ -331,6 +382,13 @@
           </a>
         </li>
 
+        <li class="sidebar__item {% if request.resolver_match.url_name == 'vendor_profile' %}active{% endif %}">
+          <a href="{% url 'vendor_profile' request.user.id %}">
+            <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
+            <span>Update Profile</span>
+          </a>
+        </li>
+
         <li class="sidebar-menu-group-title">Manage</li>
 
         <li class="sidebar__item {% if request.resolver_match.url_name == 'vendor_orders' %}active{% endif %}">
@@ -353,6 +411,25 @@
         </li>
 
 
+        <li class="sidebar__item {% if request.resolver_match.url_name == 'vendor_payment_show' %}active{% endif %}">
+
+          <a href="{% url 'vendor_payment_show' %}">
+
+            <iconify-icon icon="mdi:briefcase-outline"  class="menu-icon"></iconify-icon>
+
+            <span>Payments Upload</span>
+
+          </a>
+
+        </li>
+
+
+
+
+
+        
+
+
         <!-- ================= CUSTOMER ================= -->
         {% else %}
 
@@ -372,7 +449,26 @@
           </a>
         </li>
 
-        <li class="sidebar__item">
+        <li class="sidebar__item {% if request.resolver_match.url_name == 'customer_tracking' %}active{% endif %}">
+          <a href="{% url 'customer_tracking' %}">
+            <iconify-icon icon="mdi:crosshairs-gps" class="menu-icon"></iconify-icon>
+            <span>Tracking</span>
+          </a>
+        </li>
+
+        <li class="sidebar__item {% if request.resolver_match.url_name == 'customer_payments' %}active{% endif %}">
+          <a href="{% url 'customer_payments' %}">
+            <iconify-icon icon="mdi:credit-card-outline" class="menu-icon"></iconify-icon>
+            <span>Payments</span>
+          </a>
+        </li>
+
+
+
+
+
+
+         <li class="sidebar__item">
           <a href="2">
             <iconify-icon icon="mdi:clipboard-text-outline" class="menu-icon"></iconify-icon>
             <span>Privacy Policy</span>
@@ -382,10 +478,10 @@
         <li class="sidebar__item">
           <a href="{% url 'my_bookings' %}">
             <iconify-icon icon="mdi:briefcase-outline" class="menu-icon"></iconify-icon>
-            <span>My Bookings</span>
+            <span>Raise Complaint</span>
           </a>
         </li>
-        
+
         <li class="sidebar__item {% if request.resolver_match.url_name == 'complaint_list' %}active{% endif %}">
           <a href="{% url 'complaint_list' %}">
             <iconify-icon icon="mdi:note-text-outline" class="menu-icon"></iconify-icon>
@@ -398,7 +494,7 @@
             <iconify-icon icon="mdi:message-text-outline" class="menu-icon"></iconify-icon>
             <span>Feedback & Suggestions</span>
           </a>
-        </li>
+        </li> 
 
 
 
@@ -803,11 +899,31 @@
             </div><!-- Notification dropdown end -->
 
             <div class="dropdown">
-              <button class="d-flex justify-content-center align-items-center rounded-circle" type="button"
-                data-bs-toggle="dropdown">
-                <img src="{% static 'assets/images/tes/tes4.png' %}" alt="image"
-                  class="w-40-px h-40-px object-fit-cover rounded-circle">
-              </button>
+<button
+  class="d-flex justify-content-center align-items-center rounded-circle"
+  type="button"
+  data-bs-toggle="dropdown"
+>
+
+{% if request.user.profile_image %}
+
+<img
+  src="{{ request.user.profile_image.url }}"
+  alt="image"
+  class="w-40-px h-40-px object-fit-cover rounded-circle"
+>
+
+{% else %}
+
+<img
+  src="{% static 'assets/images/logo/default-user-image.png' %}"
+  alt="image"
+  class="w-40-px h-40-px object-fit-cover rounded-circle"
+>
+
+{% endif %}
+
+</button>
               <div class="dropdown-menu to-top dropdown-menu-sm">
                 <div class="py-12 px-16 radius-8  mb-16 d-flex align-items-center justify-content-between gap-2">
                   <div>

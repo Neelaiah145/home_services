@@ -2,69 +2,160 @@
 
 {% block content %}
 
-<div class="container mt-4">
 
-    <div class="card shadow-sm border-0 rounded-3">
 
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0 text-white">Add Services</h5>
+<div class="service-page">
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+
+        <div>
+
+            <h5 class="fw-bold mb-0">
+
+                Service Management
+            </h5>
+
+            <p class="page-subtitle">
+
+                Add and manage all service information
+
+            </p>
+
         </div>
 
-        <div class="card-body">
+
+        <a href="{% url 'services.list' %}" class="list-btn">
+
+            <i class="bi bi-grid"></i>
+
+            Services List
+
+        </a>
+
+    </div>
+
+    <!-- CARD -->
+
+    <div class="service-card">
+
+        <!-- CARD TOP -->
+
+        <div class="card-top">
+
+            <div>
+
+                <h5 class="card-title">
+
+                    Add New Service
+
+                </h5>
+
+                <p class="card-desc">
+
+                    Upload service images and enter service details
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="card-body-custom">
 
             <form method="POST" enctype="multipart/form-data">
+
                 {% csrf_token %}
 
-                <div class="row">
+                <div class="row g-4">
 
-                    <!-- ICON -->
-                    <div class="col-md-6 text-center">
-                        <label class="form-label fw-semibold">Upload Service Icon Image</label>
+                    <!-- ICON IMAGE -->
 
-                        <div class="border rounded p-3 mb-3"
-                            style="height:200px; display:flex; align-items:center; justify-content:center;">
-                            <img id="iconPreview" style="max-height:100%; max-width:100%; object-fit:cover;">
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+
+                            Upload Service Icon Image
+
+                        </label>
+
+                        <div class="image-box">
+
+                            <img id="iconPreview">
+
                         </div>
 
-                        <input type="file" name="serviceicon" class="form-control" onchange="previewIcon(event)"
-                            required>
+                        <input type="file" name="serviceicon" class="file-input" onchange="previewIcon(event)" required>
+
                     </div>
 
                     <!-- BACKGROUND IMAGE -->
-                    <div class="col-md-6 text-center">
-                        <label class="form-label fw-semibold">Upload Background Image</label>
 
-                        <div class="border rounded p-3 mb-3"
-                            style="height:200px; display:flex; align-items:center; justify-content:center;">
-                            <img id="bgPreview" style="max-height:100%; max-width:100%; object-fit:cover;">
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+
+                            Upload Background Image
+
+                        </label>
+
+                        <div class="image-box">
+
+                            <img id="bgPreview">
+
                         </div>
 
-                        <input type="file" name="service_image" class="form-control" onchange="previewBg(event)"
-                            required>
+                        <input type="file" name="service_image" class="file-input" onchange="previewBg(event)" required>
+
                     </div>
 
                     <!-- SERVICE NAME -->
-                    <div class="col-md-6 mt-3">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Service Name</label>
-                            <input type="text" name="servicename" class="form-control"
-                                placeholder="Enter Service Name..." required>
-                        </div>
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+
+                            Service Name
+
+                        </label>
+
+                        <input type="text" name="servicename" class="form-control-custom"
+                            placeholder="Enter Service Name..." required>
+
                     </div>
 
                 </div>
 
                 <!-- BUTTONS -->
-                <div class="d-flex justify-content-between mt-3">
-                    <a href="{% url 'services.list' %}" class="btn btn-outline-success">Back</a>
 
-                   <button type="submit" name="save_add_more" class="btn btn-primary px-4">
-                        Save & Add More
-                    </button>
+                <div class="form-actions">
 
-                    <button type="submit" class="btn btn-primary px-4">
-                        Save
-                    </button>
+                    <a href="{% url 'services.list' %}" class="back-btn">
+
+                        Back
+
+                    </a>
+
+                    <div class="right-btns">
+
+                        <button type="submit" name="save_add_more" class="save-more-btn">
+
+                            Save & Add More
+
+                        </button>
+
+                        <button type="submit" class="save-btn">
+
+                            Save
+
+                        </button>
+
+                    </div>
+
                 </div>
 
             </form>
@@ -76,22 +167,45 @@
 </div>
 
 <!-- IMAGE PREVIEW SCRIPT -->
+
 <script>
+
     function previewIcon(event) {
+
         const reader = new FileReader();
+
         reader.onload = function () {
-            document.getElementById('iconPreview').src = reader.result;
+
+            document.getElementById(
+                'iconPreview'
+            ).src = reader.result;
+
         }
-        reader.readAsDataURL(event.target.files[0]);
+
+        reader.readAsDataURL(
+            event.target.files[0]
+        );
+
     }
 
     function previewBg(event) {
+
         const reader = new FileReader();
+
         reader.onload = function () {
-            document.getElementById('bgPreview').src = reader.result;
+
+            document.getElementById(
+                'bgPreview'
+            ).src = reader.result;
+
         }
-        reader.readAsDataURL(event.target.files[0]);
+
+        reader.readAsDataURL(
+            event.target.files[0]
+        );
+
     }
+
 </script>
 
 {% endblock %}
