@@ -1,28 +1,29 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <title>
-    Payment Invoice
+    Invoice
 </title>
 
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
 
 body{
- 
-    background:#f4f7fb;
+    font-family:'DM Sans',sans-serif;
+    background:#f5f7fb;
     padding:30px;
 }
 
+/* MAIN */
+
 .invoice{
-    max-width:950px;
+    max-width:900px;
     margin:auto;
     background:#fff;
-    padding:35px;
-    border-radius:24px;
+    padding:34px;
+    border-radius:18px;
     border:1px solid #e5e7eb;
 }
 
@@ -33,12 +34,10 @@ body{
     justify-content:space-between;
     align-items:flex-start;
     margin-bottom:30px;
-    gap:20px;
-    flex-wrap:wrap;
 }
 
 .company{
-    font-size:30px;
+    font-size:24px;
     font-weight:700;
     color:#111827;
 }
@@ -46,78 +45,56 @@ body{
 .meta{
     font-size:13px;
     color:#6b7280;
-    line-height:1.9;
+    line-height:1.8;
+    text-align:right;
 }
 
-.invoice-badge{
-    background:#ecfdf5;
-    color:#15803d;
-    padding:8px 14px;
-    border-radius:30px;
-    font-size:12px;
-    font-weight:700;
-}
+/* BILL */
 
-/* TOP GRID */
-
-.top-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:20px;
+.bill{
+    display:flex;
+    justify-content:space-between;
     margin-bottom:30px;
+    gap:30px;
 }
 
-.info-card{
-    background:#f9fafb;
-    border:1px solid #e5e7eb;
-    border-radius:18px;
-    padding:20px;
+.bill-box{
+    flex:1;
 }
 
-.info-title{
-    font-size:12px;
-    font-weight:700;
+.bill-title{
+    font-size:13px;
     color:#6b7280;
-    text-transform:uppercase;
-    margin-bottom:14px;
+    margin-bottom:8px;
 }
 
-.info-value{
-    font-size:14px;
+.bill-value{
+    font-size:15px;
+    font-weight:700;
     color:#111827;
-    line-height:1.9;
-    font-weight:600;
+    margin-bottom:4px;
 }
 
 /* TABLE */
 
-.table-wrap{
-    border:1px solid #e5e7eb;
-    border-radius:18px;
-    overflow:hidden;
-    margin-top:20px;
-}
-
 .table{
     width:100%;
     border-collapse:collapse;
+    margin-top:10px;
 }
 
 .table th{
-    background:#f9fafb;
     text-align:left;
-    padding:16px;
     font-size:12px;
     color:#6b7280;
-    text-transform:uppercase;
-    font-weight:700;
+    padding:14px 10px;
+    background:#f9fafb;
 }
 
 .table td{
-    padding:18px 16px;
-    border-top:1px solid #e5e7eb;
+    padding:16px 10px;
+    border-bottom:1px solid #e5e7eb;
     font-size:14px;
-    color:#111827;
 }
 
 /* TOTAL */
@@ -125,11 +102,7 @@ body{
 .total-box{
     margin-top:30px;
     margin-left:auto;
-    width:320px;
-    background:#f9fafb;
-    border:1px solid #e5e7eb;
-    border-radius:18px;
-    padding:22px;
+    width:340px;
 }
 
 .total-row{
@@ -140,39 +113,85 @@ body{
 }
 
 .total-final{
-    border-top:1px solid #dbe1ea;
-    padding-top:14px;
-    margin-top:14px;
+    border-top:1px solid #e5e7eb;
+    padding-top:16px;
     font-size:18px;
     font-weight:700;
 }
 
-/* PAYMENT */
+/* PAYMENT INFO */
 
-.payment-proof{
-    width:150px;
-    margin-top:14px;
-    border-radius:14px;
+.payment-card{
+    margin-top:30px;
+    background:#f9fafb;
     border:1px solid #e5e7eb;
+    border-radius:16px;
+    padding:22px;
+}
+
+.payment-title{
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:16px;
+    color:#111827;
+}
+
+.payment-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+}
+
+.pay-item{
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    padding:16px;
+}
+
+.pay-label{
+    font-size:12px;
+    color:#6b7280;
+    margin-bottom:6px;
+}
+
+.pay-value{
+    font-size:16px;
+    font-weight:700;
+    color:#111827;
+}
+
+/* BADGE */
+
+.method-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:8px 14px;
+    border-radius:30px;
+    background:#eff6ff;
+    color:#2563eb;
+    font-size:12px;
+    font-weight:700;
+    text-transform:capitalize;
 }
 
 /* BUTTONS */
 
 .actions{
     margin-top:35px;
-    display:flex;
-    justify-content:flex-end;
-    gap:12px;
+    text-align:right;
 }
 
 .btn{
-    height:48px;
-    padding:0 22px;
+    height:42px;
     border:none;
-    border-radius:12px;
-    cursor:pointer;
-    font-size:14px;
+    border-radius:10px;
+    padding:0 18px;
+    font-size:13px;
     font-weight:700;
+    cursor:pointer;
+    margin-left:10px;
 }
 
 .print{
@@ -188,33 +207,13 @@ body{
 /* FOOTER */
 
 .footer{
-    margin-top:40px;
-    border-top:1px solid #e5e7eb;
-    padding-top:20px;
+    margin-top:35px;
     text-align:center;
-    font-size:13px;
+    font-size:12px;
     color:#6b7280;
 }
 
-@media(max-width:768px){
-
-    body{
-        padding:15px;
-    }
-
-    .invoice{
-        padding:22px;
-    }
-
-    .top-grid{
-        grid-template-columns:1fr;
-    }
-
-    .total-box{
-        width:100%;
-    }
-
-}
+/* PRINT */
 
 @media print{
 
@@ -230,7 +229,6 @@ body{
     .invoice{
         border:none;
         border-radius:0;
-        max-width:100%;
     }
 
 }
@@ -250,183 +248,65 @@ body{
         <div>
 
             <div class="company">
-                Payment Invoice
+                Your Company
             </div>
 
-            <div class="meta">
-
-                Invoice ID :
-                INV-{{ payment.id }}
-
-                <br>
-
-                Order ID :
-                #{{ booking.order_id }}
-
-                <br>
-
-                Registered Date :
-                {{ booking.created_at|date:"d M Y" }}
-
-                <br>
-
-                Payment Date :
-                {{ payment.created_at|date:"d M Y" }}
-
+            <div style="font-size:13px;color:#6b7280;margin-top:5px;">
+                Customer Payment Invoice
             </div>
 
         </div>
 
-        <div>
+        <div class="meta">
 
-            <div class="invoice-badge">
+            <div>
+                <strong>
+                    Invoice ID :
+                </strong>
 
-                {{ booking.get_status_display }}
+                INV-{{ booking.id }}
+            </div>
 
+            <div>
+                {{ booking.created_at|date:"d M Y" }}
             </div>
 
         </div>
 
     </div>
 
-    <!-- TOP INFO -->
+    <!-- BILL -->
 
-    <div class="top-grid">
+    <div class="bill">
 
-        <!-- CUSTOMER -->
+        <div class="bill-box">
 
-        <div class="info-card">
-
-            <div class="info-title">
-                Customer Details
+            <div class="bill-title">
+                Bill To
             </div>
 
-            <div class="info-value">
-
-                Name :
+            <div class="bill-value">
                 {{ booking.user.first_name }}
+            </div>
 
-                <br>
-
-                Phone :
-                {{ booking.phone }}
-
-                <br>
-
-                City :
-                {{ booking.city }}
-
-                <br>
-
-                Address :
-                {{ booking.address }}
-
+            <div style="font-size:13px;color:#6b7280;">
+                {{ booking.user.mobile }}
             </div>
 
         </div>
 
-        <!-- VENDOR -->
+        <div class="bill-box" style="text-align:right;">
 
-        <div class="info-card">
-
-            <div class="info-title">
-                Vendor Details
+            <div class="bill-title">
+                Vendor
             </div>
 
-            <div class="info-value">
+            <div class="bill-value">
 
                 {% if booking.vendor %}
-
-                    Vendor :
                     {{ booking.vendor.first_name }}
-
-                    <br>
-
-                    Phone :
-                    {{ booking.vendor.phone }}
-
                 {% else %}
-
-                    Vendor Not Assigned
-
-                {% endif %}
-
-            </div>
-
-        </div>
-
-        <!-- SERVICE -->
-
-        <div class="info-card">
-
-            <div class="info-title">
-                Service Details
-            </div>
-
-            <div class="info-value">
-
-                Service :
-                {{ booking.service.s_title }}
-
-                <br>
-
-                Category :
-                {{ booking.category }}
-
-                <br>
-
-                Status :
-                {{ booking.get_status_display }}
-
-            </div>
-
-        </div>
-
-        <!-- SCHEDULE -->
-
-        <div class="info-card">
-
-            <div class="info-title">
-                Schedule Details
-            </div>
-
-            <div class="info-value">
-
-                {% if booking.scheduled_date %}
-
-                    Service Type :
-                    Single Booking
-
-                    <br>
-
-                    Date :
-                    {{ booking.scheduled_date }}
-
-                    <br>
-
-                    Time :
-                    {{ booking.scheduled_time }}
-
-                {% else %}
-
-                    Service Type :
-                    Multiple Days
-
-                    <br>
-
-                    Start :
-                    {{ booking.start_date }}
-
-                    <br>
-
-                    End :
-                    {{ booking.end_date }}
-
-                    <br>
-
-                    Duration :
-                    {{ booking.total_days }} Days
-
+                    Not Assigned
                 {% endif %}
 
             </div>
@@ -437,61 +317,51 @@ body{
 
     <!-- TABLE -->
 
-    <div class="table-wrap">
+    <table class="table">
 
-        <table class="table">
+        <tr>
 
-            <tr>
+            <th>
+                Service
+            </th>
 
-                <th>
-                    Service
-                </th>
+            <th>
+                Category
+            </th>
 
-                <th>
-                    Transaction ID
-                </th>
+            <th>
+                Qty
+            </th>
 
-                <th>
-                    Payment Status
-                </th>
+            <th style="text-align:right;">
+                Amount
+            </th>
 
-                <th>
-                    Amount
-                </th>
+        </tr>
 
-            </tr>
+        <tr>
 
-            <tr>
+            <td>
+                {{ booking.service.s_title }}
+            </td>
 
-                <td>
+            <td>
+                {{ booking.category }}
+            </td>
 
-                    {{ booking.service.s_title }}
+            <td>
+                1
+            </td>
 
-                </td>
+            <td style="text-align:right;">
 
-                <td>
+                ₹{{ total_amount }}
 
-                    {{ payment.transaction_id }}
+            </td>
 
-                </td>
+        </tr>
 
-                <td>
-
-                    {{ payment.get_status_display }}
-
-                </td>
-
-                <td>
-
-                    ₹{{ payment.paid_amount }}
-
-                </td>
-
-            </tr>
-
-        </table>
-
-    </div>
+    </table>
 
     <!-- TOTAL -->
 
@@ -500,36 +370,146 @@ body{
         <div class="total-row">
 
             <span>
-                Service Amount
+                Total Amount
             </span>
 
-            <span>
-                ₹{{ payment.paid_amount }}
-            </span>
+            <strong>
+                ₹{{ total_amount }}
+            </strong>
 
         </div>
 
         <div class="total-row">
 
             <span>
-                Tax
+                Paid Amount
             </span>
 
+            <strong style="color:#2563eb;">
+                ₹{{ paid_amount }}
+            </strong>
+
+        </div>
+
+        <div class="total-row">
+
             <span>
-                ₹0
+                Remaining Amount
             </span>
+
+            <strong style="color:#dc2626;">
+                ₹{{ remaining_amount }}
+            </strong>
 
         </div>
 
         <div class="total-row total-final">
 
             <span>
-                Total Paid
+                Final Amount
             </span>
 
             <span>
-                ₹{{ payment.paid_amount }}
+                ₹{{ total_amount }}
             </span>
+
+        </div>
+
+    </div>
+
+    <!-- PAYMENT INFO -->
+
+    <div class="payment-card">
+
+        <div class="payment-title">
+            Payment Information
+        </div>
+
+        <div class="payment-grid">
+
+            <div class="pay-item">
+
+                <div class="pay-label">
+                    Payment Method
+                </div>
+
+                <div class="pay-value">
+
+                    <span class="method-badge">
+
+                        {{ payment_method }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="pay-item">
+
+                <div class="pay-label">
+                    Transaction ID
+                </div>
+
+                <div class="pay-value">
+
+                    {% if payment and payment.transaction_id %}
+
+                        {{ payment.transaction_id }}
+
+                    {% else %}
+
+                        N/A
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="pay-item">
+
+                <div class="pay-label">
+                    Payment Status
+                </div>
+
+                <div class="pay-value">
+
+                    {% if payment %}
+
+                        {{ payment.get_status_display }}
+
+                    {% else %}
+
+                        Pending
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="pay-item">
+
+                <div class="pay-label">
+                    Due Date
+                </div>
+
+                <div class="pay-value">
+
+                    {% if payment and payment.due_date %}
+
+                        {{ payment.due_date }}
+
+                    {% else %}
+
+                        Not Updated
+
+                    {% endif %}
+
+                </div>
+
+            </div>
 
         </div>
 
@@ -537,24 +517,21 @@ body{
 
     <!-- SCREENSHOT -->
 
-    {% if payment.screenshot %}
+    {% if payment and payment.screenshot %}
 
-    <div style="margin-top:35px;">
+    <div style="margin-top:30px;">
 
-        <div style="
-            font-size:14px;
-            font-weight:700;
-            color:#111827;
-            margin-bottom:12px;
-        ">
-
+        <div style="font-size:16px;font-weight:700;margin-bottom:14px;">
             Payment Screenshot
-
         </div>
 
         <img
             src="{{ payment.screenshot.url }}"
-            class="payment-proof"
+            style="
+                width:220px;
+                border-radius:16px;
+                border:1px solid #e5e7eb;
+            "
         >
 
     </div>
@@ -589,7 +566,7 @@ body{
 
     <div class="footer">
 
-        Thank you for your payment and service booking
+        Thank you for your business
 
     </div>
 

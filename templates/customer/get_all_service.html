@@ -1,0 +1,591 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    background: #f0f4f8;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #1e293b;
+}
+
+/* ─────────────────────────────
+   WRAPPER
+───────────────────────────── */
+.sl-wrap {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+}
+
+/* ─────────────────────────────
+   PAGE HEADER
+───────────────────────────── */
+.sl-header {
+    background: #fff;
+    border: 1px solid #e4eaf2;
+    border-radius: 18px;
+    padding: 36px 44px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.sl-header h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0a2540;
+    margin: 0 0 6px;
+    line-height: 1.2;
+}
+
+.sl-header p {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+}
+
+.sl-verified {
+    background: #1a56db;
+    color: #e8f0fe;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    padding: 8px 18px;
+    border-radius: 30px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ─────────────────────────────
+   LAYOUT
+───────────────────────────── */
+.sl-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 1060px) {
+    .sl-layout {
+        grid-template-columns: 1fr;
+    }
+    .sl-sidebar {
+        order: -1;
+    }
+}
+
+/* ─────────────────────────────
+   SERVICE GRID
+───────────────────────────── */
+.sl-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 18px;
+}
+
+/* ─────────────────────────────
+   SERVICE CARD
+───────────────────────────── */
+.sc {
+    background: #fff;
+    border: 1px solid #e4eaf2;
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.sc:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(10,37,64,.1);
+}
+
+/* Image */
+.sc-img {
+    position: relative;
+    height: 195px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.sc-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .4s ease;
+}
+
+.sc:hover .sc-img img {
+    transform: scale(1.04);
+}
+
+.sc-img-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(10,37,64,.4) 100%);
+    pointer-events: none;
+}
+
+/* Tag */
+.sc-tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #1a56db;
+    color: #e8f0fe;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    padding: 4px 11px;
+    border-radius: 30px;
+    z-index: 2;
+}
+
+/* Body */
+.sc-body {
+    padding: 18px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.sc-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0a2540;
+    line-height: 1.35;
+    margin: 0;
+}
+
+.sc-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color .2s;
+}
+
+.sc-title a:hover {
+    color: #1a56db;
+}
+
+.sc-desc {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.7;
+    margin: 0;
+    flex: 1;
+}
+
+.sc-divider {
+    height: 1px;
+    background: #e4eaf2;
+    margin: 2px 0;
+}
+
+/* Book button */
+.sc-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #0a2540;
+    color: #e2eaf5;
+    border-radius: 12px;
+    padding: 11px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background .2s, transform .15s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.sc-btn:hover {
+    background: #1a56db;
+    color: #e8f0fe;
+    transform: scale(1.015);
+}
+
+/* ─────────────────────────────
+   SIDEBAR
+───────────────────────────── */
+.sl-sidebar {
+    position: sticky;
+    top: 24px;
+}
+
+.sl-filter {
+    background: #fff;
+    border: 1px solid #e4eaf2;
+    border-radius: 18px;
+    padding: 26px 24px 28px;
+}
+
+.sl-filter-title {
+    font-size: 18px !important;
+    font-weight: 500 !important;
+    color: #0a2540;
+    margin: 0 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.sl-filter-title svg {
+    width: 18px;
+    height: 18px;
+    color: #1a56db;
+    flex-shrink: 0;
+}
+
+/* Label above each field */
+.sl-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: 7px;
+}
+
+/* Input wrapper for icon */
+.sl-input-wrap {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.sl-input-wrap svg {
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+/* Shared input / select */
+.sl-input {
+    width: 100%;
+    height: 46px;
+    border: 1px solid #dce4ef;
+    border-radius: 12px;
+    padding: 0 36px 0 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    color: #1e293b;
+    background: #f8fafc;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+}
+
+.sl-input:focus {
+    border-color: #1a56db;
+    box-shadow: 0 0 0 3px rgba(26,86,219,.1);
+    background: #fff;
+}
+
+.sl-submit {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 12px;
+    background: #1a56db;
+    color: #fff;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: background .2s, transform .15s;
+}
+
+.sl-submit:hover {
+    background: #0a2540;
+    transform: translateY(-1px);
+}
+
+/* ─────────────────────────────
+   EMPTY STATE
+───────────────────────────── */
+.sl-empty {
+    grid-column: 1 / -1;
+    background: #fff;
+    border: 1px solid #e4eaf2;
+    border-radius: 18px;
+    padding: 70px 24px;
+    text-align: center;
+}
+
+.sl-empty-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #ebf2ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.sl-empty-icon svg {
+    width: 26px;
+    height: 26px;
+    color: #1a56db;
+}
+
+.sl-empty h4 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0a2540;
+    margin: 0 0 8px;
+}
+
+.sl-empty p {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+}
+
+/* ─────────────────────────────
+   PAGINATION
+───────────────────────────── */
+.sl-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 44px;
+    flex-wrap: wrap;
+}
+
+.sl-page-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    height: 42px;
+    padding: 0 12px;
+    border-radius: 11px;
+    background: #fff;
+    border: 1px solid #dce4ef;
+    color: #1e293b;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    transition: background .2s, border-color .2s, color .2s;
+}
+
+.sl-page-btn:hover {
+    background: #1a56db;
+    border-color: #1a56db;
+    color: #fff;
+}
+
+.sl-page-btn.active {
+    background: #0a2540;
+    border-color: #0a2540;
+    color: #e2eaf5;
+    pointer-events: none;
+}
+
+</style>
+
+<div class="sl-wrap">
+
+    <!-- HEADER -->
+    <div class="page-header">
+
+        <h6 class="fw-semibold mb-0">
+            View All Services
+        </h6>
+
+        <div class="page-subtitle">
+          Browse and explore all available professional services with trusted experts.
+        </div>
+
+    </div>
+
+    <!-- MAIN LAYOUT -->
+    <div class="sl-layout">
+
+        <!-- SERVICE CARDS -->
+        <div>
+            <div class="sl-grid">
+
+                {% for category_service in category_servicess %}
+
+                <div class="sc">
+
+                    <div class="sc-img">
+                        <img
+                            src="{% if category_service.image %}{{ category_service.image.url }}{% else %}{% static 'assets/img/listing/b2b/b2b_img_01.webp' %}{% endif %}"
+                            alt="{{ category_service.s_title }}">
+                        <div class="sc-img-overlay"></div>
+                        <span class="sc-tag">{{ category_service.s_tag }}</span>
+                    </div>
+<div class="sc-body">
+
+    <h3 class="sc-title">
+        <a href="#">
+            {{ category_service.s_title }}
+        </a>
+    </h3>
+
+    <p class="sc-desc">
+        {{ category_service.s_desc|truncatewords:18 }}
+    </p>
+
+    <div class="sc-divider"></div>
+
+    <a class="sc-btn" href="{% url 'book_service' %}">
+
+        <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true">
+
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+
+        </svg>
+
+        Book Now
+
+    </a>
+
+</div>
+
+                </div>
+
+                {% empty %}
+
+                <div class="sl-empty">
+                    <div class="sl-empty-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                    </div>
+                    <h4>No Services Found</h4>
+                    <p>Try adjusting your search or filter options.</p>
+                </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <aside class="sl-sidebar">
+            <div class="sl-filter">
+
+                <h3 class="sl-filter-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="4" y1="6" x2="16" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="16" y2="18"/>
+                    </svg>
+                    Filter Services
+                </h3>
+
+                <form method="GET">
+
+                    <label class="sl-label" for="sl-search">Keyword</label>
+                    <div class="sl-input-wrap">
+                        <input
+                            id="sl-search"
+                            type="text"
+                            name="search"
+                            class="sl-input"
+                            placeholder="e.g. cleaning, plumbing…"
+                            value="{{ request.GET.search }}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                    </div>
+
+                    <label class="sl-label" for="sl-service">Category</label>
+                    <div class="sl-input-wrap">
+                        <select id="sl-service" name="service" class="sl-input">
+                            <option value="">All Categories</option>
+                            {% for service in category_services %}
+                            <option value="{{ service.id }}"
+                                {% if request.GET.service == service.id|stringformat:"s" %}selected{% endif %}>
+                                {{ service.s_title }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </div>
+
+                    <button class="sl-submit" type="submit">Search Services</button>
+
+                </form>
+
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- PAGINATION -->
+    {% if is_paginated %}
+    <div class="sl-pagination">
+
+        {% if page_obj.has_previous %}
+        <a class="sl-page-btn"
+           href="?page={{ page_obj.previous_page_number }}&search={{ request.GET.search }}&service={{ request.GET.service }}"
+           aria-label="Previous page">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
+        {% endif %}
+
+        {% for num in paginator.page_range %}
+            {% if page_obj.number == num %}
+                <a class="sl-page-btn active" href="#" aria-current="page">{{ num }}</a>
+            {% else %}
+                <a class="sl-page-btn"
+                   href="?page={{ num }}&search={{ request.GET.search }}&service={{ request.GET.service }}">
+                   {{ num }}
+                </a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <a class="sl-page-btn"
+           href="?page={{ page_obj.next_page_number }}&search={{ request.GET.search }}&service={{ request.GET.service }}"
+           aria-label="Next page">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+        {% endif %}
+
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

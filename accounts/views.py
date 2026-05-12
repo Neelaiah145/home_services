@@ -379,6 +379,7 @@ class LogoutView(LoginRequiredMixin, View):
 
 
 # super admin -- dashboard page
+from django.db.models import Count
 from django.utils import timezone
 from datetime import datetime
 class SuperDashboardView(LoginRequiredMixin, RoleRequiredMixin, View):
@@ -453,7 +454,47 @@ class SuperDashboardView(LoginRequiredMixin, RoleRequiredMixin, View):
             month_labels.append(month_name)
 
             monthly_data.append(total)
+        # CATEGORY DROPDOWN
 
+        categories = Category.objects.all()
+
+        selected_category = request.GET.get("category")
+
+
+        # SERVICES QUERY
+
+        services = CategoryService.objects.all()
+
+
+        # FILTER CATEGORY
+
+        if selected_category:
+
+            services = services.filter(
+                category_id=selected_category
+            )
+
+
+        # SERVICE CHART DATA
+
+        service_labels = []
+
+        service_data = []
+
+
+        for service in services:
+
+            total = Booking.objects.filter(
+                service=service
+            ).count()
+
+            service_labels.append(
+                service.s_title
+            )
+
+            service_data.append(
+                total
+            )
         context = {
 
             'page_title': 'Dashboard',
@@ -472,6 +513,14 @@ class SuperDashboardView(LoginRequiredMixin, RoleRequiredMixin, View):
 
             'month_labels': month_labels,
             'monthly_data': monthly_data,
+
+            'categories': categories,
+
+            'selected_category': selected_category,
+
+            'service_labels': json.dumps(service_labels),
+
+            'service_data': json.dumps(service_data),
         }
 
         return render(
@@ -945,12 +994,148 @@ class DeleteServiceView(View):
 # ======================================================================================================
 
 # admin dashboard page
+
+
+
 class AdminDashboardView(LoginRequiredMixin, RoleRequiredMixin, View):
+
     allowed_roles = ['admin']
 
     def get(self, request):
-        return render(request, "admin/dashboard.html")
 
+        # TOTAL USERS
+
+        total_customers = User.objects.filter(
+            role="customer"
+        ).count()
+
+        total_vendors = User.objects.filter(
+            role="vendor"
+        ).count()
+
+
+        total_bookings = Booking.objects.count()
+
+        # BOOKING STATUS COUNTS
+
+        total_pending = Booking.objects.filter(
+            status="pending"
+        ).count()
+
+        total_assigned = Booking.objects.filter(
+            status="assigned"
+        ).count()
+
+        total_accepted = Booking.objects.filter(
+            status="accepted"
+        ).count()
+
+        total_in_progress = Booking.objects.filter(
+            status="in_progress"
+        ).count()
+
+        total_completed = Booking.objects.filter(
+            status="completed"
+        ).count()
+
+        total_cancelled = Booking.objects.filter(
+            status="cancelled"
+        ).count()
+
+        # MONTHLY LEADS
+
+        monthly_data = []
+
+        month_labels = []
+
+        current_year = timezone.now().year
+
+        for month in range(1, 13):
+
+            total = Booking.objects.filter(
+                created_at__year=current_year,
+                created_at__month=month
+            ).count()
+
+            month_name = datetime(
+                current_year,
+                month,
+                1
+            ).strftime("%b")
+
+            month_labels.append(month_name)
+
+            monthly_data.append(total)
+        # CATEGORY DROPDOWN
+
+        categories = Category.objects.all()
+
+        selected_category = request.GET.get("category")
+
+
+        # SERVICES QUERY
+
+        services = CategoryService.objects.all()
+
+
+        # FILTER CATEGORY
+
+        if selected_category:
+
+            services = services.filter(
+                category_id=selected_category
+            )
+
+
+        # SERVICE CHART DATA
+
+        service_labels = []
+
+        service_data = []
+
+
+        for service in services:
+
+            total = Booking.objects.filter(
+                service=service
+            ).count()
+
+            service_labels.append(
+                service.s_title
+            )
+
+            service_data.append(
+                total
+            )
+        context = {
+
+            'page_title': 'Dashboard',
+
+            'total_customers': total_customers,
+            'total_vendors': total_vendors,
+       
+            'total_bookings': total_bookings,
+
+            'total_pending': total_pending,
+            'total_assigned': total_assigned,
+            'total_accepted': total_accepted,
+            'total_in_progress': total_in_progress,
+            'total_completed': total_completed,
+            'total_cancelled': total_cancelled,
+
+            'month_labels': month_labels,
+            'monthly_data': monthly_data,
+
+            'categories': categories,
+
+            'selected_category': selected_category,
+
+            'service_labels': json.dumps(service_labels),
+
+            'service_data': json.dumps(service_data),
+        }
+
+        return render(request,"admin/dashboard.html",context)
 
 # admin create vendor
 
@@ -1771,7 +1956,7 @@ class AdminRenewalDashboardView(LoginRequiredMixin, View):
 
     def get(self, request):
 
-        if request.user.role != "admin":
+        if request.user.role not in ["admin", "superadmin"]:
 
             return HttpResponse(
                 "Not allowed"
@@ -2177,7 +2362,6 @@ class VendorOrdersView(LoginRequiredMixin, View):
 
 
 from decimal import Decimal
-
 class AdminOrdersView(LoginRequiredMixin, View):
 
     def get(self, request):
@@ -2189,6 +2373,8 @@ class AdminOrdersView(LoginRequiredMixin, View):
         city = request.GET.get("city")
 
         q = request.GET.get("q")
+
+        postal_code = request.GET.get("postal_code")
 
         # BOOKINGS
 
@@ -2234,6 +2420,16 @@ class AdminOrdersView(LoginRequiredMixin, View):
                 Q(city__icontains=q) |
 
                 Q(order_id__icontains=q)
+
+            )
+
+        # POSTAL CODE FILTER
+
+        if postal_code:
+
+            bookings = bookings.filter(
+
+                vendor__vendor_profile__postal_code__icontains=postal_code
 
             )
 
@@ -2290,6 +2486,16 @@ class AdminOrdersView(LoginRequiredMixin, View):
                 city__icontains=city
             )
 
+        # POSTAL CODE FILTER
+
+        if postal_code:
+
+            vendors = vendors.filter(
+
+                vendor_profile__postal_code__icontains=postal_code
+
+            )
+
         vendors = vendors.distinct()
 
         # PAGINATION
@@ -2324,6 +2530,8 @@ class AdminOrdersView(LoginRequiredMixin, View):
                 "selected_city": city,
 
                 "q": q,
+
+                "postal_code": postal_code,
 
             }
         )
@@ -2363,9 +2571,7 @@ class AdminOrdersView(LoginRequiredMixin, View):
                 id=booking_id
             )
 
-            # =====================================
             # PAYMENT SAVE
-            # =====================================
 
             if total_amount:
 
@@ -2375,7 +2581,7 @@ class AdminOrdersView(LoginRequiredMixin, View):
                     booking=booking
                 ).first()
 
-                # UPDATE EXISTING PAYMENT
+                # UPDATE
 
                 if payment:
 
@@ -2391,7 +2597,7 @@ class AdminOrdersView(LoginRequiredMixin, View):
 
                     payment.save()
 
-                # CREATE NEW PAYMENT
+                # CREATE
 
                 else:
 
@@ -2419,9 +2625,7 @@ class AdminOrdersView(LoginRequiredMixin, View):
 
                 })
 
-            # =====================================
             # STATUS UPDATE
-            # =====================================
 
             if status:
 
@@ -2462,8 +2666,6 @@ class AdminOrdersView(LoginRequiredMixin, View):
                 "error": str(e)
 
             }, status=400)
-            
-            
             
 
 # super-admin orders
@@ -2619,14 +2821,18 @@ class ProfileView(LoginRequiredMixin, View):
 
 
 
+from decimal import Decimal
+
 class AdminPaymentsView(LoginRequiredMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
 
         if request.user.role not in ["admin", "superadmin"]:
+
             return redirect("dashboard")
 
         return super().dispatch(request, *args, **kwargs)
+
 
     def get(self, request):
 
@@ -2638,18 +2844,31 @@ class AdminPaymentsView(LoginRequiredMixin, View):
             "service__category"
         ).order_by("-id")
 
-        payment_status = request.GET.get("payment_status")
+
+        payment_status = request.GET.get(
+            "payment_status"
+        )
 
         if payment_status:
-            payments = payments.filter(status=payment_status)
+
+            payments = payments.filter(
+                status=payment_status
+            )
 
 
         for p in payments:
 
             if not p.payment_method:
+
                 p.payment_method = "Cash"
 
-        page_obj = paginate_queryset(request, payments, 10)
+
+        page_obj = paginate_queryset(
+            request,
+            payments,
+            10
+        )
+
 
         return render(
             request,
@@ -2659,25 +2878,107 @@ class AdminPaymentsView(LoginRequiredMixin, View):
                 "page_obj": page_obj,
             }
         )
+
+
     def post(self, request):
 
-        payment_id = request.POST.get("payment_id")
+        payment_id = request.POST.get(
+            "payment_id"
+        )
 
-        payment_method = request.POST.get("payment_method")
+        if payment_id:
 
-        payment = get_object_or_404(
-        Payment,
-        id=payment_id
-    )
+            payment = get_object_or_404(
+                Payment,
+                id=payment_id
+            )
 
-        payment.payment_method = payment_method
 
-        payment.save()
+            # PAYMENT METHOD
 
-        return redirect("admin_payments")
-    
-    
-    
+            payment_method = request.POST.get(
+                "payment_method"
+            )
+
+            if payment_method:
+
+                payment.payment_method = payment_method
+
+
+            # DUE DATE
+
+            due_date = request.POST.get(
+                "due_date"
+            )
+
+            if due_date:
+
+                payment.due_date = due_date
+
+
+            # CUSTOMER REQUEST
+
+            payment_request = request.POST.get(
+                "payment_request"
+            )
+
+            if payment_request:
+
+                payment.payment_request = payment_request
+
+
+            # PAID AMOUNT
+
+            paid_amount = request.POST.get(
+                "paid_amount"
+            )
+
+            if paid_amount:
+
+                paid_amount_decimal = Decimal(
+                    paid_amount
+                )
+
+                payment.paid_amount = paid_amount_decimal
+
+
+                total_amount = Decimal(
+                    payment.total_amount or 0
+                )
+
+                remaining = (
+                    total_amount - paid_amount_decimal
+                )
+
+                payment.remaining_amount = remaining
+
+
+                # STATUS UPDATE
+
+                if remaining <= 0:
+
+                    payment.status = "paid"
+
+                elif paid_amount_decimal > 0:
+
+                    payment.status = "partial_paid"
+
+                else:
+
+                    payment.status = "pending"
+
+
+            if not payment.payment_method:
+
+                payment.payment_method = "Cash"
+
+
+            payment.save()
+
+
+        return redirect(
+            "admin_payments"
+        )
     
     
     
@@ -2737,15 +3038,18 @@ class VendorPaymentsShowView(LoginRequiredMixin, View):
             return redirect("login")
 
         bookings = Booking.objects.filter(
-            vendor=request.user,
-            status="completed"
+        vendor=request.user,
+        status__in=[
+            "accepted",
+            "in_progress",
+            "completed"
+        ]
         ).select_related(
             "user",
             "service"
         ).prefetch_related(
             "payments"
         ).order_by("-id")
-
         payment_status = request.GET.get("payment_status")
 
         if payment_status == "paid":
@@ -2800,6 +3104,7 @@ class VendorPaymentsShowView(LoginRequiredMixin, View):
                 b.remaining_amount_value = payment.remaining_amount or 0
 
                 b.transaction_id_value = payment.transaction_id
+           
 
             else:
 
@@ -2810,6 +3115,7 @@ class VendorPaymentsShowView(LoginRequiredMixin, View):
                 b.remaining_amount_value = 0
 
                 b.transaction_id_value = ""
+                b.due_date_value = None
 
         page_obj = paginate_queryset(request, bookings, 10)
 
@@ -2882,16 +3188,32 @@ class VendorPaymentsView(LoginRequiredMixin, View):
             return redirect("login")
 
         bookings = Booking.objects.filter(
+
             vendor=request.user,
-            status="completed"
+
+            status__in=[
+                "accepted",
+                "in_progress",
+                "completed"
+            ]
+
         ).select_related(
+
             "user",
             "service"
+
         ).prefetch_related(
+
             "payments"
+
         ).order_by("-id")
 
-        payment_status = request.GET.get("payment_status")
+        # PAYMENT STATUS FILTER
+
+        payment_status = request.GET.get(
+            "payment_status"
+        )
+
         if payment_status == "paid":
 
             bookings = [
@@ -2919,6 +3241,7 @@ class VendorPaymentsView(LoginRequiredMixin, View):
             ]
 
         elif payment_status == "pending":
+
             bookings = [
 
                 b for b in bookings
@@ -2929,17 +3252,44 @@ class VendorPaymentsView(LoginRequiredMixin, View):
                     b.payments.first().status == "pending"
                 )
             ]
-         
 
-        page_obj = paginate_queryset(request,bookings,10)
-        return render(
+        # DUE DATE VALUES
+
+        for b in bookings:
+
+            payment = b.payments.first()
+
+            if payment:
+
+                b.due_date_value = (
+                    str(payment.due_date)
+                    if payment.due_date
+                    else ""
+                )
+
+            else:
+
+                b.due_date_value = ""
+
+        # PAGINATION
+
+        page_obj = paginate_queryset(
             request,
+            bookings,
+            10
+        )
+
+        return render(
+
+            request,
+
             "vendor/vendor_payments.html",
+
             {
-                "bookings": bookings,
                 "bookings": page_obj,
                 "page_obj": page_obj,
             }
+
         )
 
 # invoice number
@@ -2968,6 +3318,27 @@ class CustomerInvoiceView(LoginRequiredMixin, View):
 
         payment = booking.payments.first()
 
+        # PAYMENT VALUES
+
+        total_amount = 0
+        paid_amount = 0
+        remaining_amount = 0
+        payment_method = "Cash"
+
+        if payment:
+
+            total_amount = payment.total_amount or 0
+
+            paid_amount = payment.paid_amount or 0
+
+            remaining_amount = (
+                payment.remaining_amount or 0
+            )
+
+            payment_method = (
+                payment.payment_method or "Cash"
+            )
+
         return render(
 
             request,
@@ -2977,8 +3348,12 @@ class CustomerInvoiceView(LoginRequiredMixin, View):
             {
 
                 "booking": booking,
+                "payment": payment,
 
-                "payment": payment
+                "total_amount": total_amount,
+                "paid_amount": paid_amount,
+                "remaining_amount": remaining_amount,
+                "payment_method": payment_method,
 
             }
 
@@ -3652,14 +4027,59 @@ class CustomerPaymentsView(LoginRequiredMixin, View):
             
         }
 
-        return render(
-            request,
-            "customer/customer_payments.html",
-            context
-        )
+        return render(request,"customer/customer_payments.html",context)
         
+    def post(self, request):
+
+        payment_id = request.POST.get("payment_id")
+
+        payment_request = request.POST.get(
+        "payment_request"
+    )
+
+        payment = get_object_or_404(
+        Payment,
+        id=payment_id
+    )
+
+        payment.payment_request = payment_request
+
+        payment.save()
+
+        return redirect("customer_payments")
 
 
 
+# render the servcies in customer dashboard
+from django.views.generic import ListView
+from core.models import CategoryService
+class ServicesListingView(ListView):
+    model = CategoryService
+    template_name = "customer/get_all_service.html"
+    context_object_name = "category_servicess"
+    paginate_by = 6
 
+    def get_queryset(self):
 
+        queryset = CategoryService.objects.all().order_by("-created_at")
+
+        service_id = self.request.GET.get("service_page")
+        search = self.request.GET.get("search")
+
+        # Filter by service
+        if service_id:
+            queryset = queryset.filter(id=service_id)
+
+        # Search by title
+        if search:
+            queryset = queryset.filter(s_title__icontains=search)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # For dropdown
+        context["category_services"] = CategoryService.objects.all()
+
+        return context

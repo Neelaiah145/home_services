@@ -656,10 +656,7 @@ tbody tr:hover{
                                 <select id="status-{{ b.id }}"
                                         class="custom-select">
 
-                                    <option value="pending"
-                                        {% if b.status == "pending" %}selected{% endif %}>
-                                        Pending
-                                    </option>
+                    
 
                                     <option value="accepted"
                                         {% if b.status == "accepted" %}selected{% endif %}>
@@ -708,7 +705,7 @@ tbody tr:hover{
 
                         <td>
 
-                            {% if b.status == "completed" %}
+                            {% if b.status == "accepted" or b.status == "in_progress" or b.status == "completed" %}
 
                                 {% with payment=b.payments.first %}
 

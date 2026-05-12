@@ -7,7 +7,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> Dashboard </title>
+  <title>SriDixitha Dashboard </title>
 
 
 
@@ -441,6 +441,14 @@
         </li>
 
         <li class="sidebar-menu-group-title">Manage</li>
+
+              <li class="sidebar__item {% if request.resolver_match.url_name == 'services_listing_page' %}active{% endif %}">
+          <a href="{% url 'services_listing_page' %}">
+            <iconify-icon icon="mdi:credit-card-outline" class="menu-icon"></iconify-icon>
+            <span>View All Service</span>
+          </a>
+        </li>
+
 
         <li class="sidebar__item {% if request.resolver_match.url_name == 'customer_orders' %}active{% endif %}">
           <a href="{% url 'customer_orders' %}">
@@ -1038,6 +1046,5 @@
 
 </body>
 
-<!-- Mirrored from wowdash.wowtheme7.com/demo/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 22 Apr 2026 08:55:54 GMT -->
 
 </html>

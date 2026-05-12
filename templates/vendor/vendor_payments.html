@@ -335,6 +335,7 @@ tbody tr:hover{ background:#f9fbff; }
 
                 <thead>
                     <tr>
+                         <th>Sl.No</th>
                         <th>Order ID</th>
                         <th>Customer</th>
                         <th>Service</th>
@@ -343,6 +344,7 @@ tbody tr:hover{ background:#f9fbff; }
                         <th>Transaction ID</th>
                         <th>Screenshot</th>
                         <th>Action</th>
+                        <th>Due Date</th>
                     </tr>
                 </thead>
 
@@ -350,6 +352,11 @@ tbody tr:hover{ background:#f9fbff; }
                     {% for b in bookings %}
                     {% with payment=b.payments.first %}
                     <tr class="payment-row">
+                             <td>
+
+                        {{ forloop.counter }}
+
+                    </td>
 
                         <td><div class="order-id">{{ b.order_id }}</div></td>
 
@@ -361,7 +368,7 @@ tbody tr:hover{ background:#f9fbff; }
                         <td><div class="service-name">{{ b.service }}</div></td>
 
                         <td>
-                            <span class="status-badge completed">{{ b.get_status_display }}</span>
+                            <span class="status-badge {{ b.status }}">{{ b.get_status_display }}</span>
                         </td>
 
                         <td>
@@ -393,6 +400,45 @@ tbody tr:hover{ background:#f9fbff; }
                                 {% if payment %}Edit Payment{% else %}Upload Payment{% endif %}
                             </a>
                         </td>
+
+                        <td>
+
+    {% if b.due_date_value %}
+
+        <div
+            style="
+                background:#fef3c7;
+                color:#92400e;
+                padding:10px 14px;
+                border-radius:12px;
+                font-size:12px;
+                font-weight:700;
+                display:inline-block;
+                white-space:nowrap;
+            "
+        >
+
+            {{ b.due_date_value }}
+
+        </div>
+
+    {% else %}
+
+        <span
+            style="
+                color:#9ca3af;
+                font-size:12px;
+                font-weight:600;
+            "
+        >
+
+            Not Updated
+
+        </span>
+
+    {% endif %}
+
+</td>
 
                     </tr>
                     {% endwith %}
