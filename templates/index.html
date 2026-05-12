@@ -324,35 +324,37 @@
                 <button class="vs-menu-toggle d-inline-block d-lg-none"><i class="fal fa-bars"></i></button>
 
               </div>
+              {% if not request.user.is_authenticated %}
+
               <div class="col-auto d-xl-block d-none">
                 <div class="header-buttons dropdown account-dropdown">
 
-                  <!-- Search Icon -->
-                  <!-- <a href="#" class="vs-icon searchBoxTggler">
-                  <i class="fas fa-search"></i>
-                </a> -->
-
                   <!-- Account Button -->
-                  <button class="vs-btn dropdown-toggle">
+                  <button class="vs-btn dropdown-toggle" data-bs-toggle="dropdown">
                     Account
                   </button>
 
                   <!-- Dropdown -->
                   <ul class="dropdown-menu dropdown-menu-end">
+
                     <li>
                       <a class="dropdown-item" href="{% url 'login' %}">
                         <i class="fa-regular fa-user me-2"></i> Login
                       </a>
                     </li>
+
                     <li>
                       <a class="dropdown-item" href="{% url 'register' %}">
                         <i class="fa-regular fa-user-plus me-2"></i> Register
                       </a>
                     </li>
+
                   </ul>
 
                 </div>
               </div>
+
+              {% endif %}
             </div>
           </div>
         </div>
@@ -372,7 +374,8 @@
         <!-- Slide 1 -->
         {% for banner in banners %}
         <div class="hero-item"
-          style="background-image: url('{% if banner.image %}{{ banner.image.url }}{% else %} {% static "/assets/img/default-banner.jpg" %}{% endif %}');">
+          style="background-image: url('{% if banner.image %}{{ banner.image.url }}{% else %} {% static "
+          /assets/img/default-banner.jpg" %}{% endif %}');">
 
           <div class="row g-5 gx-50 align-items-center">
             <div class="col-xl-7 col-lg-10">
@@ -415,8 +418,7 @@
               <select name="category" id="category-select" class="form-control" onchange="this.form.submit()">
                 <option value="">-- select category --</option>
                 {% for cat in categories %}
-                <option value="{{ cat.id }}"
-                  {% if selected_category and selected_category.id == cat.id %}selected{% endif %}>
+                <option value="{{ cat.id }}" {% if selected_category and selected_category.id == cat.id %}selected{% endif %}>
                   {{ cat.title }}
                 </option>
                 {% endfor %}
@@ -852,6 +854,8 @@
   <script src="https://cdn.jsdelivr.net/npm/slick-carousel/slick/slick.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/wowjs/dist/wow.min.js"></script>
+  <script src="{% static 'assets/js/protect.js' %}"></script>
+
 </body>
 
 

@@ -1,25 +1,47 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
-    <h1 style="color: #fea007;">Privacy Policy</h1>
-    <p>
-        We value your privacy and are committed to protecting your personal information.
-        This Privacy Policy explains how we collect, use, and safeguard your data when you use our services.
-    </p>
+
+<div class="container-fluid p-4">
+
+    <div class="text-center mb-4">
+        <h2 style="color: #fea007; font-weight: 700;">
+            Privacy Policy
+        </h2>
+
+        <p class="text-muted mb-0">
+            We value your privacy and are committed to protecting your
+            personal information. This Privacy Policy explains how we
+            collect, use, and safeguard your data when you use our services.
+        </p>
+    </div>
 
     {% for policy in policies %}
 
-    <div class="mb-4" style="padding: 15px 0px;">
-        <h5 style="color: #132676;">{{ forloop.counter }} . {{ policy.title }}</h5>
-        <div style="padding: 0px 0px 0px 40px;">
+    <div class="mb-4">
+
+        <h5 style="color: #132676; font-weight: 600;">
+            {{ forloop.counter }}. {{ policy.title }}
+        </h5>
+
+        <div class="ps-4 pt-2 text-muted" style="line-height: 1.8;">
             {{ policy.content|linebreaks }}
         </div>
+
     </div>
+
     <hr>
+
     {% empty %}
-    <p>No privacy policy available.</p>
+
+    <div class="text-center py-5">
+        <p class="text-muted mb-0">
+            No privacy policy available.
+        </p>
+    </div>
+
     {% endfor %}
 
 </div>
+
 {% endblock %}

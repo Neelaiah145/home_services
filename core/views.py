@@ -860,10 +860,6 @@ class JobApplications(View):
         messages.success(request, "Application submitted successfully!")
         return redirect('job.apply', job_id=job.id)
 
-
-
-
-
 class ListFooter(View):
 
     def get(self, request):
