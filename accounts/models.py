@@ -121,7 +121,7 @@ class User(AbstractUser):
 
 
 def generate_order_id():
-    return "RCN" + uuid.uuid4().hex[:8].upper()
+    return "SDE" + uuid.uuid4().hex[:8].upper()
 
 # bookings
 

@@ -112,7 +112,7 @@ body{
     border:1px solid var(--border);
     border-radius:22px;
     overflow:hidden;
-    box-shadow:0 4px 20px rgba(15,23,42,0.04);
+    box-shadow:0 4px 20px #657fbc0a;
 }
 
 /* =========================
@@ -220,7 +220,44 @@ table{
 thead{
     background:#f8fafc;
 }
+/* =========================
+   FILTER TOGGLE
+========================= */
 
+.filter-toggle{
+    height:44px;
+    border:none;
+    border-radius:12px;
+    background:#4475dd;
+    color:#fff;
+    padding:0 18px;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.2s ease;
+    font-family:'DM Sans',sans-serif;
+}
+
+.filter-toggle:hover{
+    background:#5c69cf;
+}
+
+/* FILTER PANEL */
+
+.filters-panel{
+    display:none;
+    margin-top:18px;
+    padding:18px;
+    background:#f8fafc;
+    border:1px solid #eef2f7;
+    border-radius:16px;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.filters-panel.show{
+    display:flex;
+}
 thead th{
     padding:16px 15px;
     text-align:left;
@@ -543,69 +580,121 @@ tbody tr:hover{
                 All Bookings
             </div>
 
-            <form method="GET">
+          <form method="GET">
 
-                <div class="toolbar">
+    <div class="toolbar">
 
-                    <select name="category"
-                            class="custom-select"
-                            onchange="this.form.submit()">
+        <!-- SEARCH -->
 
-                        <option value="">All Categories</option>
+        <input type="text"
+               name="q"
+               class="search-input"
+               placeholder="Search customer or phone..."
+               value="{{ q|default:'' }}">
 
-                        {% for c in categories %}
-                        <option value="{{ c.id }}"
-                            {% if selected_category == c.id|stringformat:"s" %}selected{% endif %}>
-                            {{ c.title }}
-                        </option>
-                        {% endfor %}
+        <!-- FILTER BUTTON -->
 
-                    </select>
+        <button type="button"
+                class="filter-toggle"
+                onclick="toggleFilters()">
 
-                    <select name="service"
-                            class="custom-select"
-                            onchange="this.form.submit()">
+            ⚙ Filters
 
-                        <option value="">All Services</option>
+        </button>
 
-                        {% for s in services %}
-                        <option value="{{ s.id }}"
-                            {% if selected_service == s.id|stringformat:"s" %}selected{% endif %}>
-                            {{ s.s_title }}
-                        </option>
-                        {% endfor %}
+        <!-- SEARCH BUTTON -->
 
-                    </select>
+        <button type="submit"
+                class="btn-search">
 
-                    <select name="city"
-                            class="custom-select"
-                            onchange="this.form.submit()">
+            Search
 
-                        <option value="">All Cities</option>
+        </button>
 
-                        {% for c in cities %}
-                        <option value="{{ c }}"
-                            {% if selected_city == c %}selected{% endif %}>
-                            {{ c }}
-                        </option>
-                        {% endfor %}
+    </div>
 
-                    </select>
+    <!-- FILTER DROPDOWN -->
 
-                    <input type="text"
-                           name="q"
-                           class="search-input"
-                           placeholder="Search customer or phone..."
-                           value="{{ q|default:'' }}">
+    <div class="filters-panel"
+         id="filtersPanel">
 
-                    <button type="submit"
-                            class="btn-search">
-                        Search
-                    </button>
+        <!-- CATEGORY -->
 
-                </div>
+        <select name="category"
+                class="custom-select">
 
-            </form>
+            <option value="">
+                All Categories
+            </option>
+
+            {% for c in categories %}
+
+            <option value="{{ c.id }}"
+                {% if selected_category == c.id|stringformat:"s" %}selected{% endif %}>
+
+                {{ c.title }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <!-- SERVICE -->
+
+        <select name="service"
+                class="custom-select">
+
+            <option value="">
+                All Services
+            </option>
+
+            {% for s in services %}
+
+            <option value="{{ s.id }}"
+                {% if selected_service == s.id|stringformat:"s" %}selected{% endif %}>
+
+                {{ s.s_title }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <!-- CITY -->
+
+        <select name="city"
+                class="custom-select">
+
+            <option value="">
+                All Cities
+            </option>
+
+            {% for c in cities %}
+
+            <option value="{{ c }}"
+                {% if selected_city == c %}selected{% endif %}>
+
+                {{ c }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <!-- POSTAL CODE -->
+
+        <input type="text"
+               name="postal_code"
+               class="custom-select"
+               placeholder="Postal Code"
+               value="{{ postal_code|default:'' }}">
+
+    </div>
+
+</form>
 
         </div>
 
@@ -1263,7 +1352,13 @@ function assignVendor(id){
     });
 
 }
+function toggleFilters(){
 
+    document.getElementById(
+        "filtersPanel"
+    ).classList.toggle("show");
+
+}
 </script>
 
 {% endblock %}

@@ -11,17 +11,592 @@
   --sub:#6b7280;
   --green:#16a34a;
   --yellow:#d97706;
+  
 }
 
 /* =========================
-   PAGE
+   MODAL OVERLAY
 ========================= */
 
+.modal-overlay{
+    position:fixed;
+    inset:0;
+
+    background:rgba(15,23,42,.38);
+
+    backdrop-filter:blur(4px);
+
+    display:flex;
+    justify-content:flex-end;
+
+    opacity:0;
+    visibility:hidden;
+
+    transition:.25s ease;
+
+    z-index:99999;
+}
+
+.modal-overlay.show{
+    opacity:1;
+    visibility:visible;
+}
+
+
+/* =========================
+   DRAWER
+========================= */
+
+.action-card{
+    width:92vw;
+
+    max-width:none;
+
+    height:100vh;
+
+    background:#fff;
+
+    overflow-y:auto;
+
+    transform:translateX(100%);
+    transition:.32s ease;
+
+    box-shadow:-10px 0 40px rgba(0,0,0,.08);
+}
+
+.modal-overlay.show .action-card{
+    transform:translateX(0);
+}
+
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+.action-card::-webkit-scrollbar{
+    width:6px;
+}
+
+.action-card::-webkit-scrollbar-thumb{
+    background:#d1d5db;
+    border-radius:20px;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.card-header{
+    position:sticky;
+    top:0;
+
+    z-index:50;
+
+    background:#fff;
+
+    border-bottom:1px solid #eef2f7;
+
+    padding:18px 26px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.dp-header-label{
+    font-size:10px;
+    font-weight:700;
+
+    color:#94a3b8;
+
+    text-transform:uppercase;
+    letter-spacing:.08em;
+
+    margin-bottom:5px;
+}
+
+.dp-header-order{
+    font-size:24px;
+    font-weight:800;
+
+    color:#0f172a;
+
+    line-height:1;
+}
+
+
+/* =========================
+   HEADER ACTIONS
+========================= */
+
+.header-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.header-invoice-btn{
+    height:42px;
+
+    padding:0 18px;
+
+    border-radius:12px;
+
+    background:#0f172a;
+    color:#fff;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    text-decoration:none;
+
+    font-size:13px;
+    font-weight:700;
+
+    transition:.2s;
+}
+
+.header-invoice-btn:hover{
+    background:#111827;
+    color:#fff;
+}
+
+.close-modal{
+    width:40px;
+    height:40px;
+
+    border:none;
+    border-radius:12px;
+
+    background:#f8fafc;
+
+    color:#334155;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.close-modal:hover{
+    background:#eef2f7;
+}
+
+
+/* =========================
+   BODY
+========================= */
+
+.card-body{
+    padding:24px 26px;
+}
+
+
+/* =========================
+   DETAILS GRID
+========================= */
+
+.detail-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+
+    gap:16px;
+
+    margin-bottom:24px;
+}
+
+.detail-card{
+    padding-bottom:10px;
+
+    border-bottom:1px solid #eef2f7;
+}
+
+.dp-label{
+    font-size:10px;
+    font-weight:700;
+
+    color:#94a3b8;
+
+    text-transform:uppercase;
+    letter-spacing:.08em;
+
+    margin-bottom:7px;
+}
+
+.dp-value{
+    font-size:14px;
+    font-weight:700;
+
+    color:#0f172a;
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.status{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    height:30px;
+
+    padding:0 12px;
+
+    border-radius:999px;
+
+    font-size:11px;
+    font-weight:700;
+}
+
+.status.pending{
+    background:#fff7ed;
+    color:#c2410c;
+}
+
+.status.partial_paid{
+    background:#eff6ff;
+    color:#2563eb;
+}
+
+.status.paid{
+    background:#ecfdf5;
+    color:#15803d;
+}
+
+
+/* =========================
+   TRANSACTION
+========================= */
+
+.txn-chip{
+    display:inline-flex;
+    align-items:center;
+
+    padding:7px 10px;
+
+    border-radius:10px;
+
+    background:#f8fafc;
+
+    border:1px solid #e2e8f0;
+
+    color:#334155;
+
+    font-size:12px;
+    font-weight:700;
+
+    font-family:monospace;
+}
+
+
+/* =========================
+   SUMMARY
+========================= */
+
+.payment-summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+
+    gap:16px;
+
+    margin-bottom:26px;
+}
+
+.summary-card{
+    padding:14px 0;
+
+    border-bottom:2px solid #eef2f7;
+}
+
+.summary-label{
+    font-size:10px;
+    font-weight:700;
+
+    color:#94a3b8;
+
+    text-transform:uppercase;
+
+    margin-bottom:8px;
+}
+
+.summary-value{
+    font-size:24px;
+    font-weight:800;
+}
+
+.total-card .summary-value{
+    color:#2563eb;
+}
+
+.paid-card .summary-value{
+    color:#16a34a;
+}
+
+.remaining-card .summary-value{
+    color:#dc2626;
+}
+
+
+/* =========================
+   REQUEST
+========================= */
+
+.request-box{
+    margin-bottom:24px;
+}
+
+.request-message{
+    padding:16px 0;
+
+    border-top:1px solid #eef2f7;
+    border-bottom:1px solid #eef2f7;
+
+    color:#334155;
+
+    line-height:1.8;
+
+    font-size:14px;
+}
+
+.request-empty{
+    padding:14px 0;
+
+    color:#94a3b8;
+
+    border-top:1px solid #eef2f7;
+}
+
+
+/* =========================
+   UPDATE SECTIONS
+========================= */
+
+.payment-update-box,
+.due-date-box{
+    margin-bottom:22px;
+}
+
+
+/* =========================
+   FORMS
+========================= */
+
+.payment-form,
+.due-form{
+    display:flex;
+    gap:12px;
+    align-items:center;
+
+    margin-top:10px;
+}
+
+.payment-input-group{
+    position:relative;
+    flex:1;
+}
+
+.currency-symbol{
+    position:absolute;
+
+    left:14px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:#64748b;
+
+    font-size:13px;
+    font-weight:700;
+}
+
+.payment-form input,
+.due-form input{
+    width:100%;
+    height:50px;
+
+    border:1px solid #dbe4ee;
+
+    border-radius:12px;
+
+    background:#fff;
+
+    padding:0 16px 0 36px;
+
+    font-size:13px;
+    font-weight:600;
+
+    outline:none;
+
+    transition:.2s;
+}
+
+.due-form input{
+    padding-left:16px;
+}
+
+.payment-form input:focus,
+.due-form input:focus{
+    border-color:#2563eb;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.payment-form button,
+.due-form button{
+    height:50px;
+
+    padding:0 18px;
+
+    border:none;
+    border-radius:12px;
+
+    background:#2563eb;
+    color:#fff;
+
+    font-size:13px;
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+    white-space:nowrap;
+}
+
+.payment-form button:hover,
+.due-form button:hover{
+    background:#1d4ed8;
+}
+
+
+/* =========================
+   REMOVE OLD INVOICE BTN
+========================= */
+
+.btn-invoice{
+    display:none;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:1100px){
+
+    .detail-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .action-card{
+        max-width:100%;
+    }
+
+    .card-body{
+        padding:18px;
+    }
+
+    .card-header{
+        padding:16px 18px;
+    }
+
+    .detail-grid{
+        grid-template-columns:1fr;
+    }
+
+    .payment-summary{
+        grid-template-columns:1fr;
+    }
+
+    .payment-form,
+    .due-form{
+        flex-direction:column;
+    }
+
+    .payment-form button,
+    .due-form button{
+        width:100%;
+    }
+
+}
+
+/*  emd style*/
+/* =========================
+   PAGE
+========================= */
+.request-box{
+    margin-top:20px;
+    margin-bottom:22px;
+}
+
+.request-message{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    padding:14px 16px;
+    color:#334155;
+    font-size:14px;
+    line-height:1.7;
+    margin-top:8px;
+}
+
+.request-empty{
+    background:#f8fafc;
+    border:1px dashed #cbd5e1;
+    border-radius:14px;
+    padding:14px 16px;
+    color:#94a3b8;
+    font-size:14px;
+    margin-top:8px;
+}
+
+.due-form{
+    display:flex;
+    gap:12px;
+    margin-top:10px;
+    align-items:center;
+}
+
+.due-form input{
+    flex:1;
+    height:48px;
+    border-radius:12px;
+    border:1px solid #dbe4ee;
+    padding:0 14px;
+    outline:none;
+}
+
+.due-form button{
+    height:48px;
+    padding:0 20px;
+    border:none;
+    border-radius:12px;
+    background:#2563eb;
+    color:#fff;
+    font-weight:600;
+    transition:.3s;
+}
+
+.due-form button:hover{
+    background:#1d4ed8;
+}
 .page-wrap{
     padding:24px;
     background:var(--bg);
     min-height:100vh;
-    max-width:1450px;
+    max-width:1100px;
     margin:auto;
 }
 
@@ -67,8 +642,6 @@
     background:#fafafa;
 }
 
-/* FILTER */
-
 .filter-group{
     display:flex;
     background:#f3f4f6;
@@ -94,8 +667,6 @@
     box-shadow:0 2px 6px rgba(0,0,0,.05);
 }
 
-/* SEARCH */
-
 .search-container{
     position:relative;
 }
@@ -119,8 +690,6 @@
     font-size:13px;
 }
 
-/* DATE */
-
 .date-input{
     height:40px;
     padding:0 12px;
@@ -141,7 +710,7 @@
 
 table{
     width:100%;
-    min-width:1450px;
+    min-width:820px;
     border-collapse:separate;
     border-spacing:0;
     white-space:nowrap;
@@ -164,7 +733,7 @@ th{
 }
 
 td{
-    padding:16px 18px;
+    padding:14px 18px;
     border-bottom:1px solid #eef2f7;
     font-size:13px;
     color:#111827;
@@ -179,8 +748,6 @@ tbody tr{
 tbody tr:hover{
     background:#f9fbff;
 }
-
-/* TEXT */
 
 .customer-name{
     font-weight:700;
@@ -247,28 +814,6 @@ tbody tr:hover{
     background:#fff;
 }
 
-/* INVOICE */
-
-.btn-invoice{
-    min-width:90px;
-    height:38px;
-    padding:0 16px;
-    background:#2563eb;
-    color:#fff;
-    border-radius:10px;
-    font-size:12px;
-    font-weight:700;
-    text-decoration:none;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.btn-invoice:hover{
-    background:#1d4ed8;
-    color:#fff;
-}
-
 /* EMPTY */
 
 .empty{
@@ -281,7 +826,79 @@ tbody tr:hover{
 /* =========================
    PAGINATION
 ========================= */
+/* =========================
+   ACTION MODAL (CENTERED)
+========================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    display: none;
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
 
+.modal-overlay.show {
+    display: flex;
+}
+
+.action-card {
+    background: #fff;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 20px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    animation: modalSlideUp 0.3s ease-out;
+}
+
+@keyframes modalSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card-header {
+    padding: 20px;
+    background: #f9fafb;
+    border-bottom: 1px solid #f1f3f5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #9ca3af;
+    cursor: pointer;
+}
+
+.close-modal:hover { color: #111827; }
+
+/* Keep button styles from your original code but scoped to the card */
+.action-card .btn-invoice {
+    margin-top: 15px;
+    background: #2563eb;
+    height: 44px;
+}
 .tbl-footer{
     width:100%;
     display:flex;
@@ -330,6 +947,226 @@ tbody tr:hover{
 }
 
 /* =========================
+   ACTIONS DROPDOWN
+========================= */
+
+.actions-cell{
+    position:relative;
+}
+
+.dots-btn{
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    border:1px solid #e5e7eb;
+    background:#fff;
+    cursor:pointer;
+    font-size:18px;
+    font-weight:900;
+    color:#374151;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    line-height:1;
+    transition:.15s ease;
+    letter-spacing:0;
+}
+
+.dots-btn:hover{
+    background:#f3f4f6;
+    border-color:#d1d5db;
+}
+
+.dots-btn.open{
+    background:#eff6ff;
+    border-color:#93c5fd;
+    color:#2563eb;
+}
+
+.dropdown-panel{
+    display:none;
+    position:fixed;
+    z-index:9999;
+    width:290px;
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:16px;
+    box-shadow:0 12px 40px rgba(0,0,0,0.13);
+    padding:0;
+    overflow:hidden;
+}
+
+.dropdown-panel.show{
+    display:block;
+    animation:dpFadeIn .15s ease;
+}
+
+@keyframes dpFadeIn{
+    from{ opacity:0; transform:translateY(-6px); }
+    to{ opacity:1; transform:translateY(0); }
+}
+
+/* Dropdown header */
+
+.dp-header{
+    background:linear-gradient(135deg,#eff6ff,#f0fdf4);
+    padding:14px 16px 12px;
+    border-bottom:1px solid #eef2f7;
+}
+
+.dp-header-label{
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    color:#6b7280;
+    margin-bottom:2px;
+}
+
+.dp-header-order{
+    font-size:13px;
+    font-weight:700;
+    color:#111827;
+}
+
+/* Dropdown section */
+
+.dp-section{
+    padding:12px 16px;
+    border-bottom:1px solid #f3f4f6;
+}
+
+.dp-section:last-child{
+    border-bottom:none;
+}
+
+.dp-label{
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    color:#9ca3af;
+    margin-bottom:6px;
+}
+
+.dp-value{
+    font-size:13px;
+    color:#111827;
+    font-weight:600;
+}
+
+.dp-value.muted{
+    color:#9ca3af;
+    font-weight:500;
+}
+
+/* Transaction chip */
+
+.txn-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:#f3f4f6;
+    border:1px solid #e5e7eb;
+    border-radius:8px;
+    padding:5px 10px;
+    font-size:12px;
+    font-weight:700;
+    color:#374151;
+    font-family:monospace;
+}
+
+/* Request box */
+
+.request-box{
+    background:#eff6ff;
+    border:1px solid #bfdbfe;
+    color:#1d4ed8;
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:12px;
+    line-height:1.7;
+    white-space:normal;
+    word-break:break-word;
+}
+
+/* Due date badge */
+
+.due-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:#fef3c7;
+    border:1px solid #fde68a;
+    color:#92400e;
+    border-radius:8px;
+    padding:5px 10px;
+    font-size:12px;
+    font-weight:700;
+}
+
+/* Due date update form */
+
+.due-form{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    margin-top:8px;
+}
+
+.due-form input[type="date"]{
+    flex:1;
+    height:36px;
+    border:1px solid #e5e7eb;
+    border-radius:8px;
+    padding:0 10px;
+    outline:none;
+    font-size:12px;
+    background:#fff;
+}
+
+.due-form button{
+    height:36px;
+    border:none;
+    background:#16a34a;
+    color:#fff;
+    padding:0 14px;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:.15s ease;
+}
+
+.due-form button:hover{
+    background:#15803d;
+}
+
+/* Invoice button */
+
+.btn-invoice{
+    width:100%;
+    height:38px;
+    background:#2563eb;
+    color:#fff;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:700;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    transition:.15s ease;
+}
+
+.btn-invoice:hover{
+    background:#1d4ed8;
+    color:#fff;
+}
+
+/* =========================
    MOBILE
 ========================= */
 
@@ -357,6 +1194,9 @@ tbody tr:hover{
         font-size:12px;
     }
 
+    .dropdown-panel{
+        width:260px;
+    }
 }
 
 </style>
@@ -366,15 +1206,8 @@ tbody tr:hover{
     <!-- HEADER -->
 
     <div class="page-header">
-
-        <div class="page-title">
-            All Payments
-        </div>
-
-        <div class="page-subtitle">
-            Service Payment Management
-        </div>
-
+        <div class="page-title">All Payments</div>
+        <div class="page-subtitle">Service Payment Management</div>
     </div>
 
     <!-- CARD -->
@@ -385,42 +1218,21 @@ tbody tr:hover{
 
         <div class="toolbar">
 
-            <!-- FILTER -->
-
             <div class="filter-group">
-
-                <button class="filter-btn active" onclick="setStatus('', this)">
-                    All
-                </button>
-
-                <button class="filter-btn" onclick="setStatus('paid', this)">
-                    Paid
-                </button>
-
-                <button class="filter-btn" onclick="setStatus('pending', this)">
-                    Pending
-                </button>
-
+                <button class="filter-btn active" onclick="setStatus('', this)">All</button>
+                <button class="filter-btn" onclick="setStatus('paid', this)">Paid</button>
+                <button class="filter-btn" onclick="setStatus('pending', this)">Pending</button>
             </div>
 
-            <!-- SEARCH -->
-
             <div class="search-container">
-
-                <span class="search-icon">
-                    🔍
-                </span>
-
+                <span class="search-icon">🔍</span>
                 <input
                     type="text"
                     id="searchInput"
                     placeholder="Search payments..."
                     onkeyup="applyFilters()"
                 >
-
             </div>
-
-            <!-- DATE -->
 
             <input
                 type="date"
@@ -435,260 +1247,415 @@ tbody tr:hover{
 
         <div class="table-wrap">
 
-        <table>
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Sl.No</th>
+                        <th>Order</th>
+                        <th>Customer</th>
+                        <!-- <th>Vendor</th> -->
+                        <th>Service</th>
+                        <th>Total Amount</th>
+                        <th>Payment Type</th>
+                        <th>Status</th>
+                    
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for p in payments %}
+
+                    <tr class="payment-row">
+
+                        <!-- SERIAL -->
+                        <td>{{ forloop.counter }}</td>
+
+                        <!-- ORDER -->
+                        <td>
+                            {% if p.booking.order_id %}
+                                {{ p.booking.order_id }}
+                            {% else %}
+                                #{{ p.booking.id }}
+                            {% endif %}
+                        </td>
+
+                        <!-- CUSTOMER -->
+                        <td>
+                            <div class="customer-name">
+                                {{ p.booking.user.first_name|default:p.booking.user.username }}
+                            </div>
+                            <div class="customer-phone">
+                                {{ p.booking.user.phone|default:"-" }}
+                            </div>
+                        </td>
+
+                        <!-- VENDOR -->
+                        <!-- <td>
+                            {% if p.vendor %}
+                                {{ p.vendor.first_name }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td> -->
+
+                        <!-- SERVICE -->
+                        <td>
+                            <div class="service-title">{{ p.service.s_title }}</div>
+                            <div class="service-cat">{{ p.service.category.title|default:"" }}</div>
+                        </td>
+
+                        <!-- TOTAL -->
+                        <td><strong>₹{{ p.total_amount }}</strong></td>
+
+                        <!-- PAYMENT TYPE -->
+                        <td>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="payment_id" value="{{ p.id }}">
+                                <div style="display:flex;gap:8px;align-items:center;">
+                                    <select name="payment_method" class="pay-type">
+                                        <option value="Cash" {% if p.payment_method == "Cash" %}selected{% endif %}>Cash</option>
+                                        <option value="Card" {% if p.payment_method == "Card" %}selected{% endif %}>Card</option>
+                                        <option value="Online" {% if p.payment_method == "Online" %}selected{% endif %}>Online</option>
+                                        <option value="UPI" {% if p.payment_method == "UPI" %}selected{% endif %}>UPI</option>
+                                    </select>
+                                    <button
+                                        type="submit"
+                                        style="height:38px;border:none;background:#16a34a;color:#fff;padding:0 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;"
+                                    >Save</button>
+                                </div>
+                            </form>
+                        </td>
+
+                        <!-- STATUS -->
+                        <td>
+                            <span class="status {{ p.status }}">
+                                {{ p.status|title }}
+                            </span>
+                        </td>
+
+      
+
+                        <!-- ACTIONS -->
+<td class="actions-cell">
+    <button class="dots-btn" type="button" onclick="openActionModal('modal_{{ p.id }}')">⋮</button>
+
+    <!-- CENTERED ACTION MODAL -->
+    <div class="modal-overlay" id="modal_{{ p.id }}" onclick="closeActionModal('modal_{{ p.id }}')">
+
+    <div class="action-card" onclick="event.stopPropagation()">
+
+        <!-- HEADER -->
 
-            <thead>
+        <div class="card-header">
 
-                <tr>
+            <div>
 
-                    <th>Sl.No</th>
-                    <th>Order</th>
-                    <th>Customer</th>
-                    <th>Vendor</th>
-                    <th>Service</th>
-                    <th>Total Amount</th>
-                    <th>Payment Type</th>
-                    <th>Status</th>
-                    <th>Transaction</th>
-                    <th>Date</th>
-                    <th>Invoice</th>
+                <div class="dp-header-label">
+                    Order Details
+                </div>
 
-                </tr>
+                <div class="dp-header-order">
+                    #{{ p.booking.order_id|default:p.booking.id }}
+                </div>
 
-            </thead>
-
-            <tbody>
-
-                {% for p in payments %}
-
-                <tr class="payment-row">
-
-                    <!-- SERIAL -->
-
-                    <td>
-
-                        {{ forloop.counter }}
-
-                    </td>
-
-                    <!-- ORDER -->
-
-                    <td>
-
-                        {% if p.booking.order_id %}
-
-                            {{ p.booking.order_id }}
-
-                        {% else %}
-
-                            #{{ p.booking.id }}
-
-                        {% endif %}
-
-                    </td>
-
-                    <!-- CUSTOMER -->
-
-                    <td>
-
-                        <div class="customer-name">
-
-                            {{ p.booking.user.first_name|default:p.booking.user.username }}
-
-                        </div>
-
-                        <div class="customer-phone">
-
-                            {{ p.booking.user.phone|default:"-" }}
-
-                        </div>
-
-                    </td>
-
-                    <!-- VENDOR -->
-
-                    <td>
-
-                        {% if p.vendor %}
-
-                            {{ p.vendor.first_name }}
-
-                        {% else %}
-
-                            —
-
-                        {% endif %}
-
-                    </td>
-
-                    <!-- SERVICE -->
-
-                    <td>
-
-                        <div class="service-title">
-
-                            {{ p.service.s_title }}
-
-                        </div>
-
-                        <div class="service-cat">
-
-                            {{ p.service.category.title|default:"" }}
-
-                        </div>
-
-                    </td>
-
-                    <!-- TOTAL -->
-
-                    <td>
-
-                        <strong>
-
-                            ₹{{ p.total_amount }}
-
-                        </strong>
-
-                    </td>
-
-                    <!-- PAYMENT TYPE -->
-
-                  <td>
-
-    <form method="POST">
-
-        {% csrf_token %}
-
-        <input
-            type="hidden"
-            name="payment_id"
-            value="{{ p.id }}"
-        >
-
-        <div style="display:flex;gap:8px;align-items:center;">
-
-            <select
-                name="payment_method"
-                class="pay-type"
-            >
-
-                <option value="Cash"
-                    {% if p.payment_method == "Cash" %}selected{% endif %}
-                >
-                    Cash
-                </option>
-
-                <option value="Card"
-                    {% if p.payment_method == "Card" %}selected{% endif %}
-                >
-                    Card
-                </option>
-
-                <option value="Online"
-                    {% if p.payment_method == "Online" %}selected{% endif %}
-                >
-                    Online
-                </option>
-
-                <option value="UPI"
-                    {% if p.payment_method == "UPI" %}selected{% endif %}
-                >
-                    UPI
-                </option>
-
-            </select>
+            </div>
 
             <button
-                type="submit"
-                style="
-                    height:38px;
-                    border:none;
-                    background:#16a34a;
-                    color:#fff;
-                    padding:0 14px;
-                    border-radius:10px;
-                    font-size:12px;
-                    font-weight:700;
-                    cursor:pointer;
-                "
-            >
+                class="close-modal"
+                onclick="closeActionModal('modal_{{ p.id }}')">
 
-                Save
+                &times;
 
             </button>
 
         </div>
 
-    </form>
 
-</td>
+        <!-- BODY -->
 
-                    <!-- STATUS -->
+        <div class="card-body">
 
-                    <td>
+            <!-- DETAILS -->
 
-                        <span class="status {{ p.status }}">
+            <div class="detail-grid">
 
-                            {{ p.status|title }}
+                <!-- CUSTOMER -->
+
+                <div class="detail-card">
+
+                    <div class="dp-label">
+                        Customer
+                    </div>
+
+                    <div class="dp-value">
+                        {{ p.booking.user.first_name|default:p.booking.user.username }}
+                    </div>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="detail-card">
+
+                    <div class="dp-label">
+                        Payment Status
+                    </div>
+
+                    <span class="status {{ p.status }}">
+                        {{ p.status|title }}
+                    </span>
+
+                </div>
+
+
+                <!-- TRANSACTION -->
+
+                <div class="detail-card">
+
+                    <div class="dp-label">
+                        Transaction ID
+                    </div>
+
+                    {% if p.transaction_id %}
+
+                        <span class="txn-chip">
+
+                            {{ p.transaction_id }}
 
                         </span>
 
-                    </td>
+                    {% else %}
 
-                    <!-- TRANSACTION -->
+                        <span class="dp-value muted">
 
-                    <td>
+                            No Transaction
 
-                        {{ p.transaction_id|default:"—" }}
+                        </span>
 
-                    </td>
+                    {% endif %}
 
-                    <!-- DATE -->
+                </div>
 
-                    <td
-                        class="pay-date"
-                        data-date="{{ p.created_at|date:'Y-m-d' }}"
-                    >
 
-                        {{ p.created_at|date:"d M Y" }}
+                <!-- PAYMENT METHOD -->
 
-                    </td>
+                <div class="detail-card">
 
-                    <!-- INVOICE -->
+                    <div class="dp-label">
+                        Payment Method
+                    </div>
 
-                    <td>
+                    <div class="dp-value">
 
-                        <a
-                            href="{% url 'payment_invoice' p.id %}"
-                            target="_blank"
-                            class="btn-invoice"
-                        >
+                        {{ p.payment_method }}
 
-                            Invoice
+                    </div>
 
-                        </a>
+                </div>
 
-                    </td>
+            </div>
 
-                </tr>
 
-                {% empty %}
+            <!-- PAYMENT SUMMARY -->
 
-                <tr>
+            <div class="payment-summary">
 
-                    <td colspan="11" class="empty">
+                <!-- TOTAL -->
 
-                        No payments found
+                <div class="summary-card total-card">
 
-                    </td>
+                    <div class="summary-label">
+                        Total Amount
+                    </div>
 
-                </tr>
+                    <div class="summary-value">
 
-                {% endfor %}
+                        ₹{{ p.total_amount }}
 
-            </tbody>
+                    </div>
 
-        </table>
+                </div>
+
+
+                <!-- PAID -->
+
+                <div class="summary-card paid-card">
+
+                    <div class="summary-label">
+                        Paid Amount
+                    </div>
+
+                    <div class="summary-value">
+
+                        ₹{{ p.paid_amount }}
+
+                    </div>
+
+                </div>
+
+
+                <!-- REMAINING -->
+
+                <div class="summary-card remaining-card">
+
+                    <div class="summary-label">
+                        Remaining Amount
+                    </div>
+
+                    <div class="summary-value">
+
+                        ₹{{ p.remaining_amount }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CUSTOMER REQUEST -->
+
+            <div class="request-box">
+
+                <div class="dp-label">
+                    Customer Request
+                </div>
+
+                {% if p.payment_request %}
+
+                    <div class="request-message">
+
+                        {{ p.payment_request }}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="request-empty">
+
+                        No customer request available
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- UPDATE PAYMENT -->
+
+            <div class="payment-update-box">
+
+                <div class="dp-label">
+                    Update Payment Amount
+                </div>
+
+                <form method="POST" class="payment-form">
+
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="payment_id"
+                        value="{{ p.id }}">
+
+                    <div class="payment-input-group">
+
+                        <span class="currency-symbol">
+                            ₹
+                        </span>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="paid_amount"
+                            value="{{ p.paid_amount }}"
+                            placeholder="Enter paid amount"
+                            required>
+
+                    </div>
+
+                    <button type="submit">
+
+                        Update Payment
+
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- EXTEND DUE DATE -->
+
+            <div class="due-date-box">
+
+                <div class="dp-label">
+                    Extend Due Date
+                </div>
+
+                <form method="POST" class="due-form">
+
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="payment_id"
+                        value="{{ p.id }}">
+
+                    <input
+                        type="date"
+                        name="due_date"
+                        value="{{ p.due_date|date:'Y-m-d' }}"
+                        required>
+
+                    <button type="submit">
+
+                        Extend Due Date
+
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- INVOICE -->
+
+            <a
+                href="{% url 'payment_invoice' p.id %}"
+                target="_blank"
+                class="btn-invoice">
+
+                🧾 View Full Invoice
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+</td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="10" class="empty">No payments found</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
 
         </div>
 
@@ -697,52 +1664,20 @@ tbody tr:hover{
         {% if page_obj %}
 
         <div class="tbl-footer">
-
             <div class="page-btns">
 
                 {% if page_obj.has_previous %}
-
-                <a
-                    class="pg-btn"
-                    href="?page={{ page_obj.previous_page_number }}"
-                >
-
-                    ‹
-
-                </a>
-
+                <a class="pg-btn" href="?page={{ page_obj.previous_page_number }}">‹</a>
                 {% endif %}
 
-                <span class="pg-btn active">
-
-                    {{ page_obj.number }}
-
-                </span>
+                <span class="pg-btn active">{{ page_obj.number }}</span>
 
                 {% if page_obj.has_next %}
-
-                <a
-                    class="pg-btn"
-                    href="?page={{ page_obj.next_page_number }}"
-                >
-
-                    {{ page_obj.next_page_number }}
-
-                </a>
-
-                <a
-                    class="pg-btn"
-                    href="?page={{ page_obj.next_page_number }}"
-                >
-
-                    ›
-
-                </a>
-
+                <a class="pg-btn" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+                <a class="pg-btn" href="?page={{ page_obj.next_page_number }}">›</a>
                 {% endif %}
 
             </div>
-
         </div>
 
         {% endif %}
@@ -753,57 +1688,132 @@ tbody tr:hover{
 
 <script>
 
+/* ── Status filter ── */
+
 let currentStatus = "";
 
 function setStatus(status, el){
-
     currentStatus = status;
-
-    document.querySelectorAll(".filter-btn").forEach(btn => {
-
-        btn.classList.remove("active");
-
-    });
-
+    document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
     el.classList.add("active");
-
     applyFilters();
-
 }
 
+/* ── Search / date filter ── */
+
 function applyFilters(){
-
-    const q = document.getElementById("searchInput").value.toLowerCase();
-
+    const q            = document.getElementById("searchInput").value.toLowerCase();
     const selectedDate = document.getElementById("dateFilter").value;
 
     document.querySelectorAll(".payment-row").forEach(row => {
-
-        const text = row.innerText.toLowerCase();
-
+        const text   = row.innerText.toLowerCase();
         const status = row.querySelector(".status")?.innerText.toLowerCase();
-
-        const date = row.querySelector(".pay-date")?.dataset.date;
-
+        const date   = row.querySelector(".pay-date")?.dataset.date;
         let show = true;
 
-        if(q && !text.includes(q)){
-            show = false;
-        }
-
-        if(currentStatus && !status.includes(currentStatus)){
-            show = false;
-        }
-
-        if(selectedDate && date !== selectedDate){
-            show = false;
-        }
+        if(q            && !text.includes(q))             show = false;
+        if(currentStatus && !status.includes(currentStatus)) show = false;
+        if(selectedDate  && date !== selectedDate)          show = false;
 
         row.style.display = show ? "" : "none";
-
     });
-
 }
+
+/* ── Dropdown logic ── */
+
+let activeDropdown = null;
+
+function toggleDropdown(event, id){
+    event.stopPropagation();
+
+    const panel = document.getElementById(id);
+    const btn   = event.currentTarget;
+
+    /* If clicking the same one, close it */
+    if(activeDropdown === panel && panel.classList.contains("show")){
+        closeDropdown();
+        return;
+    }
+
+    /* Close any open dropdown first */
+    closeDropdown();
+
+    /* Position the panel */
+    positionPanel(panel, btn);
+
+    panel.classList.add("show");
+    btn.classList.add("open");
+    activeDropdown = panel;
+}
+
+function positionPanel(panel, btn){
+    /* Temporarily show off-screen to measure height */
+    panel.style.visibility  = "hidden";
+    panel.style.display     = "block";
+    const ph = panel.offsetHeight;
+    const pw = panel.offsetWidth;
+    panel.style.display     = "";
+    panel.style.visibility  = "";
+
+    const rect   = btn.getBoundingClientRect();
+    const vpH    = window.innerHeight;
+    const vpW    = window.innerWidth;
+
+    /* Vertical: prefer below, flip above if not enough room */
+    let top = rect.bottom + window.scrollY + 6;
+    if(rect.bottom + ph + 6 > vpH){
+        top = rect.top + window.scrollY - ph - 6;
+    }
+
+    /* Horizontal: align right edge of panel with right edge of button */
+    let left = rect.right + window.scrollX - pw;
+    if(left < 8) left = 8;
+    if(left + pw > vpW - 8) left = vpW - pw - 8;
+
+    panel.style.top  = top  + "px";
+    panel.style.left = left + "px";
+}
+
+function closeDropdown(){
+    if(activeDropdown){
+        activeDropdown.classList.remove("show");
+        /* Reset the open style on the trigger button */
+        document.querySelectorAll(".dots-btn.open").forEach(b => b.classList.remove("open"));
+        activeDropdown = null;
+    }
+}
+
+/* Close on outside click */
+document.addEventListener("click", closeDropdown);
+
+/* Close on scroll (reposition would be complex) */
+window.addEventListener("scroll", closeDropdown, true);
+
+/* Prevent clicks inside the panel from closing it */
+document.querySelectorAll(".dropdown-panel").forEach(panel => {
+    panel.addEventListener("click", e => e.stopPropagation());
+});
+
+function openActionModal(id) {
+    const modal = document.getElementById(id);
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden'; // Prevent scrolling background
+}
+
+function closeActionModal(id) {
+    const modal = document.getElementById(id);
+    modal.classList.remove('show');
+    document.body.style.overflow = ''; // Restore scrolling
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape") {
+        document.querySelectorAll('.modal-overlay.show').forEach(m => {
+            closeActionModal(m.id);
+        });
+    }
+});
 
 </script>
 

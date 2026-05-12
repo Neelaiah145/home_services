@@ -207,6 +207,12 @@ path(
 ),
 
 
+    path(
+        "services_page/",
+        ServicesListingView.as_view(),
+        name="services_listing_page"
+    ),
+
 
 
 
