@@ -1,5 +1,5 @@
 from django.urls import path
-from core.views import CategoryServicesAPIView,IndexView, ServicesListView, CategoryListing,ContactForm, ContactListView, ContactUpdateView, DeleteContact, FeedbackForm, NewsListView, CreateNews, UpdateNews, DeleteNews, CreateBanner, ListBanner, UpdateBanner, DeleteBanner, CreateCategory, ListCategory, UpdateCategory, DeleteCaregory, CreateCategoryService, ListCategoryService, UpdateCategoryService, DeleteCategoryService, ListServices, CreateService, UpdateServices, DeleteServices, ListJobs, CreateJob, UpdateJob,Joblisting, DeleteJob, JobApplications, ListFeedback, DeleteFeedback, ListFooter, CreateFooter, UpdateFooter, DeleteFooter
+from core.views import *
 
 urlpatterns = [
     path("", IndexView.as_view(), name="indexpage"),
@@ -76,4 +76,6 @@ urlpatterns = [
     path('cretae/footer/', CreateFooter.as_view(), name='create.footer'),
     path('update/footer/<int:id>/', UpdateFooter.as_view(), name='update.footer'),
     path('delete/footer/<int:id>/', DeleteFooter.as_view(), name='delete.footer'),
+    path("job-applications/",AdminJobApplicationsView.as_view(),name="admin_job_applications"),
+    path("privacy-policy/",PrivacyPolicyView.as_view(),name="privacy_policy"),
 ]

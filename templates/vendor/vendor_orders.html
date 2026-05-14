@@ -555,7 +555,7 @@ tbody tr:hover{
                 <thead>
 
                     <tr>
-
+                        <th>Sl.No</th>
                         <th>Order ID</th>
                         <th>Customer</th>
                         <th>Service</th>
@@ -563,7 +563,7 @@ tbody tr:hover{
                         <th>Status</th>
                         <th>Update Status</th>
                         <th>Details</th>
-                        <th>Payment</th>
+                        <!-- <th>Payment</th> -->
 
                     </tr>
 
@@ -574,6 +574,7 @@ tbody tr:hover{
                     {% for b in bookings %}
 
                     <tr class="order-row">
+                        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
 
                         <td>
 
@@ -702,7 +703,7 @@ tbody tr:hover{
                             </a>
 
                         </td>
-
+<!-- 
                         <td>
 
                             {% if b.status == "accepted" or b.status == "in_progress" or b.status == "completed" %}
@@ -760,7 +761,7 @@ tbody tr:hover{
 
                             {% endif %}
 
-                        </td>
+                        </td> -->
 
                     </tr>
 

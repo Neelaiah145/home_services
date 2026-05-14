@@ -582,7 +582,8 @@ class DeleteCategoryService(View):
 class ListServices(View):
     def get(self, request):
         services = ServicesCards.objects.all()
-        return render(request, 'pages/services/list.html', {'services': services})
+        page_obj = paginate_queryset(request,services,10)
+        return render(request, 'pages/services/list.html', {'services': page_obj,'page_obj': page_obj,})
 
 
 class CreateService(View):
@@ -776,7 +777,53 @@ class JobApplications(View):
         messages.success(request, "Application submitted successfully!")
         return redirect('job.apply', job_id=job.id)
 
+class AdminJobApplicationsView(LoginRequiredMixin, View):
 
+    def dispatch(self, request, *args, **kwargs):
+
+        if request.user.role not in ["admin", "superadmin"]:
+
+            return redirect("dashboard")
+
+        return super().dispatch(request, *args, **kwargs)
+
+
+    def get(self, request):
+
+        applications = JobApplication.objects.select_related(
+            "job"
+        ).order_by("-id")
+
+
+        q = request.GET.get("q")
+
+
+        if q:
+
+            applications = applications.filter(
+                Q(name__icontains=q) |
+                Q(email__icontains=q) |
+                Q(phone__icontains=q) |
+                Q(job__title__icontains=q)
+            )
+
+
+        page_obj = paginate_queryset(
+            request,
+            applications,
+            10
+        )
+
+
+        return render(
+            request,
+            "admin/job_applications.html",
+            {
+                "applications": page_obj,
+                "page_obj": page_obj,
+                "q": q,
+            }
+        )
 
 
 
@@ -924,3 +971,14 @@ class DeleteFooter(View):
         footer.delete()
         messages.success(request, 'footer item deleted successfully')
         return redirect('list.footer')
+
+
+
+
+class PrivacyPolicyView(View):
+
+    def get(self, request):
+
+        return render(request,
+            "privacy_policy.html"
+        )

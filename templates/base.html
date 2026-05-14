@@ -56,6 +56,7 @@
   <!-- main css -->
   <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
    <link rel="stylesheet" href="{% static 'assets/css/dashboards.css' %}">
+  
 
 </head>
 
@@ -187,6 +188,12 @@
           <a href="{% url 'list.jobs' %}">
             <iconify-icon icon="mdi:briefcase-outline" class="menu-icon"></iconify-icon>
             <span>Jobs</span>
+          </a>
+        </li>
+        <li class="sidebar__item {% if request.resolver_match.url_name == 'admin_job_applications' %}active{% endif %}">
+          <a href="{% url 'admin_job_applications' %}">
+            <iconify-icon icon="mdi:briefcase-outline" class="menu-icon"></iconify-icon>
+            <span>Job Applications</span>
           </a>
         </li>
 
@@ -349,6 +356,14 @@
           </a>
         </li>
 
+        <li class="sidebar__item {% if request.resolver_match.url_name == 'admin_job_applications' %}active{% endif %}">
+          <a href="{% url 'admin_job_applications' %}">
+            <iconify-icon icon="mdi:briefcase-outline" class="menu-icon"></iconify-icon>
+            <span>Job Applications</span>
+          </a>
+        </li>
+
+
         <li class="sidebar__item {% if request.resolver_match.url_name == 'list.feedback' %}active{% endif %}">
           <a href="{% url 'list.feedback' %}">
             <iconify-icon icon="mdi:message-text-outline" class="menu-icon"></iconify-icon>
@@ -444,7 +459,7 @@
 
               <li class="sidebar__item {% if request.resolver_match.url_name == 'services_listing_page' %}active{% endif %}">
           <a href="{% url 'services_listing_page' %}">
-            <iconify-icon icon="mdi:credit-card-outline" class="menu-icon"></iconify-icon>
+            <iconify-icon icon="mdi:view-grid-outline" class="menu-icon"></iconify-icon>
             <span>View All Service</span>
           </a>
         </li>
@@ -452,7 +467,7 @@
 
         <li class="sidebar__item {% if request.resolver_match.url_name == 'customer_orders' %}active{% endif %}">
           <a href="{% url 'customer_orders' %}">
-            <iconify-icon icon="mdi:cart-outline" class="menu-icon"></iconify-icon>
+            <iconify-icon icon="mdi:briefcase-outline" class="menu-icon"></iconify-icon>
             <span>My Services</span>
           </a>
         </li>
@@ -476,33 +491,35 @@
 
 
 
-         <li class="sidebar__item">
-          <a href="2">
-            <iconify-icon icon="mdi:clipboard-text-outline" class="menu-icon"></iconify-icon>
-            <span>Privacy Policy</span>
-          </a>
-        </li>
 
         <li class="sidebar__item">
           <a href="{% url 'my_bookings' %}">
-            <iconify-icon icon="mdi:briefcase-outline" class="menu-icon"></iconify-icon>
+            <iconify-icon icon="solar:chat-round-line-outline" class="menu-icon"></iconify-icon>
             <span>Raise Complaint</span>
           </a>
         </li>
 
         <li class="sidebar__item {% if request.resolver_match.url_name == 'complaint_list' %}active{% endif %}">
           <a href="{% url 'complaint_list' %}">
-            <iconify-icon icon="mdi:note-text-outline" class="menu-icon"></iconify-icon>
+            <iconify-icon icon="solar:clipboard-text-outline" class="menu-icon"></iconify-icon>
             <span>Remarks</span>
           </a>
         </li>
 
         <li class="sidebar__item {% if request.resolver_match.url_name == 'feedbackform' %}active{% endif %}">
           <a href="{% url 'feedbackform' %}">
-            <iconify-icon icon="mdi:message-text-outline" class="menu-icon"></iconify-icon>
+            <iconify-icon icon="solar:chat-line-outline" class="menu-icon"></iconify-icon>
             <span>Feedback & Suggestions</span>
           </a>
         </li> 
+
+        <li class="sidebar__item {% if request.resolver_match.url_name == 'privacy_policy' %}active{% endif %}">
+          <a href="{% url 'privacy_policy' %}">
+            <iconify-icon icon="solar:shield-check-outline" class="menu-icon"></iconify-icon>
+            <span> Privacy Policy</span>
+          </a>
+        </li>
+
 
 
 
@@ -572,8 +589,8 @@
         </div>
         <div class="col-auto">
           <div class="d-flex flex-wrap align-items-center gap-3">
-            <button type="button" data-theme-toggle
-              class="w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center"></button>
+            <!-- <button type="button" data-theme-toggle
+              class="w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center"></button> -->
             <!-- <div class="dropdown d-none d-sm-inline-block">
               <button
                 class="has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center"
@@ -686,7 +703,7 @@
                 type="button" data-bs-toggle="dropdown">
                 <iconify-icon icon="mage:email" class="text-primary-light text-xl"></iconify-icon>
               </button>
-              <div class="dropdown-menu to-top dropdown-menu-lg p-0">
+              <!-- <div class="dropdown-menu to-top dropdown-menu-lg p-0">
                 <div
                   class="m-16 py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
                   <div>
@@ -802,8 +819,9 @@
                 <div class="text-center py-12 px-16">
                   <a href="javascript:void(0)" class="text-primary-600 fw-semibold text-md">See All Message</a>
                 </div>
-              </div>
-            </div><!-- Message dropdown end -->
+              </div> -->
+            </div>
+            <!-- Message dropdown end -->
 
             <div class="dropdown">
               <button
@@ -904,87 +922,190 @@
                 </div>
 
               </div>
-            </div><!-- Notification dropdown end -->
+            </div>
+            
+            
+            
+            <!-- Notification dropdown end -->
 
-            <div class="dropdown">
-<button
-  class="d-flex justify-content-center align-items-center rounded-circle"
-  type="button"
-  data-bs-toggle="dropdown"
->
+            <!-- profile dropdown start -->
 
-{% if request.user.profile_image %}
+<div class="dropdown">
 
-<img
-  src="{{ request.user.profile_image.url }}"
-  alt="image"
-  class="w-40-px h-40-px object-fit-cover rounded-circle"
->
+    <!-- TOGGLE -->
 
-{% else %}
+    <button
+        class="pf-dropdown-toggle"
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false">
 
-<img
-  src="{% static 'assets/images/logo/default-user-image.png' %}"
-  alt="image"
-  class="w-40-px h-40-px object-fit-cover rounded-circle"
->
+        {% if request.user.profile_image %}
 
-{% endif %}
+        <img
+            src="{{ request.user.profile_image.url }}"
+            alt="profile">
 
-</button>
-              <div class="dropdown-menu to-top dropdown-menu-sm">
-                <div class="py-12 px-16 radius-8  mb-16 d-flex align-items-center justify-content-between gap-2">
-                  <div>
-                    <div class="d-flex justify-content-between"> <span
-                        class="text-secondary-light fw-medium text-sm">{{request.user.role}}</span>
-                      <button type="button" class="hover-text-danger"
-                        style="border: 1px solid hsl(35, 100%, 50%); color: hsl(35, 100%, 50%);">
-                        <iconify-icon icon="radix-icons:cross-1" class="icon text-xl"></iconify-icon>
-                      </button>
+        {% else %}
+
+        <img
+            src="{% static 'assets/images/logo/default-user-image.png' %}"
+            alt="profile">
+
+        {% endif %}
+
+    </button>
+
+
+
+    <!-- MENU -->
+
+    <div class="dropdown-menu dropdown-menu-end pf-dropdown-menu">
+
+        <!-- HEADER -->
+
+        <div class="pf-dropdown-header">
+
+            <button
+                type="button"
+                class="pf-close-btn"
+                data-bs-toggle="dropdown">
+
+                <iconify-icon icon="mdi:close"></iconify-icon>
+
+            </button>
+
+            <div class="pf-user-wrap">
+
+                {% if request.user.profile_image %}
+
+                <img
+                    src="{{ request.user.profile_image.url }}"
+                    class="pf-user-image"
+                    alt="profile">
+
+                {% else %}
+
+                <img
+                    src="{% static 'assets/images/logo/default-user-image.png' %}"
+                    class="pf-user-image"
+                    alt="profile">
+
+                {% endif %}
+
+                <div>
+
+                    <div class="pf-role-badge">
+
+                        {{ request.user.first_name }}
+
                     </div>
-                    <h6 class="text-lg text-primary-light fw-semibold mb-2">{% if user.is_authenticated %}
-                      <p style="margin-top: 10px;">{{ request.user.email }}</p>
-                      {% else %}
-                      <p>Welcome, Guest</p>
-                      {% endif %}
-                    </h6>
 
-                  </div>
+                    {% if user.is_authenticated %}
+
+                    <p class="pf-user-email">
+
+                        {{ request.user.email }}
+
+                    </p>
+
+                    {% else %}
+
+                    <p class="pf-user-email">
+
+                        Welcome, Guest
+
+                    </p>
+
+                    {% endif %}
 
                 </div>
-                <ul class="to-top-list">
-                  <li>
-                    <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
-                      href="{% url 'profile' %}">
-                      <iconify-icon icon="solar:user-linear" class="icon text-xl"></iconify-icon> My Profile</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
-                      href="email.html">
-                      <iconify-icon icon="tabler:message-check" class="icon text-xl"></iconify-icon> Inbox</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
-                      href="#">
-                      <iconify-icon icon="icon-park-outline:setting-two" class="icon text-xl"></iconify-icon>
-                      Setting</a>
-                  </li>
-                  <li>
-                    <form method="POST" action="{% url 'logout' %}">
-                      {% csrf_token %}
-                      <button type="submit"
-                        class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3"
-                        style="border:none;background:none;width:100%;text-align:left;">
 
-                        <iconify-icon icon="lucide:power" class="icon text-xl"></iconify-icon>
+            </div>
+
+        </div>
+
+
+
+        <!-- LINKS -->
+
+        <ul class="pf-dropdown-list">
+
+            <li>
+
+                <a
+                    href="{% url 'profile' %}"
+                    class="pf-dropdown-link">
+
+                    <iconify-icon icon="solar:user-outline"></iconify-icon>
+
+                    My Profile
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a
+                    href="#"
+                    class="pf-dropdown-link">
+
+                    <iconify-icon icon="solar:inbox-outline"></iconify-icon>
+
+                    Inbox
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a
+                    href="{% url 'profile' %}"
+                    class="pf-dropdown-link">
+
+                    <iconify-icon icon="solar:settings-outline"></iconify-icon>
+
+                    Settings
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <form
+                    method="POST"
+                    action="{% url 'logout' %}">
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="pf-dropdown-link logout">
+
+                        <iconify-icon icon="solar:logout-2-outline"></iconify-icon>
+
                         Log Out
 
-                      </button>
-                    </form>
-                  </li>
-                </ul>
-              </div>
-            </div><!-- Profile dropdown end -->
+                    </button>
+
+                </form>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+</div>
+            
+            
+            <!-- Profile dropdown end -->
           </div>
         </div>
       </div>

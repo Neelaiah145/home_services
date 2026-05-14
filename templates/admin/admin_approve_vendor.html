@@ -384,6 +384,7 @@ tbody tr:hover{
 </style>
 
 <div class="page-wrap">
+    
 
     <div class="page-header">
 
@@ -392,10 +393,9 @@ tbody tr:hover{
             <h6 class="fw-semibold mb-0">
                 Admin Approved Vendors
             </h6>
-
-            <div class="page-subtitle">
-                View and manage all admin approved vendor accounts and service providers
-            </div>
+<div class="page-subtitle">
+    View and manage vendor accounts available only in your assigned city.
+</div>
 
         </div>
 
@@ -460,7 +460,7 @@ tbody tr:hover{
                 <thead>
 
                     <tr>
-
+                        <th>Sl.No</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
@@ -479,7 +479,7 @@ tbody tr:hover{
                     {% for v in vendors %}
 
                     <tr>
-
+                        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
                         <td>
                             {{ v.first_name }}
                         </td>

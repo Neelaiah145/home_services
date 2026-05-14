@@ -295,6 +295,7 @@
             <table>
                 <thead>
                     <tr>
+                        <th>Sl.No</th>
                         <th>Order ID</th>
                         <th>Service</th>
                         <th>Vendor</th>
@@ -306,6 +307,7 @@
                 <tbody>
                     {% for booking in bookings %}
                     <tr>
+                        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
                         <td>
                             <div class="order-id">{{ booking.order_id }}</div>
                             <div class="small-text">{{ booking.created_at|date:"d M Y" }}</div>

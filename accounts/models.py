@@ -138,7 +138,9 @@ class Booking(models.Model):
     )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    admin = models.ForeignKey(User,on_delete=models.SET_NULL,
+    null=True,blank=True,related_name="admin_bookings",limit_choices_to={"role": "admin"}
+    )
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE
@@ -325,7 +327,8 @@ class Payment(models.Model):
         super().save(*args, **kwargs)
         
         
-        
+
+# vendor profile    
 class VendorProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="vendor_profile")
     experience = models.PositiveIntegerField(help_text="Years of experience")
@@ -403,3 +406,47 @@ class CustomerRemark(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.status}"
+    
+    
+
+
+# notifications in all users  
+class Notification(models.Model):
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="notifications"
+    )
+
+    booking = models.ForeignKey(
+        Booking,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+
+    payment = models.ForeignKey(
+        Payment,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+
+    title = models.CharField(
+        max_length=255
+    )
+
+    message = models.TextField()
+
+    is_read = models.BooleanField(
+        default=False
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+
+        ordering = ['-id']

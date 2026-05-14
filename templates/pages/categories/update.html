@@ -8,32 +8,41 @@
 
     <!-- HEADER -->
 
-    <div class="page-header">
+   <div class="page-header">
 
         <div>
 
-            <h5 class="fw-bold mb-0">
+            <h6 class="fw-semibold mb-0">
 
-                Category Management
+                Update Category
 
-            </h5>
+            </h6>
 
             <p class="page-subtitle">
 
-                Create and manage service categories
+                Create and publish latest Category updates
 
             </p>
 
         </div>
 
-        <a href="{% url 'list.category' %}"
-           class="list-btn">
+                <div class="header-right">
 
-            <i class="bi bi-grid"></i>
+            <div class="banner-badge">
+               Update Category
 
-            Category List
+            </div>
 
-        </a>
+            <a href="{% url 'list.category' %}"
+               class="list-btn">
+
+                <i class="bi bi-images"></i>
+
+                Category List
+
+            </a>
+
+        </div>
 
     </div>
 

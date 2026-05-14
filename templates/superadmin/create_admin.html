@@ -156,6 +156,44 @@
 
                 </div>
 
+                <!-- CITY -->
+
+                <div class="form-group">
+
+                    <label>
+                        City
+                    </label>
+
+                    <input
+                        id="city"
+                        type="text"
+                        class="form-input"
+                        required
+                        placeholder="Enter city"
+                    >
+
+                </div>
+
+                <!-- PINCODE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Pincode
+                    </label>
+
+                    <input
+                        id="pincode"
+                        type="text"
+                        class="form-input"
+                        required
+                        placeholder="Enter pincode"
+                    >
+
+                </div>
+
+                <!-- PHONE -->
+
                 <div class="form-group">
 
                     <label>
@@ -194,11 +232,8 @@
                 <div class="otp-container">
 
                     <input maxlength="1" class="otp-input" oninput="moveNext(this,0)">
-
                     <input maxlength="1" class="otp-input" oninput="moveNext(this,1)">
-
                     <input maxlength="1" class="otp-input" oninput="moveNext(this,2)">
-
                     <input maxlength="1" class="otp-input" oninput="moveNext(this,3)">
 
                 </div>
@@ -302,6 +337,14 @@
                         </th>
 
                         <th>
+                            City
+                        </th>
+
+                        <th>
+                            Pincode
+                        </th>
+
+                        <th>
                             Phone
                         </th>
 
@@ -343,6 +386,18 @@
 
                         <td>
 
+                            {{ admin.city }}
+
+                        </td>
+
+                        <td>
+
+                            {{ admin.pincode }}
+
+                        </td>
+
+                        <td>
+
                             {{ admin.phone }}
 
                         </td>
@@ -353,7 +408,7 @@
 
                     <tr>
 
-                        <td colspan="3">
+                        <td colspan="5">
 
                             <div class="empty-state">
 
@@ -382,8 +437,6 @@
             </table>
 
         </div>
-
-        <!-- PAGINATION -->
 
         <div class="tbl-footer">
 
@@ -451,7 +504,8 @@ const phoneInput = document.querySelector("#phone");
 
 const iti = window.intlTelInput(phoneInput, {
 
-    utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
+    utilsScript:
+    "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
 
     separateDialCode: true,
 
@@ -495,7 +549,10 @@ function moveNext(el, index){
     let inputs =
         document.querySelectorAll(".otp-input");
 
-    if(el.value.length === 1 && index < inputs.length - 1){
+    if(
+        el.value.length === 1 &&
+        index < inputs.length - 1
+    ){
 
         inputs[index + 1].focus();
     }
@@ -517,7 +574,9 @@ function startTimer(){
 
     timeLeft = 120;
 
-    document.getElementById("resendBtn").disabled = true;
+    document.getElementById(
+        "resendBtn"
+    ).disabled = true;
 
     otpTimer = setInterval(()=>{
 
@@ -527,8 +586,10 @@ function startTimer(){
         let sec =
             timeLeft % 60;
 
-        document.getElementById("timer").innerText =
-            `${min}:${sec < 10 ? '0'+sec : sec}`;
+        document.getElementById(
+            "timer"
+        ).innerText =
+        `${min}:${sec < 10 ? '0'+sec : sec}`;
 
         timeLeft--;
 
@@ -536,9 +597,13 @@ function startTimer(){
 
             clearInterval(otpTimer);
 
-            document.getElementById("timer").innerText = "Expired";
+            document.getElementById(
+                "timer"
+            ).innerText = "Expired";
 
-            document.getElementById("resendBtn").disabled = false;
+            document.getElementById(
+                "resendBtn"
+            ).disabled = false;
         }
 
     },1000);
@@ -548,9 +613,12 @@ function sendOTP(){
 
     let phone = iti.getNumber();
 
-    if(!iti.isValidNumber()){
+    if(!phone){
 
-        showMsg("Enter a valid phone number","error");
+        showMsg(
+            "Enter valid phone number",
+            "error"
+        );
 
         return;
     }
@@ -560,12 +628,17 @@ function sendOTP(){
         method:"POST",
 
         headers:{
-            "Content-Type":"application/x-www-form-urlencoded",
-            "X-CSRFToken": getCSRF()
+            "Content-Type":
+            "application/x-www-form-urlencoded",
+
+            "X-CSRFToken":
+            getCSRF()
         },
 
-        body: new URLSearchParams({
+        body:new URLSearchParams({
+
             phone: phone
+
         })
     })
 
@@ -575,16 +648,34 @@ function sendOTP(){
 
         if(data.status === "sent"){
 
-            document.getElementById("otpBox").style.display = "block";
+            document.getElementById(
+                "otpBox"
+            ).style.display = "block";
 
             startTimer();
 
-            showMsg("OTP sent to " + phone);
+            showMsg(
+                "OTP sent successfully"
+            );
 
-        } else {
+        }else{
 
-            showMsg(data.error,"error");
+            showMsg(
+                data.error,
+                "error"
+            );
         }
+
+    })
+
+    .catch(err=>{
+
+        console.log(err);
+
+        showMsg(
+            "OTP sending failed",
+            "error"
+        );
     });
 }
 
@@ -592,17 +683,35 @@ function verifyOTP(){
 
     let otp = getOTP();
 
+    let phone = iti.getNumber();
+
+    if(otp.length !== 4){
+
+        showMsg(
+            "Enter valid OTP",
+            "error"
+        );
+
+        return;
+    }
+
     fetch("/verify-otp/",{
 
         method:"POST",
 
         headers:{
-            "Content-Type":"application/x-www-form-urlencoded",
-            "X-CSRFToken": getCSRF()
+            "Content-Type":
+            "application/x-www-form-urlencoded",
+
+            "X-CSRFToken":
+            getCSRF()
         },
 
-        body: new URLSearchParams({
+        body:new URLSearchParams({
+
+            phone: phone,
             otp: otp
+
         })
     })
 
@@ -612,38 +721,95 @@ function verifyOTP(){
 
         if(data.status === "verified"){
 
-            document.getElementById("passBox").style.display = "block";
+            document.getElementById(
+                "passBox"
+            ).style.display = "block";
 
-            showMsg("OTP verified");
+            showMsg(
+                "OTP verified successfully"
+            );
 
-        } else {
+        }else{
 
-            showMsg("Invalid OTP","error");
+            showMsg(
+                data.error || "Invalid OTP",
+                "error"
+            );
         }
+
+    })
+
+    .catch(err=>{
+
+        console.log(err);
+
+        showMsg(
+            "OTP verification failed",
+            "error"
+        );
     });
 }
 
 function createAdmin(){
 
+    let first_name =
+        document.getElementById(
+            "first_name"
+        ).value;
+
+    let last_name =
+        document.getElementById(
+            "last_name"
+        ).value;
+
+    let email =
+        document.getElementById(
+            "email"
+        ).value;
+
+    let city =
+        document.getElementById(
+            "city"
+        ).value;
+
+    let pincode =
+        document.getElementById(
+            "pincode"
+        ).value;
+
+    let password =
+        document.getElementById(
+            "password"
+        ).value;
+
+    let confirm_password =
+        document.getElementById(
+            "confirm_password"
+        ).value;
+
+    let otp = getOTP();
+
+    let phone = iti.getNumber();
+
     let data = new URLSearchParams({
 
-        first_name:
-            document.getElementById("first_name").value,
+        first_name:first_name,
 
-        last_name:
-            document.getElementById("last_name").value,
+        last_name:last_name,
 
-        email:
-            document.getElementById("email").value,
+        email:email,
 
-        phone:
-            iti.getNumber(),
+        city:city,
 
-        password:
-            document.getElementById("password").value,
+        pincode:pincode,
 
-        confirm_password:
-            document.getElementById("confirm_password").value
+        phone:phone,
+
+        password:password,
+
+        confirm_password:confirm_password,
+
+        otp:otp
     });
 
     fetch("/create_admin/",{
@@ -651,11 +817,14 @@ function createAdmin(){
         method:"POST",
 
         headers:{
-            "Content-Type":"application/x-www-form-urlencoded",
-            "X-CSRFToken": getCSRF()
+            "Content-Type":
+            "application/x-www-form-urlencoded",
+
+            "X-CSRFToken":
+            getCSRF()
         },
 
-        body: data
+        body:data
     })
 
     .then(res=>res.json())
@@ -664,14 +833,34 @@ function createAdmin(){
 
         if(data.status === "success"){
 
-            showMsg("Admin created successfully");
+            showMsg(
+                "Admin created successfully"
+            );
 
-            setTimeout(()=>location.reload(),1000);
+            setTimeout(()=>{
 
-        } else {
+                location.reload();
 
-            showMsg(data.error,"error");
+            },1000);
+
+        }else{
+
+            showMsg(
+                data.error,
+                "error"
+            );
         }
+
+    })
+
+    .catch(err=>{
+
+        console.log(err);
+
+        showMsg(
+            "Something went wrong",
+            "error"
+        );
     });
 }
 

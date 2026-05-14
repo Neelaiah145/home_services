@@ -10,30 +10,39 @@
 
     <div class="page-header">
 
-
         <div>
 
-            <h5 class="fw-bold mb-0">
+            <h6 class="fw-semibold mb-0">
 
-                Service Management
-            </h5>
+                Add Service
+
+            </h6>
 
             <p class="page-subtitle">
 
-                Add and manage all service information
+                Create and publish latest news updates
 
             </p>
 
         </div>
 
+                <div class="header-right">
 
-        <a href="{% url 'services.list' %}" class="list-btn">
+            <div class="banner-badge">
+                Create Service
 
-            <i class="bi bi-grid"></i>
+            </div>
 
-            Services List
+            <a href="{% url 'services.list' %}"
+               class="list-btn">
 
-        </a>
+                <i class="bi bi-images"></i>
+
+               Service List
+
+            </a>
+
+        </div>
 
     </div>
 

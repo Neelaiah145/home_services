@@ -470,7 +470,7 @@ body{
                 <thead>
 
                     <tr>
-
+                        <th>Sl.No</th>
                         <th>Order</th>
                         <th>Customer</th>
                         <th>Service</th>
@@ -489,7 +489,7 @@ body{
                     {% for booking in bookings %}
 
                     <tr>
-
+                        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
                         <td>
 
                             <div class="order-id">

@@ -2,553 +2,109 @@
 {% load static %}
 {% block content %}
 
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
 <style>
-
-:root{
-    --bg:#f4f7fb;
-    --card:#ffffff;
-    --border:#e5e7eb;
-    --text:#111827;
-    --sub:#6b7280;
-    --primary:#2563eb;
-    --success:#16a34a;
+.cp-wrap{max-width:860px;margin:0 auto;padding:24px 16px;font-family:inherit}
+.cp-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.cp-title{font-size:17px;font-weight:600;color:#111827;margin:0}
+.cp-sub{font-size:13px;color:#6b7280;margin-top:2px}
+.cp-back{height:36px;padding:0 14px;border-radius:8px;background:#f3f4f6;color:#374151;text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-size:13px;border:1px solid #e5e7eb;transition:.15s}
+.cp-back:hover{background:#e5e7eb}
+.cp-card{background:#fff;border-radius:14px;border:1px solid #e5e7eb;overflow:hidden}
+.cp-banner{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid #f3f4f6;background:#fafafa;flex-wrap:wrap;gap:12px}
+.cp-id-label{font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.cp-id-value{font-size:18px;font-weight:700;color:#111827}
+.cp-pill{height:30px;padding:0 14px;border-radius:999px;background:#ecfdf5;color:#15803d;display:inline-flex;align-items:center;font-size:12px;font-weight:600}
+.cp-body{padding:22px}
+.cp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:22px}
+.cp-info{background:#f9fafb;border:1px solid #f3f4f6;border-radius:10px;padding:14px 16px}
+.cp-info label{display:block;font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.cp-info p{margin:0;font-size:15px;font-weight:600;color:#111827}
+.cp-empty-val{font-size:14px;color:#9ca3af;font-weight:400}
+.cp-divider{height:1px;background:#f3f4f6;margin:0 0 20px}
+.cp-tl-title{font-size:14px;font-weight:600;color:#374151;margin-bottom:16px}
+.cp-timeline{position:relative;padding-left:26px}
+.cp-tl-line{position:absolute;left:6px;top:8px;bottom:8px;width:1px;background:#e5e7eb}
+.cp-step{position:relative;margin-bottom:12px}
+.cp-step:last-child{margin-bottom:0}
+.cp-dot{position:absolute;left:-26px;top:10px;width:13px;height:13px;border-radius:50%;background:#fff;border:2px solid #d1d5db;z-index:1}
+.cp-step.latest .cp-dot{border-color:#2563eb;background:#2563eb}
+.cp-step-card{background:#f9fafb;border:1px solid #f3f4f6;border-radius:10px;padding:13px 16px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.cp-step-status{font-size:14px;font-weight:600;color:#111827;margin-bottom:2px}
+.cp-step-user{font-size:12px;color:#2563eb}
+.cp-step-date{font-size:12px;color:#9ca3af;white-space:nowrap;padding-top:1px}
+.cp-empty-box{text-align:center;padding:36px;font-size:13px;color:#9ca3af}
+@media(max-width:600px){
+  .cp-grid{grid-template-columns:1fr}
+  .cp-step-card{flex-direction:column}
 }
-
-/* =========================
-   BODY
-========================= */
-
-body{
-    background:var(--bg);
-    font-family:'DM Sans',sans-serif;
-    color:var(--text);
-}
-
-/* =========================
-   PAGE
-========================= */
-
-.cp-container{
-    max-width:1400px;
-    margin:auto;
-    padding:32px 20px;
-}
-
-/* =========================
-   HEADER
-========================= */
-
-.cp-nav-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:16px;
-    flex-wrap:wrap;
-    margin-bottom:24px;
-}
-
-.cp-page-title{
-    font-size:28px;
-    font-weight:800;
-    color:var(--text);
-    margin:0;
-}
-
-.cp-page-sub{
-    font-size:14px;
-    color:var(--sub);
-    margin-top:4px;
-}
-
-.cp-back-btn{
-    height:44px;
-    padding:0 18px;
-    border-radius:12px;
-    background:#eef2ff;
-    color:var(--primary);
-    text-decoration:none;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    font-size:13px;
-    font-weight:700;
-    transition:.2s ease;
-}
-
-.cp-back-btn:hover{
-    background:#dbeafe;
-    color:#1d4ed8;
-}
-
-/* =========================
-   CARD
-========================= */
-
-.cp-card{
-    background:#fff;
-    border-radius:26px;
-    border:1px solid var(--border);
-    overflow:hidden;
-    box-shadow:0 8px 30px rgba(15,23,42,.05);
-}
-
-/* =========================
-   TOP BANNER
-========================= */
-
-.cp-status-banner{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:20px;
-    padding:26px 30px;
-    border-bottom:1px solid var(--border);
-    background:#fafafa;
-}
-
-.cp-order-meta{
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-}
-
-.cp-id-label{
-    font-size:12px;
-    font-weight:700;
-    color:var(--sub);
-    text-transform:uppercase;
-    letter-spacing:.5px;
-}
-
-.cp-id-value{
-    font-size:26px;
-    font-weight:800;
-    color:var(--text);
-}
-
-.cp-status-pill{
-    height:42px;
-    padding:0 20px;
-    border-radius:999px;
-    background:#ecfdf5;
-    color:var(--success);
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    font-size:13px;
-    font-weight:700;
-    text-transform:capitalize;
-}
-
-/* =========================
-   CONTENT
-========================= */
-
-.cp-content-body{
-    padding:32px;
-}
-
-/* =========================
-   GRID
-========================= */
-
-.cp-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:24px;
-    margin-bottom:34px;
-}
-
-.cp-info-card{
-    background:#f8fafc;
-    border:1px solid #edf2f7;
-    border-radius:18px;
-    padding:22px;
-}
-
-.cp-info-group label{
-    display:block;
-    font-size:12px;
-    color:var(--sub);
-    margin-bottom:8px;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:.4px;
-}
-
-.cp-info-group p{
-    margin:0;
-    font-size:18px;
-    font-weight:700;
-    color:var(--text);
-}
-
-.cp-empty{
-    font-size:15px;
-    color:var(--sub);
-    font-weight:500;
-}
-
-/* =========================
-   DIVIDER
-========================= */
-
-.cp-divider{
-    width:100%;
-    height:1px;
-    background:#eef2f7;
-    margin:0 0 36px;
-}
-
-/* =========================
-   TIMELINE TITLE
-========================= */
-
-.cp-timeline-title{
-    font-size:18px;
-    font-weight:800;
-    color:var(--text);
-    margin-bottom:28px;
-}
-
-/* =========================
-   TIMELINE
-========================= */
-
-.cp-timeline{
-    position:relative;
-    padding-left:34px;
-}
-
-.cp-timeline-line{
-    position:absolute;
-    left:9px;
-    top:5px;
-    bottom:5px;
-    width:2px;
-    background:#dbe1ea;
-}
-
-.cp-step{
-    position:relative;
-    margin-bottom:28px;
-}
-
-.cp-step:last-child{
-    margin-bottom:0;
-}
-
-.cp-dot{
-    position:absolute;
-    left:-34px;
-    top:8px;
-    width:18px;
-    height:18px;
-    border-radius:50%;
-    background:#fff;
-    border:3px solid #cbd5e1;
-    z-index:2;
-}
-
-.cp-step.latest .cp-dot{
-    border-color:var(--primary);
-    background:var(--primary);
-    box-shadow:0 0 0 6px rgba(37,99,235,.12);
-}
-
-.cp-step-card{
-    background:#f8fafc;
-    border:1px solid #edf2f7;
-    border-radius:18px;
-    padding:20px;
-}
-
-.cp-step-content{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:18px;
-    flex-wrap:wrap;
-}
-
-.cp-step-info{
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-}
-
-.cp-step-status{
-    font-size:16px;
-    font-weight:700;
-    color:var(--text);
-    text-transform:capitalize;
-}
-
-.cp-step-user{
-    font-size:13px;
-    color:var(--primary);
-    font-weight:700;
-}
-
-.cp-step-date{
-    font-size:13px;
-    color:var(--sub);
-    font-weight:600;
-}
-
-/* =========================
-   EMPTY
-========================= */
-
-.cp-empty-box{
-    text-align:center;
-    padding:50px 20px;
-    color:#94a3b8;
-    font-size:14px;
-    font-weight:600;
-}
-
-/* =========================
-   MOBILE
-========================= */
-
-@media(max-width:992px){
-
-    .cp-grid{
-        grid-template-columns:1fr;
-    }
-
-}
-
-@media(max-width:768px){
-
-    .cp-container{
-        padding:14px;
-    }
-
-    .cp-nav-header{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .cp-page-title{
-        font-size:22px;
-    }
-
-    .cp-status-banner{
-        padding:20px;
-    }
-
-    .cp-content-body{
-        padding:20px;
-    }
-
-    .cp-id-value{
-        font-size:22px;
-    }
-
-    .cp-step-content{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-}
-
 </style>
 
-<div class="cp-container">
+<div class="cp-wrap">
 
-    <!-- HEADER -->
+  <div class="cp-header">
+    <div>
+      <p class="cp-title">Order activity details</p>
+      <p class="cp-sub">Track complete order history and activity updates</p>
+    </div>
+    <a href="{% url 'customer_orders' %}" class="cp-back">← Back to my orders</a>
+  </div>
 
-    <div class="cp-nav-header">
+  <div class="cp-card">
 
-        <div>
-
-            <h4 class="cp-page-title">
-                Order Activity Details
-            </h4>
-
-            <div class="cp-page-sub">
-                Track complete order history and activity updates
-            </div>
-
-        </div>
-
-        <a href="{% url 'customer_orders' %}"
-           class="cp-back-btn">
-
-            ← Back to My Orders
-
-        </a>
-
+    <div class="cp-banner">
+      <div>
+        <div class="cp-id-label">Order reference</div>
+        <div class="cp-id-value">{{ booking.order_id|default:booking.id }}</div>
+      </div>
+      <span class="cp-pill">{{ booking.status|title }}</span>
     </div>
 
-    <!-- CARD -->
+    <div class="cp-body">
 
-    <div class="cp-card">
-
-        <!-- TOP -->
-
-        <div class="cp-status-banner">
-
-            <div class="cp-order-meta">
-
-                <span class="cp-id-label">
-                    Order Reference
-                </span>
-
-                <span class="cp-id-value">
-                    {{ booking.order_id|default:booking.id }}
-                </span>
-
-            </div>
-
-            <div class="cp-status-pill">
-
-                {{ booking.status|title }}
-
-            </div>
-
+      <div class="cp-grid">
+        <div class="cp-info">
+          <label>Service name</label>
+          <p>{{ booking.service.s_title }}</p>
         </div>
-
-        <!-- CONTENT -->
-
-        <div class="cp-content-body">
-
-            <!-- GRID -->
-
-            <div class="cp-grid">
-
-                <!-- SERVICE -->
-
-                <div class="cp-info-card">
-
-                    <div class="cp-info-group">
-
-                        <label>
-                            Service Name
-                        </label>
-
-                        <p>
-                            {{ booking.service.s_title }}
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <!-- PROVIDER -->
-
-                <div class="cp-info-card">
-
-                    <div class="cp-info-group">
-
-                        <label>
-                            Assigned Provider
-                        </label>
-
-                        <p>
-
-                            {% if booking.vendor %}
-
-                                {{ booking.vendor.first_name }}
-
-                            {% else %}
-
-                                <span class="cp-empty">
-
-                                    Unassigned
-
-                                </span>
-
-                            {% endif %}
-
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- DIVIDER -->
-
-            <div class="cp-divider"></div>
-
-            <!-- TIMELINE -->
-
-            <h5 class="cp-timeline-title">
-
-                Activity Timeline
-
-            </h5>
-
-            <div class="cp-timeline">
-
-                <div class="cp-timeline-line"></div>
-
-                {% for h in history %}
-
-                <div class="cp-step {% if forloop.first %}latest{% endif %}">
-
-                    <div class="cp-dot"></div>
-
-                    <div class="cp-step-card">
-
-                        <div class="cp-step-content">
-
-                            <div class="cp-step-info">
-
-                                <span class="cp-step-status">
-
-                                    {{ h.status|title }}
-
-                                </span>
-
-                                {% if h.updated_by %}
-
-                                <span class="cp-step-user">
-
-                                    Updated by {{ h.updated_by.first_name }}
-
-                                </span>
-
-                                {% endif %}
-
-                            </div>
-
-                            <div class="cp-step-date">
-
-                                {{ h.created_at|date:"M d, Y" }}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                {% empty %}
-
-                <div class="cp-empty-box">
-
-                    No activity history found
-
-                </div>
-
-                {% endfor %}
-
-            </div>
-
+        <div class="cp-info">
+          <label>Assigned provider</label>
+          <p>
+            {% if booking.vendor %}
+              {{ booking.vendor.first_name }}
+            {% else %}
+              <span class="cp-empty-val">Unassigned</span>
+            {% endif %}
+          </p>
         </div>
+      </div>
 
+      <div class="cp-divider"></div>
+
+      <div class="cp-tl-title">Activity timeline</div>
+
+      <div class="cp-timeline">
+        <div class="cp-tl-line"></div>
+
+        {% for h in history %}
+        <div class="cp-step {% if forloop.first %}latest{% endif %}">
+          <div class="cp-dot"></div>
+          <div class="cp-step-card">
+            <div>
+              <div class="cp-step-status">{{ h.status|title }}</div>
+              {% if h.updated_by %}
+              <div class="cp-step-user">Updated by {{ h.updated_by.first_name }}</div>
+              {% endif %}
+            </div>
+            <div class="cp-step-date">{{ h.created_at|date:"M d, Y" }}</div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="cp-empty-box">No activity history found</div>
+        {% endfor %}
+
+      </div>
     </div>
-
+  </div>
 </div>
 
 {% endblock %}

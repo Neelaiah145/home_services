@@ -48,10 +48,6 @@ body{
   padding:50px 24px;
 }
 
-/* ============================
-   WRAPPER
-============================ */
-
 .booking-wrapper{
   width:100%;
   max-width:1160px;
@@ -64,9 +60,7 @@ body{
   box-shadow:0 8px 40px rgba(15,23,42,0.07);
 }
 
-/* ============================
-   LEFT PANEL
-============================ */
+/* LEFT */
 
 .left-side{
   background:var(--dark);
@@ -146,16 +140,12 @@ body{
   color:rgba(255,255,255,0.35);
 }
 
-/* ============================
-   RIGHT PANEL
-============================ */
+/* RIGHT */
 
 .right-side{
   padding:60px 56px;
   background:#fff;
 }
-
-/* BADGE */
 
 .small-badge{
   display:inline-flex;
@@ -170,8 +160,6 @@ body{
   margin-bottom:20px;
 }
 
-/* TITLE */
-
 .form-title{
   font-size:30px;
   font-weight:700;
@@ -184,7 +172,45 @@ body{
   font-size:14px;
   color:var(--muted);
   line-height:1.75;
-  margin-bottom:36px;
+  margin-bottom:24px;
+}
+
+/* AVAILABILITY */
+
+.availability-box{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  background:#eff6ff;
+  border:1px solid #bfdbfe;
+  padding:16px 18px;
+  border-radius:16px;
+  margin-bottom:30px;
+}
+
+.availability-icon{
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  background:#dbeafe;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  flex-shrink:0;
+}
+
+.availability-title{
+  font-size:14px;
+  font-weight:700;
+  color:#1e3a8a;
+  margin-bottom:4px;
+}
+
+.availability-text{
+  font-size:13px;
+  line-height:1.7;
+  color:#475569;
 }
 
 /* MESSAGE */
@@ -212,9 +238,7 @@ body{
   border:1px solid var(--success-border);
 }
 
-/* ============================
-   FORM GRID
-============================ */
+/* FORM */
 
 .form-grid{
   display:grid;
@@ -231,16 +255,12 @@ body{
   flex-direction:column;
 }
 
-/* LABEL */
-
 label{
   font-size:13px;
   font-weight:600;
   color:var(--muted);
   margin-bottom:9px;
 }
-
-/* INPUTS */
 
 input,
 select,
@@ -270,13 +290,6 @@ textarea:focus{
   box-shadow:0 0 0 4px rgba(29,78,216,0.08);
 }
 
-input::placeholder,
-textarea::placeholder{
-  color:var(--hint);
-}
-
-/* READONLY */
-
 .readonly-box{
   width:100%;
   padding:13px 16px;
@@ -301,8 +314,6 @@ textarea::placeholder{
   justify-content:center;
 }
 
-/* SECTION */
-
 .section-label{
   grid-column:1 / -1;
   font-size:11px;
@@ -314,10 +325,6 @@ textarea::placeholder{
   border-bottom:1px solid var(--border);
   margin-top:6px;
 }
-
-/* ============================
-   BOOKING TYPE FIELDS
-============================ */
 
 .booking-fields{
   grid-column:1 / -1;
@@ -339,7 +346,6 @@ textarea::placeholder{
   color:#1d4ed8;
   margin-bottom:6px;
   text-transform:uppercase;
-  letter-spacing:0.5px;
 }
 
 .days-count{
@@ -348,8 +354,6 @@ textarea::placeholder{
   color:#0f172a;
   line-height:1.7;
 }
-
-/* BUTTON */
 
 .submit-btn{
   width:100%;
@@ -362,14 +366,11 @@ textarea::placeholder{
   font-weight:600;
   cursor:pointer;
   transition:.2s ease;
-  font-family:inherit;
 }
 
 .submit-btn:hover{
   background:var(--primary-dark);
 }
-
-/* FOOTER */
 
 .bottom-note{
   margin-top:26px;
@@ -377,8 +378,6 @@ textarea::placeholder{
   font-size:12px;
   color:var(--hint);
 }
-
-/* RESPONSIVE */
 
 @media(max-width:960px){
 
@@ -403,14 +402,6 @@ textarea::placeholder{
     grid-template-columns:1fr;
   }
 
-  .left-side h1{
-    font-size:24px;
-  }
-
-  .form-title{
-    font-size:24px;
-  }
-
   .right-side{
     padding:36px 22px;
   }
@@ -424,8 +415,6 @@ textarea::placeholder{
 <body>
 
 <div class="booking-wrapper">
-
-  <!-- LEFT -->
 
   <div class="left-side">
 
@@ -452,13 +441,13 @@ textarea::placeholder{
       </div>
 
       <div class="feature-item">
-        <div class="feature-icon">🛡️</div>
-        Verified Experts
+        <div class="feature-icon">📍</div>
+        City Based Support
       </div>
 
       <div class="feature-item">
-        <div class="feature-icon">📍</div>
-        Doorstep Support
+        <div class="feature-icon">🛡️</div>
+        Verified Vendors
       </div>
 
       <div class="feature-item">
@@ -469,12 +458,10 @@ textarea::placeholder{
     </div>
 
     <div class="left-footer">
-      🔒 256-bit SSL Protected
+      🔒 Trusted Home Service Booking Platform
     </div>
 
   </div>
-
-  <!-- RIGHT -->
 
   <div class="right-side">
 
@@ -490,11 +477,13 @@ textarea::placeholder{
       Fill the details below and confirm your booking request.
     </div>
 
+    <!-- NEW CONTENT -->
+
+    
+
     <div id="msg" class="msg"></div>
 
     <div class="form-grid">
-
-      <!-- PERSONAL -->
 
       <div class="section-label">
         Personal Information
@@ -535,13 +524,9 @@ textarea::placeholder{
 
       </div>
 
-      <!-- SERVICE -->
-
       <div class="section-label">
         Service Details
       </div>
-
-      <!-- CATEGORY -->
 
       <div class="form-group">
 
@@ -563,8 +548,6 @@ textarea::placeholder{
 
       </div>
 
-      <!-- SERVICE -->
-
       <div class="form-group">
 
         <label>Service</label>
@@ -578,8 +561,6 @@ textarea::placeholder{
         </select>
 
       </div>
-
-      <!-- BOOKING TYPE -->
 
       <div class="form-group">
 
@@ -602,8 +583,6 @@ textarea::placeholder{
 
       <div></div>
 
-      <!-- SINGLE DAY -->
-
       <div id="singleDayFields"
            class="booking-fields">
 
@@ -621,29 +600,16 @@ textarea::placeholder{
 
           <select id="time">
 
-            <option value="09-11">
-              09 AM – 11 AM
-            </option>
-
-            <option value="11-1">
-              11 AM – 01 PM
-            </option>
-
-            <option value="1-3">
-              01 PM – 03 PM
-            </option>
-
-            <option value="3-5">
-              03 PM – 05 PM
-            </option>
+            <option value="09-11">09 AM – 11 AM</option>
+            <option value="11-1">11 AM – 01 PM</option>
+            <option value="1-3">01 PM – 03 PM</option>
+            <option value="3-5">03 PM – 05 PM</option>
 
           </select>
 
         </div>
 
       </div>
-
-      <!-- MULTIPLE DAYS -->
 
       <div id="multipleDayFields"
            class="booking-fields"
@@ -690,8 +656,6 @@ textarea::placeholder{
 
       </div>
 
-      <!-- PROBLEM -->
-
       <div class="form-group full-width">
 
         <label>Describe Your Problem</label>
@@ -702,8 +666,6 @@ textarea::placeholder{
         ></textarea>
 
       </div>
-
-      <!-- ADDRESS -->
 
       <div class="section-label">
         Service Location
@@ -721,8 +683,6 @@ textarea::placeholder{
 
       </div>
 
-      <!-- BUTTON -->
-
       <div class="form-group full-width">
 
         <button class="submit-btn"
@@ -737,7 +697,7 @@ textarea::placeholder{
     </div>
 
     <div class="bottom-note">
-       Secure · Reliable · Trusted Service Booking
+      Secure · Reliable · City Based Smart Booking
     </div>
 
   </div>
@@ -785,7 +745,6 @@ async function loadServices(){
         ${s.name}
       </option>
     `;
-
   });
 
   document.getElementById("service").innerHTML =
@@ -856,7 +815,7 @@ async function bookService(){
     "{{ request.user.phone }}";
 
   let city =
-    document.getElementById("city").value;
+    document.getElementById("city").value.trim();
 
   let category =
     document.getElementById("category").value;
@@ -865,8 +824,17 @@ async function bookService(){
     document.getElementById("service").value;
 
   if(!name){
+
     return showMsg(
       "Please enter your name.",
+      "error"
+    );
+  }
+
+  if(!city){
+
+    return showMsg(
+      "Please enter your city.",
       "error"
     );
   }

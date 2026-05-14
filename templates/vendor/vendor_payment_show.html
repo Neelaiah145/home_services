@@ -366,7 +366,7 @@ tbody tr:hover{
                 <thead>
 
                     <tr>
-
+                        <th>Sl.No</th>
                         <th>Order ID</th>
                         <th>Customer</th>
                         <th>Service</th>
@@ -386,6 +386,7 @@ tbody tr:hover{
                     {% with payment=b.payments.first %}
 
                     <tr class="payment-row">
+                        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
 
                         <td>
                             <div class="order-id">

@@ -570,363 +570,370 @@
 
     </div>
 
-    <script>
+<script>
 
-        function setRole(role) {
+    function setRole(role) {
 
-            document.getElementById("role").value = role;
+        document.getElementById("role").value = role;
 
-            const customer =
-                document.getElementById("tabCustomer");
+        const customer =
+            document.getElementById("tabCustomer");
 
-            const vendor =
-                document.getElementById("tabVendor");
+        const vendor =
+            document.getElementById("tabVendor");
 
-            const vendorBox =
-                document.getElementById("vendorBox");
+        const vendorBox =
+            document.getElementById("vendorBox");
 
-            if (role === "vendor") {
+        if (role === "vendor") {
 
-                vendor.classList.add("active");
+            vendor.classList.add("active");
 
-                customer.classList.remove("active");
+            customer.classList.remove("active");
 
-                vendorBox.classList.remove("hidden");
+            vendorBox.classList.remove("hidden");
 
-            } else {
+        } else {
 
-                customer.classList.add("active");
+            customer.classList.add("active");
 
-                vendor.classList.remove("active");
+            vendor.classList.remove("active");
 
-                vendorBox.classList.add("hidden");
+            vendorBox.classList.add("hidden");
+        }
+    }
+
+    function show(message, error = true) {
+
+        const box =
+            document.getElementById("msg");
+
+        box.style.display = "block";
+
+        box.innerText = message;
+
+        box.style.background =
+            error ? "#fee2e2" : "#dcfce7";
+
+        box.style.color =
+            error ? "#991b1b" : "#166534";
+    }
+
+    async function sendOtp() {
+
+        const role =
+            document.getElementById("role").value;
+
+        const name =
+            document.getElementById("name").value.trim();
+
+        const email =
+            document.getElementById("email").value.trim();
+
+        const phone =
+            document.getElementById("phone").value.trim();
+
+        const termsAccepted =
+            document.getElementById("termsCheck").checked;
+
+        const emailPattern =
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        const phonePattern =
+            /^[6-9]\d{9}$/;
+
+        if (name === "") {
+
+            show("Please enter full name");
+            return;
+        }
+
+        if (name.length < 3) {
+
+            show("Name must be minimum 3 characters");
+            return;
+        }
+
+        if (email === "") {
+
+            show("Please enter email address");
+            return;
+        }
+
+        if (!emailPattern.test(email)) {
+
+            show("Please enter valid email address");
+            return;
+        }
+
+        if (phone === "") {
+
+            show("Please enter mobile number");
+            return;
+        }
+
+        if (!phonePattern.test(phone)) {
+
+            show("Please enter valid Indian mobile number");
+            return;
+        }
+
+        if (role === "vendor") {
+
+            const category =
+                document.getElementById("category").value;
+
+            const service =
+                document.getElementById("service").value;
+
+            const address =
+                document.getElementById("address").value.trim();
+
+            const city =
+                document.getElementById("city").value.trim();
+
+            const postcode =
+                document.getElementById("postcode").value.trim();
+
+            if (category === "") {
+
+                show("Please select category");
+                return;
+            }
+
+            if (service === "") {
+
+                show("Please select service");
+                return;
+            }
+
+            if (address === "") {
+
+                show("Please enter business address");
+                return;
+            }
+
+            if (city === "") {
+
+                show("Please enter city");
+                return;
+            }
+
+            if (postcode === "") {
+
+                show("Please enter postcode");
+                return;
+            }
+
+            if (postcode.length !== 6) {
+
+                show("Please enter valid postcode");
+                return;
             }
         }
 
-        function show(message, error = true) {
+        if (!termsAccepted) {
 
-            const box =
-                document.getElementById("msg");
-
-            box.style.display = "block";
-
-            box.innerText = message;
-
-            box.style.background =
-                error ? "#fee2e2" : "#dcfce7";
-
-            box.style.color =
-                error ? "#991b1b" : "#166534";
+            show("Please accept Terms & Conditions");
+            return;
         }
 
-        async function sendOtp() {
+        const res = await fetch("/register/", {
 
-            const role =
-                document.getElementById("role").value;
+            method: "POST",
 
-            const name =
-                document.getElementById("name").value.trim();
+            headers: {
 
-            const email =
-                document.getElementById("email").value.trim();
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
 
-            const phone =
-                document.getElementById("phone").value.trim();
+            body: JSON.stringify({
 
-            const termsAccepted =
-                document.getElementById("termsCheck").checked;
+                action: "send_otp",
 
-            const emailPattern =
-                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                name: name,
 
-            const phonePattern =
-                /^[6-9]\d{9}$/;
+                email: email,
 
-            if (name === "") {
+                phone: phone,
 
-                show("Please enter full name");
-                return;
-            }
+                role: role
+            })
+        });
 
-            if (name.length < 3) {
+        const data = await res.json();
 
-                show("Name must be minimum 3 characters");
-                return;
-            }
+        if (data.exists) {
 
-            if (email === "") {
-
-                show("Please enter email address");
-                return;
-            }
-
-            if (!emailPattern.test(email)) {
-
-                show("Please enter valid email address");
-                return;
-            }
-
-            if (phone === "") {
-
-                show("Please enter mobile number");
-                return;
-            }
-
-            if (!phonePattern.test(phone)) {
-
-                show("Please enter valid Indian mobile number");
-                return;
-            }
-
-            if (role === "vendor") {
-
-                const category =
-                    document.getElementById("category").value;
-
-                const service =
-                    document.getElementById("service").value;
-
-                const address =
-                    document.getElementById("address").value.trim();
-
-                const city =
-                    document.getElementById("city").value.trim();
-
-                const postcode =
-                    document.getElementById("postcode").value.trim();
-
-                if (category === "") {
-
-                    show("Please select category");
-                    return;
-                }
-
-                if (service === "") {
-
-                    show("Please select service");
-                    return;
-                }
-
-                if (address === "") {
-
-                    show("Please enter business address");
-                    return;
-                }
-
-                if (city === "") {
-
-                    show("Please enter city");
-                    return;
-                }
-
-                if (postcode === "") {
-
-                    show("Please enter postcode");
-                    return;
-                }
-
-                if (postcode.length !== 6) {
-
-                    show("Please enter valid postcode");
-                    return;
-                }
-            }
-
-            if (!termsAccepted) {
-
-                show("Please accept Terms & Conditions");
-                return;
-            }
-
-            const res = await fetch("/register/", {
-
-                method: "POST",
-
-                headers: {
-
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}"
-                },
-
-                body: JSON.stringify({
-
-                    action: "send_otp",
-
-                    name: name,
-
-                    email: email,
-
-                    phone: phone,
-
-                    role: role
-                })
-            });
-
-            const data = await res.json();
-
-            if (data.exists) {
-
-                show("Mobile number already registered. Please login.");
-
-                setTimeout(() => {
-
-                    window.location = "/login/";
-
-                }, 1500);
-
-                return;
-            }
-
-            if (data.email_exists) {
-
-                show("Email already registered. Please login.");
-
-                setTimeout(() => {
-
-                    window.location = "/login/";
-
-                }, 1500);
-
-                return;
-            }
-
-            if (data.error) {
-
-                show(data.error);
-                return;
-            }
-
-            show("OTP Sent Successfully", false);
-
-            document.getElementById("step1")
-                .classList.add("hidden");
-
-            document.getElementById("step2")
-                .classList.remove("hidden");
-        }
-
-        async function verifyOtp() {
-
-            const otp =
-
-                document.getElementById("otp1").value +
-                document.getElementById("otp2").value +
-                document.getElementById("otp3").value +
-                document.getElementById("otp4").value;
-
-            if (otp.length !== 4) {
-
-                show("Please enter valid OTP");
-                return;
-            }
-
-            const role =
-                document.getElementById("role").value;
-
-            const name =
-                document.getElementById("name").value.trim();
-
-            const email =
-                document.getElementById("email").value.trim();
-
-            const phone =
-                document.getElementById("phone").value.trim();
-
-            let category = "";
-            let service = "";
-            let address = "";
-            let city = "";
-            let postcode = "";
-
-            if (role === "vendor") {
-
-                category =
-                    document.getElementById("category").value;
-
-                service =
-                    document.getElementById("service").value;
-
-                address =
-                    document.getElementById("address").value.trim();
-
-                city =
-                    document.getElementById("city").value.trim();
-
-                postcode =
-                    document.getElementById("postcode").value.trim();
-            }
-
-            const res = await fetch("/register/", {
-
-                method: "POST",
-
-                headers: {
-
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}"
-                },
-
-                body: JSON.stringify({
-
-                    action: "verify_otp",
-
-                    otp: otp,
-
-                    role: role,
-
-                    name: name,
-
-                    email: email,
-
-                    phone: phone,
-
-                    category: category,
-
-                    service: service,
-
-                    address: address,
-
-                    city: city,
-
-                    postcode: postcode
-                })
-            });
-
-            const data = await res.json();
-
-            if (data.error) {
-
-                show(data.error);
-                return;
-            }
-
-            show("Registration Successful", false);
+            show("Mobile number already registered. Please login.");
 
             setTimeout(() => {
 
                 window.location = "/login/";
 
             }, 1500);
+
+            return;
         }
 
-        function moveNext(current, nextFieldId) {
+        if (data.email_exists) {
 
-            current.value =
-                current.value.replace(/[^0-9]/g, '');
+            show("Email already registered. Please login.");
 
-            if (current.value.length >= 1) {
+            setTimeout(() => {
 
-                const next =
-                    document.getElementById(nextFieldId);
+                window.location = "/login/";
 
-                if (next) {
+            }, 1500);
 
-                    next.focus();
-                }
+            return;
+        }
+
+        if (data.error) {
+
+            show(data.error);
+            return;
+        }
+
+        show("OTP Sent Successfully", false);
+
+        document.getElementById("step1")
+            .classList.add("hidden");
+
+        document.getElementById("step2")
+            .classList.remove("hidden");
+    }
+
+    async function verifyOtp() {
+
+        const otp =
+
+            document.getElementById("otp1").value +
+            document.getElementById("otp2").value +
+            document.getElementById("otp3").value +
+            document.getElementById("otp4").value;
+
+        if (otp.length !== 4) {
+
+            show("Please enter valid OTP");
+            return;
+        }
+
+        const role =
+            document.getElementById("role").value;
+
+        const name =
+            document.getElementById("name").value.trim();
+
+        const email =
+            document.getElementById("email").value.trim();
+
+        const phone =
+            document.getElementById("phone").value.trim();
+
+        let category = "";
+        let service = "";
+        let address = "";
+        let city = "";
+
+        /* NEW */
+
+        let postal_code = "";
+
+        if (role === "vendor") {
+
+            category =
+                document.getElementById("category").value;
+
+            service =
+                document.getElementById("service").value;
+
+            address =
+                document.getElementById("address").value.trim();
+
+            city =
+                document.getElementById("city").value.trim();
+
+            /* NEW */
+
+            postal_code =
+                document.getElementById("postcode").value.trim();
+        }
+
+        const res = await fetch("/register/", {
+
+            method: "POST",
+
+            headers: {
+
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+
+            body: JSON.stringify({
+
+                action: "verify_otp",
+
+                otp: otp,
+
+                role: role,
+
+                name: name,
+
+                email: email,
+
+                phone: phone,
+
+                category: category,
+
+                service: service,
+
+                address: address,
+
+                city: city,
+
+                /* NEW */
+
+                postal_code: postal_code
+            })
+        });
+
+        const data = await res.json();
+
+        if (data.error) {
+
+            show(data.error);
+            return;
+        }
+
+        show("Registration Successful", false);
+
+        setTimeout(() => {
+
+            window.location = "/login/";
+
+        }, 1500);
+    }
+
+    function moveNext(current, nextFieldId) {
+
+        current.value =
+            current.value.replace(/[^0-9]/g, '');
+
+        if (current.value.length >= 1) {
+
+            const next =
+                document.getElementById(nextFieldId);
+
+            if (next) {
+
+                next.focus();
             }
         }
+    }
 
-    </script>
+</script>
 
 </body>
 
