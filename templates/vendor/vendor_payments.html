@@ -354,7 +354,7 @@ tbody tr:hover{ background:#f9fbff; }
                     <tr class="payment-row">
                              <td>
 
-                        {{ forloop.counter }}
+                      {{ page_obj.start_index|add:forloop.counter0 }}
 
                     </td>
 

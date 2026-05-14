@@ -774,17 +774,7 @@ tbody tr:hover{
 
         </div>
 
-        <div class="stat-card admin">
 
-            <span class="stat-label">
-                Admins
-            </span>
-
-            <div class="stat-value">
-                {{ admin_count }}
-            </div>
-
-        </div>
 
         <div class="stat-card vendor">
 
@@ -797,6 +787,20 @@ tbody tr:hover{
             </div>
 
         </div>
+
+        <div class="stat-card admin">
+
+            <span class="stat-label">
+                Admins
+            </span>
+
+            <div class="stat-value">
+                {{ admin_count }}
+            </div>
+
+        </div>
+
+
 
     </div>
 
@@ -820,12 +824,14 @@ tbody tr:hover{
                         Customers
                     </button>
 
-                    <button class="filter-btn" onclick="setRole('admin', this)">
-                        Admin
-                    </button>
 
                     <button class="filter-btn" onclick="setRole('vendor', this)">
                         Vendor
+                    </button>
+
+                    
+                    <button class="filter-btn" onclick="setRole('admin', this)">
+                        Admin
                     </button>
 
                 </div>

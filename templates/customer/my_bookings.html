@@ -293,6 +293,7 @@ body {
             <table class="cp-main-table">
                 <thead>
                     <tr>
+                        <th>Sl.No</th>
                         <th>Order ID </th>
                         <th>Service Name</th>
                         <th>Vendor Details</th>
@@ -305,6 +306,7 @@ body {
                     {% for booking in bookings %}
                     <tr>
                         <!-- ID AND SERVICE (SIDE BY SIDE) -->
+                         <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
                         <td>
                             <div class="cp-service-inline">
                                 <span class="cp-id-tag">{{ booking.order_id|default:booking.id }}</span>

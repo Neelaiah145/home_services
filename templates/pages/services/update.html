@@ -8,32 +8,41 @@
 
     <!-- PAGE HEADER -->
 
-    <div class="page-header">
-
+   <div class="page-header">
 
         <div>
 
-            <h5 class="fw-bold mb-0">
+            <h6 class="fw-semibold mb-0">
 
-                Service Management
-            </h5>
+              Update Service
+
+            </h6>
 
             <p class="page-subtitle">
 
-                Add and manage all service information
+                Create and publish latest news updates
 
             </p>
 
         </div>
 
-        <a href="{% url 'services.list' %}"
-           class="list-btn">
+                <div class="header-right">
 
-            <i class="bi bi-grid"></i>
+            <div class="banner-badge">
+                Update Service
 
-            Service List
+            </div>
 
-        </a>
+            <a href="{% url 'services.list' %}"
+               class="list-btn">
+
+                <i class="bi bi-images"></i>
+
+               Service List
+
+            </a>
+
+        </div>
 
     </div>
 

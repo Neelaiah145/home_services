@@ -342,6 +342,7 @@ tbody td{
 
 <thead>
 <tr>
+  <th>Sl.No</th>
   <th>Service ID</th>
   <th>Customer</th>
   <th>Service</th>
@@ -356,7 +357,7 @@ tbody td{
 
 {% for b in bookings %}
 <tr>
-
+<td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
 <td>{{ b.order_id }}</td>
 
 <td>{{ b.user.first_name }}</td>

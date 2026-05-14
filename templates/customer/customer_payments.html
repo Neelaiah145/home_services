@@ -601,7 +601,7 @@ tbody tr:hover{
                 <thead>
 
                     <tr>
-
+                        <th>Sl.No</th>
                         <th>Order</th>
                         <th>Service</th>
                         <th>Vendor</th>
@@ -625,7 +625,7 @@ tbody tr:hover{
                     <tr>
 
                         <!-- ORDER -->
-
+                        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
                         <td>
 
                             <div class="order-id">
