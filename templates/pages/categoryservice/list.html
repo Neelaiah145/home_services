@@ -2,144 +2,316 @@
 
 {% block content %}
 
-<div class="container mt-4">
-  {% if messages %}
-  {% for message in messages %}
-    <div class="alert alert-success mt-3 auto-hide d-flex justify-content-between align-items-center">
 
-      <span>{{ message }}</span>
 
-      <!--  Close Button -->
-      <button type="button" class="btn-close" onclick="closeAlert(this)"></button>
+<div class="service-page">
 
-    </div>
-  {% endfor %}
-{% endif %}
-    <div class="card shadow-sm border-0 rounded-3">
+    {% if messages %}
 
-        <!-- HEADER -->
-        <div class="card-header bg-dark text-white">
+        {% for message in messages %}
 
-            <form method="GET" class="d-flex gap-2 align-items-center">
+        <div class="alert alert-success mt-3 auto-hide d-flex justify-content-between align-items-center">
 
-                <select name="category" onchange="this.form.submit()" class="form-select w-auto">
-                    <option value="">-- Select Category --</option>
+            <span>
 
-                    {% for cat in categories %}
-                    <option value="{{ cat.id }}"
-                        {% if selected_category and selected_category.id == cat.id %}selected{% endif %}>
-                        {{ cat.title }}
-                    </option>
-                    {% endfor %}
-                </select>
+                {{ message }}
 
-            </form>
-             <a href="{% url 'create.footer' %}" class="btn btn-sm btn-light">
-                <i class="bi bi-plus-circle-fill"></i> Add Services
+            </span>
+
+            <button type="button"
+                    class="btn-close"
+                    onclick="closeAlert(this)"></button>
+
+        </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h5 class="fw-bold mb-0">
+
+                Service Management
+
+            </h5>
+
+            <p class="page-subtitle">
+
+                Manage category services and service information
+
+            </p>
+
+        </div>
+
+        <div class="header-right">
+
+            <a href="{% url 'add.categories.service' %}"
+               class="add-btn">
+
+                <i class="bi bi-plus-circle-fill"></i>
+
+                Add Service
+
             </a>
 
         </div>
 
+    </div>
+
+    <!-- CARD -->
+
+    <div class="service-card">
+
+        <!-- TOP -->
+
+        <div class="card-top">
+
+            <form method="GET"
+                  class="filter-form">
+
+                <select name="category"
+                        onchange="this.form.submit()"
+                        class="select-custom">
+
+                    <option value="">
+
+                        -- Select Category --
+
+                    </option>
+
+                    {% for cat in categories %}
+
+                    <option value="{{ cat.id }}"
+                        {% if selected_category and selected_category.id == cat.id %}selected{% endif %}>
+
+                        {{ cat.title }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </form>
+
+        </div>
+
         <!-- BODY -->
-        <div class="card-body table-responsive">
 
-            {% if selected_category %}
+        {% if selected_category %}
 
-            <h5 class="mb-3">
-                {{ selected_category.title }} - Services List
-            </h5>
+        <h5 class="list-title">
 
-            <table class="table table-bordered table-hover">
+            {{ selected_category.title }} - Services List
 
-                <thead class="table-light">
+        </h5>
+
+        <div class="table-wrap">
+
+            <table class="service-table">
+
+                <thead>
+
                     <tr>
-                        <th>#</th>
+
+                        <th>Sl.No</th>
                         <th>Service Title</th>
                         <th>Tag</th>
                         <th>Description</th>
                         <th>Image</th>
-                        <th>Created At</th>
+                        <th>Created Date</th>
+                        <th class="text-center">Actions</th>
+
                     </tr>
+
                 </thead>
 
                 <tbody>
 
                     {% for service in services %}
+
                     <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ service.s_title }}</td>
-                        <td><span class="badge bg-secondary">{{ service.s_tag }}</span></td>
-                        <td>{{ service.s_desc|truncatechars:60 }}</td>
 
                         <td>
+
+                            <div class="sl-no">
+
+                                {{ forloop.counter }}
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <div class="service-title">
+
+                                {{ service.s_title }}
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <span class="tag-badge">
+
+                                {{ service.s_tag }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <div class="service-desc">
+
+                                {{ service.s_desc|truncatechars:60 }}
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
                             {% if service.image %}
-                            <img src="{{ service.image.url }}" width="60" height="60">
-                            {% else %}-{% endif %}
+
+                            <img src="{{ service.image.url }}"
+                                 class="service-image">
+
+                            {% else %}
+
+                            -
+
+                            {% endif %}
+
                         </td>
 
-                        <td>{{ service.created_at|date:"d M Y" }}</td>
-                         <td class="text-center">
-                            <a href="{% url 'update.category.services' service.id %}" class="btn btn-sm btn-warning">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
+                        <td>
 
-                            <a href="{% url 'delete.category.services' service.id %}" class="btn btn-sm btn-danger">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
+                            <div class="service-date">
+
+                                {{ service.created_at|date:"d M Y" }}
+
+                            </div>
+
                         </td>
+
+                        <td>
+
+                            <div class="action-wrap">
+
+                                <a href="{% url 'update.category.services' service.id %}"
+                                   class="action-btn edit-btn">
+
+                                    <i class="fa-solid fa-pen-to-square"></i>
+
+                                </a>
+
+                                <a href="{% url 'delete.category.services' service.id %}"
+                                   class="action-btn delete-btn">
+
+                                    <i class="fa-solid fa-trash"></i>
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
                     </tr>
+
                     {% empty %}
+
                     <tr>
-                        <td colspan="6" class="text-center text-muted">
+
+                        <td colspan="7"
+                            class="empty-text">
+
                             No services found
+
                         </td>
+
                     </tr>
+
                     {% endfor %}
 
                 </tbody>
 
             </table>
 
-            {% else %}
-                <p class="text-muted text-center">Please select a category</p>
-            {% endif %}
+        </div>
+
+        {% else %}
+
+        <div class="empty-text">
+
+            Please select a category
 
         </div>
 
+        {% endif %}
+
+        <!-- PAGINATION -->
+
+        {% if page_obj.has_other_pages %}
+
+        <div class="tbl-footer">
+
+            <div class="page-btns">
+
+                {% if page_obj.has_previous %}
+
+                <a class="pg-btn"
+                   href="?category={{ selected_category.id }}&page={{ page_obj.previous_page_number }}">
+
+                    ‹
+
+                </a>
+
+                {% endif %}
+
+                <span class="pg-btn active">
+
+                    {{ page_obj.number }}
+
+                </span>
+
+                {% if page_obj.has_next %}
+
+                <a class="pg-btn"
+                   href="?category={{ selected_category.id }}&page={{ page_obj.next_page_number }}">
+
+                    {{ page_obj.next_page_number }}
+
+                </a>
+
+                {% endif %}
+
+                {% if page_obj.has_next %}
+
+                <a class="pg-btn"
+                   href="?category={{ selected_category.id }}&page={{ page_obj.next_page_number }}">
+
+                    ›
+
+                </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
     </div>
-</div>
-
-<!-- PAGINATION -->
-{% if page_obj.has_other_pages %}
-<div class="d-flex justify-content-center mt-4">
-
-    <ul class="pagination">
-
-        {% if page_obj.has_previous %}
-        <li>
-            <a href="?category={{ selected_category.id }}&page={{ page_obj.previous_page_number }}">←</a>
-        </li>
-        {% endif %}
-
-        {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
-                <li class="active"><span class="text-dark bg-primary">{{ num }}</span></li>
-            {% else %}
-                <li>
-                    <a href="?category={{ selected_category.id }}&page={{ num }}">{{ num }}</a>
-                </li>
-            {% endif %}
-        {% endfor %}
-
-        {% if page_obj.has_next %}
-        <li>
-            <a href="?category={{ selected_category.id }}&page={{ page_obj.next_page_number }}">→</a>
-        </li>
-        {% endif %}
-
-    </ul>
 
 </div>
-{% endif %}
 
 {% endblock %}

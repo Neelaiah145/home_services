@@ -5,519 +5,1021 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+
 :root{
-  --bg:#f9fafb;
-  --card:#ffffff;
-  --border:#e5e7eb;
-  --text:#111827;
-  --sub:#6b7280;
-  --primary:#2563eb;
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --border:#e5e7eb;
+    --text:#111827;
+    --sub:#6b7280;
+    --primary:#2563eb;
 }
 
-/* BASE */
 body{
-  font-family:'DM Sans',sans-serif;
-  background:var(--bg);
+  
+    background:var(--bg);
+}
+/* =========================
+   PAGINATION
+========================= */
+
+.tbl-footer{
+    width:100%;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    padding:20px 24px;
+    border-top:1px solid #eef2f7;
+    background:#fff;
 }
 
-/* PAGE */
+.page-btns{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.pg-btn{
+    min-width:40px;
+    height:40px;
+    padding:0 14px;
+    border-radius:12px;
+    border:1px solid #e5e7eb;
+    background:#fff;
+    color:#111827;
+    font-size:13px;
+    font-weight:700;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.2s ease;
+}
+
+.pg-btn:hover{
+    background:#f3f4f6;
+    border-color:#d1d5db;
+    color:#111827;
+}
+
+.pg-btn.active{
+    background:#2563eb;
+    color:#fff;
+    border-color:#2563eb;
+    box-shadow:0 4px 12px rgba(37,99,235,.18);
+}
+
 .dashboard-container{
-  max-width:1200px;
-  margin:auto;
-  padding:30px 20px;
+    max-width:1400px;
+    margin:auto;
+    padding:30px 20px;
 }
 
-/* HEADER */
-.header-section{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:24px;
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
 }
 
-.header-section h6{
-  font-weight:600;
+.page-title{
+    font-size:30px;
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:6px;
 }
 
-.header-section p{
-  font-size:13px;
-  color:var(--sub);
+.page-subtitle{
+    color:var(--sub);
+    font-size:14px;
 }
 
-.count-badge{
-  background:var(--primary);
-  color:#fff;
-  padding:6px 14px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:600;
+.table-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    overflow:hidden;
 }
 
-/* CARD */
-.data-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:12px;
-  overflow:hidden;
+.card-header-flex{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+    padding:16px 20px;
+    border-bottom:1px solid var(--border);
+    background:#fafafa;
 }
 
-/* TABLE */
+.card-title{
+    font-size:16px;
+    font-weight:700;
+    color:var(--text);
+}
+
+.toolbar{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+}
+
+.filter-group{
+    display:flex;
+    background:#f3f4f6;
+    padding:4px;
+    border-radius:8px;
+    gap:4px;
+}
+
+.filter-toggle{
+    padding:6px 14px;
+    border:none;
+    border-radius:6px;
+    background:transparent;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:600;
+    color:var(--sub);
+    font-family:'DM Sans',sans-serif;
+}
+
+.filter-toggle.active{
+    background:#fff;
+    color:var(--primary);
+}
+
+.search-container{
+    position:relative;
+}
+
+.search-container input{
+    padding-left:32px;
+    height:38px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    font-size:13px;
+    min-width:180px;
+}
+
+.search-icon{
+    position:absolute;
+    left:9px;
+    top:50%;
+    transform:translateY(-50%);
+}
+
+.date-input{
+    height:38px;
+    padding:0 12px;
+    border:1px solid var(--border);
+    border-radius:8px;
+}
+
+.table-wrapper{
+    overflow-x:auto;
+}
+
 table{
-  width:100%;
-  border-collapse:collapse;
+    width:100%;
+    border-collapse:collapse;
 }
 
 thead{
-  background:#f8fafc;
+    background:#f9fafb;
 }
 
 thead th{
-  padding:14px;
-  font-size:11px;
-  text-transform:uppercase;
-  color:var(--sub);
-  font-weight:600;
+    padding:14px 16px;
+    text-align:left;
+    font-size:11px;
+    font-weight:700;
+    color:var(--sub);
+    text-transform:uppercase;
+    border-bottom:1px solid var(--border);
 }
 
 tbody td{
-  padding:16px;
-  border-top:1px solid var(--border);
-  font-size:14px;
+    padding:14px 16px;
+    border-bottom:1px solid var(--border);
+    vertical-align:middle;
 }
 
 tbody tr:hover{
-  background:#f9fafb;
+    background:#f9fbff;
 }
 
-/* 🔥 FIXED STATUS BADGES */
-.status-tag{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:4px 12px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:600;
-  text-transform:capitalize;
-  border:1px solid transparent;
+.order-id{
+    font-weight:700;
+    color:var(--primary);
 }
 
-/* Pending */
-.status-tag.pending{
-  background:#fff4e5;
-  color:#b45309;
-  border-color:#fde68a;
+.customer-name{
+    font-weight:700;
+    margin-bottom:3px;
 }
 
-/* Progress */
-.status-tag.progress{
-  background:#eef2ff;
-  color:#4338ca;
-  border-color:#c7d2fe;
+.customer-phone{
+    font-size:12px;
+    color:var(--sub);
 }
 
-/* Completed */
-.status-tag.completed{
-  background:#e6f7ed;
-  color:#15803d;
-  border-color:#bbf7d0;
+.service-name{
+    font-weight:600;
 }
 
-/* ACTION */
+.date-text{
+    font-size:13px;
+    color:var(--sub);
+    margin-bottom:5px;
+}
+
+.status-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:100px;
+    height:28px;
+    padding:0 12px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:700;
+    text-transform:capitalize;
+}
+
+.status-badge.pending{
+    background:#fff4e5;
+    color:#ef8e00;
+}
+
+.status-badge.accepted{
+    background:#ecfeff;
+    color:#0f766e;
+}
+
+.status-badge.in_progress{
+    background:#eef1ff;
+    color:#2563eb;
+}
+
+.status-badge.completed{
+    background:#e6f7ed;
+    color:#16a34a;
+}
+
+.status-badge.cancelled{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
 .action-flex{
-  display:flex;
-  gap:8px;
-  align-items:center;
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
 .custom-select{
-  height:36px;
-  padding:0 10px;
-  border-radius:8px;
-  border:1px solid var(--border);
-  font-size:13px;
-}
-
-.custom-select:focus{
-  border-color:var(--primary);
-  outline:none;
-}
-
-.update-btn{
-  background:var(--primary);
-  color:#fff;
-  border:none;
-  padding:8px 14px;
-  border-radius:8px;
-  font-size:13px;
-  font-weight:600;
-  cursor:pointer;
-}
-
-.update-btn:hover{
-  background:#1d4ed8;
-}
-
-/* PAYMENT */
-.payment-wrapper{
-  margin-top:12px;
-}
-
-.upload-link{
-  font-size:12px;
-  color:var(--primary);
-  font-weight:600;
-  cursor:pointer;
-}
-
-.payment-box{
-  display:none;
-  margin-top:10px;
-  padding:10px;
-  background:#f9fafb;
-  border:1px solid var(--border);
-  border-radius:8px;
-}
-
-.payment-box input{
-  width:100%;
-  margin-bottom:8px;
-  padding:8px;
-  border:1px solid var(--border);
-  border-radius:6px;
-  font-size:12px;
-}
-
-.success-receipt{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  background:#e6f7ed;
-  padding:8px;
-  border-radius:8px;
-}
-
-.receipt-img{
-  width:40px;
-  height:40px;
-  border-radius:6px;
-  object-fit:cover;
-  cursor:pointer;
-}
-.more-btn{
-  display:inline-block;
-  padding:6px 14px;
-  font-size:12px;
-  font-weight:600;
-  color:#2563eb;
-  background:#eff6ff;
-  border:1px solid #dbeafe;
-  border-radius:8px;
-  text-decoration:none;
-  transition:all 0.2s ease;
-}
-
-.more-btn:hover{
-  background:#2563eb;
-  color:#fff;
-  border-color:#2563eb;
-}
-
-@media (max-width:768px){
-
-  .dashboard-container{
-    padding:15px;
-  }
-
-  .header-section{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:6px;
-  }
-
-  .header-section h6{
-    font-size:16px;
-  }
-
-  .count-badge{
-    font-size:11px;
+    height:34px;
+    border:1px solid var(--border);
+    border-radius:8px;
     padding:5px 10px;
-  }
-
-
-  .data-card{
-    overflow-x:auto;
-  }
-
-  table{
-    min-width:650px;
-  }
-
-  thead th{
-    font-size:10px;
-    padding:10px;
-  }
-
-  tbody td{
     font-size:12px;
-    padding:10px;
-  }
+    min-width:120px;
+}
 
-  .status-tag{
-    font-size:10px;
-    padding:3px 8px;
-  }
-
- 
-  .action-flex{
-    flex-direction:column;
-    align-items:stretch;
-    gap:6px;
-  }
-
-  .custom-select{
-    width:100%;
-  }
-
-  .update-btn{
-    width:100%;
+.save-btn{
+    height:34px;
+    padding:0 14px;
+    border:none;
+    border-radius:8px;
+    background:var(--primary);
+    color:#fff;
     font-size:12px;
-    padding:6px;
-  }
+    font-weight:700;
+    cursor:pointer;
+}
 
+.view-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    height:34px;
+    padding:0 14px;
+    border-radius:8px;
+    background:#f5f5f5;
+    color:#111827;
+    text-decoration:none;
+    font-size:12px;
+    font-weight:700;
+    border:1px solid var(--border);
+}
 
-  .payment-wrapper{
-    max-width:100%;
-  }
+.payment-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    height:34px;
+    padding:0 12px;
+    border-radius:8px;
+    background:#16a34a;
+    color:#fff;
+    text-decoration:none;
+    font-size:12px;
+    font-weight:700;
+}
 
-  .payment-box input{
+.payment-pending{
+    font-size:12px;
+    color:#9ca3af;
+    font-weight:600;
+}
+
+.paid-box{
+    background:#ecfdf5;
+    border:1px solid #bbf7d0;
+    padding:8px 12px;
+    border-radius:10px;
+}
+
+.paid-title{
     font-size:11px;
-  }
-
-  .receipt-img{
-    width:32px;
-    height:32px;
-  }
-
+    font-weight:700;
+    color:#15803d;
+    margin-bottom:4px;
 }
 
-@media (min-width:769px) and (max-width:1024px){
+.txn-id{
+    font-size:11px;
+    color:#166534;
+    margin-bottom:6px;
+}
 
-  .dashboard-container{
-    padding:20px;
-  }
-
-  table{
-    min-width:750px;
-  }
-
-  .action-flex{
+.screenshot-btn{
+    display:inline-flex;
+    align-items:center;
+    height:26px;
+    padding:0 10px;
+    border-radius:6px;
+    background:#2563eb;
+    color:#fff;
+    text-decoration:none;
+    font-size:11px;
+    font-weight:700;
+}
+.renew-notification{
+    background:#fef3c7;
+    border:1px solid #fcd34d;
+    padding:18px 20px;
+    border-radius:18px;
+    margin-bottom:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
     flex-wrap:wrap;
-  }
-
+    gap:15px;
 }
 
-
-@media (min-width:1200px){
-
-  .dashboard-container{
-    max-width:1400px;
-    margin:auto;
-  }
-
-  table{
-    width:100%;
-  }
-
+.renew-left{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
 }
+
+.renew-title{
+    font-size:15px;
+    font-weight:700;
+    color:#92400e;
+}
+
+.renew-sub{
+    font-size:13px;
+    color:#78350f;
+}
+
+.accept-renew-btn{
+    height:42px;
+    padding:0 18px;
+    border:none;
+    border-radius:12px;
+    background:#d97706;
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+}
+.renew-badge{
+    margin-top:8px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:#fef3c7;
+    color:#92400e;
+    border:1px solid #fcd34d;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:700;
+}
+
+.empty-row{
+    text-align:center;
+    padding:50px !important;
+    color:var(--sub);
+}
+
 </style>
 
 <div class="dashboard-container">
 
-<!-- HEADER -->
-<div class="header-section">
-  <div>
-    <h6 class="fw-semibold mb-0">Vendor Dashboard</h6>
-    <p>Update job status and manage client payments</p>
-  </div>
- 
+    <div class="page-header">
+
+        <div>
+
+            <div class="page-title">
+                Vendor Orders
+            </div>
+
+            <div class="page-subtitle">
+                Manage all customer bookings and service requests
+            </div>
+
+        </div>
+
+    </div>
+
+    {% for b in bookings %}
+
+    {% if b.renewal_requested %}
+
+    <div class="renew-notification">
+
+        <div class="renew-left">
+
+            <div class="renew-title">
+
+                🔔 Renewal Request
+
+            </div>
+
+            <div class="renew-sub">
+
+                {{ b.user.first_name }}
+                extended
+                {{ b.service.s_title }}
+
+                service until
+
+                {{ b.end_date }}
+
+            </div>
+
+        </div>
+
+        <button
+            class="accept-renew-btn"
+            onclick="acceptRenewal('{{ b.id }}')"
+        >
+
+            Accept Renewal
+
+        </button>
+
+    </div>
+
+    {% endif %}
+
+{% endfor %}
+
+    <div class="table-card">
+
+        <div class="card-header-flex">
+
+            <div class="card-title">
+                Orders
+            </div>
+
+            <div class="toolbar">
+
+                <div class="filter-group">
+
+                    <button class="filter-toggle active"
+                            onclick="setStatus('', this)">
+                        All
+                    </button>
+
+                    <button class="filter-toggle"
+                            onclick="setStatus('pending', this)">
+                        Pending
+                    </button>
+
+                    <button class="filter-toggle"
+                            onclick="setStatus('in_progress', this)">
+                        Progress
+                    </button>
+
+                    <button class="filter-toggle"
+                            onclick="setStatus('completed', this)">
+                        Completed
+                    </button>
+
+                </div>
+
+                <div class="search-container">
+
+                    <span class="search-icon">
+                        🔍
+                    </span>
+
+                    <input type="text"
+                           id="searchInput"
+                           placeholder="Search…"
+                           onkeyup="applyFilters()">
+
+                </div>
+
+                <input type="date"
+                       id="dateFilter"
+                       class="date-input"
+                       onchange="applyFilters()">
+
+            </div>
+
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Service</th>
+                        <th>Schedule</th>
+                        <th>Status</th>
+                        <th>Update Status</th>
+                        <th>Details</th>
+                        <th>Payment</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for b in bookings %}
+
+                    <tr class="order-row">
+
+                        <td>
+
+                            <div class="order-id">
+                                {{ b.order_id }}
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <div class="customer-name">
+                                {{ b.user.first_name }}
+                            </div>
+
+                            <div class="customer-phone">
+                                {{ b.user.mobile }}
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <div class="service-name">
+                                {{ b.service }}
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            {% if b.scheduled_date %}
+
+                                <div class="date-text">
+                                    📅 {{ b.scheduled_date }}
+                                </div>
+
+                                <div class="date-text">
+                                    ⏰ {{ b.scheduled_time }}
+                                </div>
+
+                            {% else %}
+
+                                <div class="date-text">
+                                    📅 {{ b.start_date }}
+                                    →
+                                    {{ b.end_date }}
+                                </div>
+
+                                <div class="date-text">
+                                    ⏳ {{ b.total_days }} Days
+                                </div>
+
+                            {% endif %}
+
+                            {% if b.is_renewed %}
+
+                            <div class="renew-badge">
+
+                                🔄 Renewed Lead
+
+                            </div>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <span class="status-badge {{ b.status }}">
+                                {{ b.get_status_display }}
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <div class="action-flex">
+
+                                <select id="status-{{ b.id }}"
+                                        class="custom-select">
+
+                    
+
+                                    <option value="accepted"
+                                        {% if b.status == "accepted" %}selected{% endif %}>
+                                        Accepted
+                                    </option>
+
+                                    <option value="in_progress"
+                                        {% if b.status == "in_progress" %}selected{% endif %}>
+                                        In Progress
+                                    </option>
+
+                                    <option value="completed"
+                                        {% if b.status == "completed" %}selected{% endif %}>
+                                        Completed
+                                    </option>
+
+                                    <option value="cancelled"
+                                        {% if b.status == "cancelled" %}selected{% endif %}>
+                                        Cancelled
+                                    </option>
+
+                                </select>
+
+                                <button type="button"
+                                        class="save-btn"
+                                        onclick="updateStatus('{{ b.id }}')">
+
+                                    Save
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <a href="{% url 'vendor_booking_detail' b.id %}"
+                               class="view-btn">
+
+                                View
+
+                            </a>
+
+                        </td>
+
+                        <td>
+
+                            {% if b.status == "accepted" or b.status == "in_progress" or b.status == "completed" %}
+
+                                {% with payment=b.payments.first %}
+
+                                    {% if payment %}
+
+                                        <div class="paid-box">
+
+                                            <div class="paid-title">
+                                                Payment Done
+                                            </div>
+
+                                            {% if payment.transaction_id %}
+
+                                            <div class="txn-id">
+                                                {{ payment.transaction_id }}
+                                            </div>
+
+                                            {% endif %}
+
+                                            {% if payment.screenshot %}
+
+                                            <a href="{{ payment.screenshot.url }}"
+                                               target="_blank"
+                                               class="screenshot-btn">
+
+                                                Screenshot
+
+                                            </a>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    {% else %}
+
+                                        <a href="{% url 'vendor_payment_page' b.id %}"
+                                           class="payment-btn">
+
+                                            Upload
+
+                                        </a>
+
+                                    {% endif %}
+
+                                {% endwith %}
+
+                            {% else %}
+
+                                <div class="payment-pending">
+                                    Complete first
+                                </div>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="8"
+                            class="empty-row">
+
+                            No orders found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+            <!-- PAGINATION -->
+
+{% if page_obj %}
+
+<div class="tbl-footer">
+
+    <div class="page-btns">
+
+        <!-- PREVIOUS -->
+
+        {% if page_obj.has_previous %}
+
+        <a class="pg-btn"
+           href="?page={{ page_obj.previous_page_number }}">
+
+            ‹
+
+        </a>
+
+        {% endif %}
+
+        <!-- CURRENT PAGE -->
+
+        <span class="pg-btn active">
+
+            {{ page_obj.number }}
+
+        </span>
+
+        <!-- NEXT PAGE -->
+
+        {% if page_obj.has_next %}
+
+        <a class="pg-btn"
+           href="?page={{ page_obj.next_page_number }}">
+
+            {{ page_obj.next_page_number }}
+
+        </a>
+
+        <!-- NEXT -->
+
+        <a class="pg-btn"
+           href="?page={{ page_obj.next_page_number }}">
+
+            ›
+
+        </a>
+
+        {% endif %}
+
+    </div>
+
 </div>
-
-<!-- TABLE -->
-<div class="data-card">
-
-<table>
-
-<thead>
-<tr>
-  <th>Order ID</th>
-  <th>Service Name</th>
-  <th>Status</th>
-  <th>Update & Payment</th>
-  <th>Details</th>
-</tr>
-</thead>
-
-<tbody>
-
-{% for b in bookings %}
-<tr>
-
-<td><strong>#{{ b.order_id }}</strong></td>
-
-<td>
-  <div style="font-weight:600;">{{ b.service.name }}</div>
-  <div style="font-size:11px;color:var(--sub);">ID: {{ b.service.id }}</div>
-</td>
-
-<td>
-  <span class="status-tag {{ b.status|lower }}">
-    {{ b.status|title }}
-  </span>
-</td>
-
-<td>
-
-<div class="action-flex">
-  <select id="status-{{ b.id }}" class="custom-select">
-    <option value="pending" {% if b.status == "pending" %}selected{% endif %}>Pending</option>
-    <option value="progress" {% if b.status == "progress" %}selected{% endif %}>In Progress</option>
-    <option value="completed" {% if b.status == "completed" %}selected{% endif %}>Completed</option>
-  </select>
-
-  <button class="update-btn" onclick="updateStatus('{{ b.id }}')">Save</button>
-</div>
-
-<div class="payment-wrapper">
-
-{% if b.status == "completed" %}
-
-  {% if b.payment %}
-    <div class="success-receipt">
-      <div>
-        <div style="font-size:10px;font-weight:800;">PAID</div>
-        <div style="font-size:12px;">TXN: {{ b.payment.transaction_id }}</div>
-      </div>
-
-      {% if b.payment.screenshot %}
-      <img src="{{ b.payment.screenshot.url }}" class="receipt-img"
-           onclick="window.open(this.src)">
-      {% endif %}
-    </div>
-  {% else %}
-    <div class="upload-link" onclick="togglePayment('{{ b.id }}')">
-      + Upload Payment Screenshot
-    </div>
-
-    <div class="payment-box" id="box-{{ b.id }}">
-      <input type="file" id="file-{{ b.id }}">
-      <input type="text" id="txn-{{ b.id }}" placeholder="Transaction ID">
-
-      <button class="update-btn" style="width:100%;"
-              onclick="submitPayment('{{ b.id }}', this)">
-        Confirm Upload
-      </button>
-
-      <div id="msg-{{ b.id }}" style="font-size:11px;text-align:center;"></div>
-    </div>
-  {% endif %}
 
 {% endif %}
 
-</div>
 
-</td>
 
-<td>
-  <a href="{% url 'vendor_booking_detail' b.id %}" class="more-btn">
-    View More
-  </a>
-</td>
 
-</tr>
-{% endfor %}
 
-</tbody>
 
-</table>
 
-</div>
+        </div>
+
+    </div>
 
 </div>
 
 <script>
-function getCSRF(){
-  let name="csrftoken";
-  let cookies=document.cookie.split(";");
-  for(let c of cookies){
-    c=c.trim();
-    if(c.startsWith(name+"=")){
-      return c.substring(name.length+1);
-    }
-  }
-  return "";
+
+let currentStatus = "";
+
+function setStatus(status, el){
+
+    currentStatus = status;
+
+    document.querySelectorAll(".filter-toggle").forEach(btn=>{
+        btn.classList.remove("active");
+    });
+
+    el.classList.add("active");
+
+    applyFilters();
 }
 
-function togglePayment(id){
-  let box=document.getElementById("box-"+id);
-  box.style.display = box.style.display==="block" ? "none" : "block";
+function applyFilters(){
+
+    const searchQuery = document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+    document.querySelectorAll(".order-row").forEach(row=>{
+
+        const rowText = row.innerText.toLowerCase();
+
+        const badge = row.querySelector(".status-badge");
+
+        let rowStatus = "";
+
+        if(badge){
+
+            if(badge.classList.contains("pending")){
+                rowStatus = "pending";
+            }
+            else if(badge.classList.contains("accepted")){
+                rowStatus = "accepted";
+            }
+            else if(badge.classList.contains("in_progress")){
+                rowStatus = "in_progress";
+            }
+            else if(badge.classList.contains("completed")){
+                rowStatus = "completed";
+            }
+            else if(badge.classList.contains("cancelled")){
+                rowStatus = "cancelled";
+            }
+
+        }
+
+        let show = true;
+
+        if(searchQuery && !rowText.includes(searchQuery)){
+            show = false;
+        }
+
+        if(currentStatus && rowStatus !== currentStatus){
+            show = false;
+        }
+
+        row.style.display = show ? "" : "none";
+
+    });
+
+}
+
+function getCSRF(){
+
+    for(let c of document.cookie.split(";")){
+
+        c = c.trim();
+
+        if(c.startsWith("csrftoken=")){
+            return c.substring(10);
+        }
+
+    }
+
+    return "";
 }
 
 function updateStatus(id){
-  let status=document.getElementById("status-"+id).value;
 
-  fetch(window.location.href,{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "X-CSRFToken":getCSRF()
-    },
-    body:JSON.stringify({booking_id:id,status:status})
-  })
-  .then(res=>res.json())
-  .then(data=>{
-    if(data.success){ location.reload(); }
-    else{ alert(data.error); }
-  });
+    let status = document.getElementById(
+        "status-" + id
+    ).value;
+
+    fetch(window.location.href,{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json",
+            "X-CSRFToken":getCSRF()
+        },
+
+        body:JSON.stringify({
+            booking_id:id,
+            status:status
+        })
+
+    })
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        if(data.success){
+
+            location.reload();
+
+        }else{
+
+            alert(data.error || "Something went wrong");
+
+        }
+
+    })
+
+    .catch(()=>{
+
+        alert("Server Error");
+
+    });
+
+}
+function acceptRenewal(id){
+
+    fetch(window.location.href,{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json",
+            "X-CSRFToken":getCSRF()
+        },
+
+        body:JSON.stringify({
+
+            booking_id:id,
+
+            renew_accept:true
+
+        })
+
+    })
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        if(data.success){
+
+            location.reload();
+
+        }else{
+
+            alert(data.error || "Something went wrong");
+
+        }
+
+    });
+
 }
 
-function submitPayment(id,btn){
-  let file=document.getElementById("file-"+id).files[0];
-  let txn=document.getElementById("txn-"+id).value;
-  let msg=document.getElementById("msg-"+id);
 
-  if(!file || !txn){
-    msg.innerText="Please provide all details.";
-    msg.style.color="red";
-    return;
-  }
-
-  btn.disabled=true;
-  btn.innerText="Uploading...";
-
-  let formData=new FormData();
-  formData.append("booking_id",id);
-  formData.append("transaction_id",txn);
-  formData.append("screenshot",file);
-
-  fetch(window.location.href,{
-    method:"POST",
-    body:formData,
-    headers:{ "X-CSRFToken":getCSRF() }
-  })
-  .then(res=>res.json())
-  .then(data=>{
-    if(data.success){
-      msg.innerText="Payment Recorded!";
-      msg.style.color="green";
-      setTimeout(()=>location.reload(),800);
-    }else{
-      msg.innerText=data.error;
-      btn.disabled=false;
-      btn.innerText="Confirm Upload";
-    }
-  });
-}
 </script>
 
 {% endblock %}

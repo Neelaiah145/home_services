@@ -5,584 +5,1047 @@
 <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
 
 <style>
-  /* HEADER */
-  .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-
-  /* STATS */
-  .stat-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-    margin-bottom: 20px;
-  }
-
-  /* BASE CARD */
-  .stat-card {
-    background: #fff;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 16px;
-    position: relative;
-  }
-
-  /* EDGE STYLE (LIKE STATUS) */
-  .stat-card.total {
-    border-left: 4px solid #111;
-  }
-
-  .stat-card.customer {
-    border-left: 4px solid #ef8e00;
-
-  }
-
-  .stat-card.admin {
-    border-left: 4px solid var(--primary-600);
-
-  }
-
-  .stat-card.vendor {
-    border-left: 4px solid var(--success-main);
-  }
-
-  .stat-label {
-    font-size: 11px;
-    color: #888;
-    font-weight: 600;
-    text-transform: uppercase;
-  }
-
-  .stat-value {
-    font-size: 22px;
-    font-weight: 700;
-    color: #ff6600;
-  }
-
-  /* TOOLBAR */
-  .card-header-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .toolbar {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  /* FILTER */
-  .filter-group {
-    display: flex;
-    background: #f3f4f6;
-    padding: 4px;
-    border-radius: 8px;
-    gap: 4px;
-  }
-
-  .filter-btn {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
-    background: transparent;
-    cursor: pointer;
-  }
-
-  .filter-btn.active {
-    background: #fff;
-    color: var(--primary-600);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-
-  /* SEARCH */
-  .search-container {
-    position: relative;
-  }
-
-  .search-container input {
-    padding-left: 30px;
-    height: 38px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-  }
-
-  .search-icon {
-    position: absolute;
-    left: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  /* DATE */
-  .date-input {
-    height: 38px;
-    padding: 0 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-  }
-
-  /* TABLE */
-  .table-wrap {
-    overflow-x: auto;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  thead th {
-    padding: 12px;
-    font-size: 11px;
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  tbody td {
-    padding: 14px;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  /* ROLE BADGES */
-  .role {
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: capitalize;
-  }
-
-  .role.customer {
-    background: #fff4e5;
-    color: #ef8e00;
-  }
-
-  .role.admin {
-    background: #eef1ff;
-    color: #4338ca;
-  }
-
-  .role.vendor {
-    background: #e6f7ed;
-    color: #15803d;
-  }
-
-  /* ACTION */
-  .actions button {
-    border: none;
-    background: #f5f5f5;
-    padding: 6px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-
-  .actions .delete {
-    color: red;
-  }
-
-  .status-group {
-    display: flex;
-    gap: 8px;
-  }
-
-  .status-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    background: #ddd;
-    color: #fff;
-    text-decoration: none;
-    transition: 0.3s;
-    font-size: 18px;
-  }
-
-  /* ACTIVE = GREEN */
-  .status-btn.active {
-    background: #28a745;
-  }
-
-  /* INACTIVE = RED */
-  .status-btn.inactive {
-    background: #dc3545;
-  }
-
-  /* Hover Effect */
-  .status-btn:hover {
-    transform: scale(1.1);
-    opacity: 0.9;
-  }
-
-  @media (max-width:768px) {
+    body {
+        background: #f4f7fb;
+    }
 
     .page-wrap {
-      padding: 15px;
+        padding: 24px;
     }
 
-    /* HEADER */
     .page-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
     }
 
-    /* STATS */
+    .page-subtitle {
+        font-size: 14px;
+        color: #6b7280;
+    }
+
+    /* =========================
+   STATS
+========================= */
+
     .stat-row {
-      grid-template-columns: 1fr;
-      gap: 12px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
     }
 
     .stat-card {
-      padding: 12px;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 18px;
+    }
+
+    .stat-card.total {
+        border-left: 4px solid #111827;
+    }
+
+    .stat-card.customer {
+        border-left: 4px solid #f59e0b;
+    }
+
+    .stat-card.admin {
+        border-left: 4px solid #2563eb;
+    }
+
+    .stat-card.vendor {
+        border-left: 4px solid #10b981;
+    }
+
+    .stat-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #9ca3af;
+        margin-bottom: 6px;
     }
 
     .stat-value {
-      font-size: 18px;
+        font-size: 24px;
+        font-weight: 700;
+        color: #111827;
     }
 
-    /* TOOLBAR */
+    /* =========================
+   CARD
+========================= */
+
+    .main-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        overflow: hidden;
+    }
+
+    /* =========================
+   TOOLBAR
+========================= */
+
     .card-header-flex {
-      flex-direction: column;
-      align-items: stretch;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 20px;
+        border-bottom: 1px solid #f1f5f9;
+        flex-wrap: wrap;
+    }
+
+    .card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #111827;
     }
 
     .toolbar {
-      flex-direction: column;
-      gap: 8px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
     }
+
+    /* =========================
+   FILTER
+========================= */
 
     .filter-group {
-      width: 100%;
-      justify-content: space-between;
+        display: flex;
+        gap: 6px;
+        background: #f3f4f6;
+        padding: 5px;
+        border-radius: 10px;
     }
 
-    .search-container input {
-      width: 100%;
+    .filter-btn {
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: none;
+        background: transparent;
+        font-size: 13px;
+        font-weight: 600;
+        color: #6b7280;
+        cursor: pointer;
+        transition: .2s ease;
     }
+
+    .filter-btn.active {
+        background: #fff;
+        color: #2563eb;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+    }
+
+    /* =========================
+   SEARCH
+========================= */
+
+    .search-container {
+        position: relative;
+    }
+
+    .search-input {
+        width: 240px;
+        height: 40px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        padding: 0 14px 0 38px;
+        font-size: 13px;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #2563eb;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+    }
+
+    /* =========================
+   DATE
+========================= */
 
     .date-input {
-      width: 100%;
+        height: 40px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        padding: 0 12px;
+        font-size: 13px;
     }
 
-    /* TABLE → SCROLL */
+    /* =========================
+   TABLE
+========================= */
+
     .table-wrap {
-      overflow-x: auto;
+        overflow-x: auto;
     }
 
     table {
-      min-width: 700px;
+        width: 100%;
+        border-collapse: collapse;
     }
 
-    th,
-    td {
-      padding: 10px;
-      font-size: 12px;
+    thead {
+        background: #f9fafb;
     }
 
-    /* ROLE BADGE */
+    thead th {
+        padding: 16px;
+        text-align: left;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #6b7280;
+        font-weight: 700;
+    }
+
+    tbody td {
+        padding: 16px;
+        border-top: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    /* =========================
+   USER
+========================= */
+
+    .user-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .user-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .user-email {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 3px;
+    }
+
+    /* =========================
+   ROLE
+========================= */
+
     .role {
-      font-size: 10px;
-      padding: 3px 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: capitalize;
     }
 
-    /* BUTTON */
-    .actions button {
-      padding: 5px 8px;
-      font-size: 11px;
+    .role.customer {
+        background: #fff7ed;
+        color: #ea580c;
     }
 
-  }
-
-
-
-  @media (min-width:769px) and (max-width:1024px) {
-
-    .page-wrap {
-      padding: 20px;
+    .role.admin {
+        background: #eef2ff;
+        color: #4338ca;
     }
 
-    .stat-row {
-      grid-template-columns: repeat(2, 1fr);
+    .role.vendor {
+        background: #ecfdf5;
+        color: #15803d;
     }
 
-    .toolbar {
-      flex-wrap: wrap;
+    /* =========================
+   DATE
+========================= */
+
+    .joined-date {
+        font-size: 13px;
+        font-weight: 600;
+        color: #6b7280;
     }
 
-    table {
-      min-width: 800px;
+    /* =========================
+   STATUS
+========================= */
+
+    .status-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
-  }
-
-
-
-  @media (min-width:1200px) {
-
-    .page-wrap {
-      max-width: 1400px;
-      margin: auto;
+    .status-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 18px;
+        transition: .2s ease;
+        border: 1px solid transparent;
     }
 
-    table {
-      width: 100%;
+    .active-btn {
+        background: #dcfce7;
+        color: #16a34a;
     }
 
-  }
+    .inactive-btn {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .selected-active {
+        background: #16a34a;
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(22, 163, 74, .25);
+    }
+
+    .selected-inactive {
+        background: #dc2626;
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, .25);
+    }
+
+    .status-btn:hover {
+        transform: scale(1.08);
+    }
+
+    /* =========================
+   BEHAVIOUR
+========================= */
+
+    .behaviour-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .behaviour-badge {
+        width: fit-content;
+        padding: 6px 12px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    .behaviour-badge.good {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .behaviour-badge.average {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    .behaviour-badge.bad {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .behaviour-badge.normal {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .behaviour-action {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 5px;
+        width: 220px;
+    }
+
+    .behaviour-select {
+        flex: 1;
+        height: 34px;
+        border: none;
+        outline: none;
+        background: #fff;
+        border-radius: 8px;
+        padding: 0 10px;
+        font-size: 12px;
+    }
+
+    .behaviour-btn {
+        height: 34px;
+        padding: 0 12px;
+        border: none;
+        border-radius: 8px;
+        background: #2563eb;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .behaviour-btn:hover {
+        background: #1d4ed8;
+    }
+
+    /* =========================
+   ACTION
+========================= */
+
+    .actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .view-btn {
+        height: 36px;
+        padding: 0 14px;
+        border-radius: 8px;
+        background: #eff6ff;
+        color: #2563eb;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .delete-btn {
+        height: 38px;
+        padding: 0 29px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: .25s ease;
+        box-shadow: 0 4px 14px rgba(239, 68, 68, .25);
+    }
+
+    .delete-btn:hover {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(220, 38, 38, .30);
+    }
+
+    .delete-btn:active {
+        transform: scale(.97);
+    }
+
+    .actions form {
+        margin: 0;
+    }
+
+    /* =========================
+   PAGINATION
+========================= */
+
+    .tbl-footer {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 20px;
+        border-top: 1px solid #eef2f7;
+        background: #fff;
+    }
+
+    .page-btns {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .pg-btn {
+        min-width: 40px;
+        height: 40px;
+        padding: 0 14px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        background: #fff;
+        color: #111827;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: .2s ease;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, .03);
+    }
+
+    .pg-btn:hover {
+        background: #f3f4f6;
+        border-color: #d1d5db;
+    }
+
+    .pg-btn.active {
+        background: #2563eb;
+        color: #fff;
+        border-color: #2563eb;
+    }
+
+    /* =========================
+   EMPTY
+========================= */
+
+    .empty-row {
+        text-align: center;
+        padding: 50px !important;
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    /* =========================
+   MOBILE
+========================= */
+
+    @media(max-width:768px) {
+
+        .page-wrap {
+            padding: 15px;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+        }
+
+        .card-header-flex {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .toolbar {
+            flex-direction: column;
+        }
+
+        .search-input,
+        .date-input {
+            width: 100%;
+        }
+
+        table {
+            min-width: 1300px;
+        }
+
+        .tbl-footer {
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .page-btns {
+            justify-content: center;
+            width: 100%;
+        }
+
+        .pg-btn {
+            min-width: 36px;
+            height: 36px;
+            font-size: 12px;
+            border-radius: 10px;
+        }
+
+    }
 </style>
 
 <div class="page-wrap">
-  {% if messages %}
-  {% for message in messages %}
-  <div class="alert alert-success mt-3 auto-hide d-flex justify-content-between align-items-center">
 
-    <span>{{ message }}</span>
-
-    <!--  Close Button -->
-    <button type="button" class="btn-close" onclick="closeAlert(this)"></button>
-
-  </div>
-  {% endfor %}
-  {% endif %}
-  <!-- HEADER -->
-  <div class="page-header">
-    <div>
-      <h6 class="fw-semibold mb-0">User Management</h6>
-      <p class="page-subtitle">Manage all users</p>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success mt-3 auto-hide d-flex justify-content-between align-items-center">
+        <span>{{ message }}</span>
+        <button type="button" class="btn-close" onclick="closeAlert(this)"></button>
     </div>
-  </div>
+    {% endfor %}
+    {% endif %}
 
-  <!-- STATS -->
-  <div class="stat-row">
+    <div class="page-header">
 
-    <div class="stat-card total">
-      <span class="stat-label">Total Users</span>
-      <div class="stat-value">{{ users.count }}</div>
-    </div>
+        <div>
 
-    <div class="stat-card customer">
-      <span class="stat-label">Customers</span>
-      <div class="stat-value">{{ customer_count }}</div>
-    </div>
+            <h6 class="fw-semibold mb-0">
+                User Management
+            </h6>
 
-    <div class="stat-card admin">
-      <span class="stat-label">Admins</span>
-      <div class="stat-value">{{admin_count}}</div>
-    </div>
+            <p class="page-subtitle">
+                Manage all users and behaviour
+            </p>
 
-
-    <div class="stat-card vendor">
-      <span class="stat-label">Vendors</span>
-      <div class="stat-value">{{ vendor_count }}</div>
-    </div>
-
-  </div>
-
-  <!-- CARD -->
-  <div class="card">
-
-    <!-- TOOLBAR -->
-    <div class="card-header card-header-flex">
-
-      <div class="card-title">Users</div>
-
-      <div class="toolbar">
-
-        <!-- FILTER -->
-        <div class="filter-group">
-          <button class="filter-btn active" onclick="setRole('', this)">All</button>
-          <button class="filter-btn" onclick="setRole('customer', this)">Customers</button>
-          <button class="filter-btn" onclick="setRole('admin', this)">Admin</button>
-          <button class="filter-btn" onclick="setRole('vendor', this)">Vendor</button>
         </div>
 
-        <!-- SEARCH -->
-        <div class="search-container">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="searchInput" placeholder="Search users..." onkeyup="applyFilters()">
+    </div>
+
+    <div class="stat-row">
+
+        <div class="stat-card total">
+            <span class="stat-label">Total Users</span>
+            <div class="stat-value">{{ users.count }}</div>
         </div>
 
-        <!-- DATE -->
-        <input type="date" id="dateFilter" class="date-input" onchange="applyFilters()">
+        <div class="stat-card customer">
+            <span class="stat-label">Customers</span>
+            <div class="stat-value">{{ customer_count }}</div>
+        </div>
 
-      </div>
+        <div class="stat-card admin">
+            <span class="stat-label">Admins</span>
+            <div class="stat-value">{{ admin_count }}</div>
+        </div>
 
-    </div>
-
-    <!-- TABLE -->
-    <div class="table-wrap">
-
-      <table>
-
-        <thead>
-          <tr>
-            <th>Sl.No</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Joined</th>
-            <th>Block</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-
-        <tbody>
-
-          {% for user in page_obj %}
-          <tr class="user-row">
-
-            <td>{{ forloop.counter }}</td>
-
-            <td>
-              {% if user.first_name %}
-              {{ user.first_name }} {{ user.last_name }}
-              {% else %}
-              {{ user.username }}
-              {% endif %}
-            </td>
-
-            <td>{{ user.email }}</td>
-
-            <td>
-              <span class="role {{ user.role }}">{{ user.role }}</span>
-            </td>
-
-            <td class="joined-date" data-date="{{ user.date_joined|date:'Y-m-d' }}">
-              {{ user.date_joined|date:"d M Y" }}
-            </td>
-            <td>
-
-              {% if request.user.role == "superadmin" %}
-
-              <!-- SUPERADMIN CAN CONTROL ALL (except self optional) -->
-              {% if user.id != request.user.id %}
-              <div class="status-group">
-
-                <a href="{% url 'set_user_status' user.id 'active' %}"
-                  class="status-btn {% if user.is_active %}active{% endif %}" title="Activate">
-                  <iconify-icon icon="mdi:power"></iconify-icon>
-                </a>
-
-                <a href="{% url 'set_user_status' user.id 'inactive' %}"
-                  class="status-btn {% if not user.is_active %}inactive{% endif %}" title="Deactivate">
-                  <iconify-icon icon="mdi:power"></iconify-icon>
-                </a>
-
-              </div>
-              {% else %}
-              <span>Self</span>
-              {% endif %}
-
-              {% elif request.user.role == "admin" %}
-
-              <!-- ADMIN CAN CONTROL ONLY CUSTOMER & VENDOR -->
-              {% if user.role in "customer,vendor" %}
-              <div class="status-group">
-
-                <a href="{% url 'set_user_status' user.id 'active' %}"
-                  class="status-btn {% if user.is_active %}active{% endif %}">
-                  <iconify-icon icon="mdi:power"></iconify-icon>
-                </a>
-
-                <a href="{% url 'set_user_status' user.id 'inactive' %}"
-                  class="status-btn {% if not user.is_active %}inactive{% endif %}">
-                  <iconify-icon icon="mdi:power"></iconify-icon>
-                </a>
-
-              </div>
-              {% else %}
-              <span style="color:gray;">No Access</span>
-              {% endif %}
-
-              {% else %}
-
-              <span style="color:gray;">No Access</span>
-
-              {% endif %}
-
-            </td>
-
-            <td class="actions">
-              <button onclick="viewUser('{{ user.id }}')"><a href="">Update</a></button>
-
-              {% if user.role != "superadmin" %}
-              <form method="post" action="{% url 'delete_user' user.id %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-sm btn-danger" style="color: white;background-color: red;"
-                  onclick="return confirm('Are you sure you want to delete this user?')">
-                  Delete
-                </button>
-              </form>
-              {% endif %}
-
-
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="6" style="text-align:center;padding:30px;">
-              No users found
-            </td>
-          </tr>
-          {% endfor %}
-
-        </tbody>
-
-      </table>
+        <div class="stat-card vendor">
+            <span class="stat-label">Vendors</span>
+            <div class="stat-value">{{ vendor_count }}</div>
+        </div>
 
     </div>
 
-  </div>
+    <div class="main-card">
+
+        <div class="card-header-flex">
+
+            <div class="card-title">
+                Users
+            </div>
+
+            <div class="toolbar">
+
+                <div class="filter-group">
+
+                    <button class="filter-btn active" onclick="setRole('', this)">
+                        All
+                    </button>
+
+                    <button class="filter-btn" onclick="setRole('customer', this)">
+                        Customers
+                    </button>
+
+                    <button class="filter-btn" onclick="setRole('admin', this)">
+                        Admin
+                    </button>
+
+                    <button class="filter-btn" onclick="setRole('vendor', this)">
+                        Vendor
+                    </button>
+
+                </div>
+
+                <div class="search-container">
+
+                    <span class="search-icon">🔍</span>
+
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search users..."
+                        onkeyup="applyFilters()">
+
+                </div>
+
+                <input type="date" id="dateFilter" class="date-input" onchange="applyFilters()">
+
+            </div>
+
+        </div>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Sl.No</th>
+                        <th>User</th>
+                        <th>Role</th>
+                        <th>Joined</th>
+                        <th>Block</th>
+                        <th>Behaviour</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for user in page_obj %}
+
+                    <tr class="user-row">
+
+                        <td>{{ forloop.counter }}</td>
+
+                        <td>
+
+                            <div class="user-cell">
+
+                                <div class="user-avatar">
+                                    {{ user.first_name|first }}
+                                </div>
+
+                                <div>
+
+                                    <div class="user-name">
+
+                                        {% if user.first_name %}
+                                        {{ user.first_name }} {{ user.last_name }}
+                                        {% else %}
+                                        {{ user.username }}
+                                        {% endif %}
+
+                                    </div>
+
+                                    <div class="user-email">
+                                        {{ user.email }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <span class="role {{ user.role }}">
+                                {{ user.role }}
+                            </span>
+
+                        </td>
+
+                        <td class="joined-date" data-date="{{ user.date_joined|date:'Y-m-d' }}">
+
+                            {{ user.date_joined|date:"d M Y" }}
+
+                        </td>
+
+                        <td>
+
+                            {% if user.role != "superadmin" %}
+
+                            <div class="status-group">
+
+                                <a href="{% url 'set_user_status' user.id 'active' %}"
+                                    class="status-btn active-btn {% if user.is_active %}selected-active{% endif %}">
+
+                                    <iconify-icon icon="mdi:power"></iconify-icon>
+
+                                </a>
+
+                                <a href="{% url 'set_user_status' user.id 'inactive' %}"
+                                    class="status-btn inactive-btn {% if not user.is_active %}selected-inactive{% endif %}">
+
+                                    <iconify-icon icon="mdi:power"></iconify-icon>
+
+                                </a>
+
+                            </div>
+
+                            {% else %}
+
+                            <span class="role admin">
+                                Protected
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if user.role != "superadmin" %}
+
+                            <div class="behaviour-wrap">
+
+                                <div class="behaviour-badge {{ user.behaviour }}">
+                                    {{ user.get_behaviour_display }}
+                                </div>
+
+                                <div class="behaviour-action">
+
+                                    <select id="behaviour-{{ user.id }}" class="behaviour-select">
+
+                                        <option value="good" {% if user.behaviour == "good" %}selected{% endif %}>
+                                            Good
+                                        </option>
+
+                                        <option value="average" {% if user.behaviour == "average" %}selected{% endif %}>
+                                            Average
+                                        </option>
+
+                                        <option value="bad" {% if user.behaviour == "bad" %}selected{% endif %}>
+                                            Bad
+                                        </option>
+
+                                        <option value="normal" {% if user.behaviour == "normal" %}selected{% endif %}>
+                                            Normal
+                                        </option>
+
+                                    </select>
+
+                                    <button type="button" class="behaviour-btn"
+                                        onclick="updateBehaviour('{{ user.id }}')">
+
+                                        Update
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <div class="actions">
+
+                                <a href="{% url 'user_profile' user.id %}" class="view-btn">
+
+                                    View
+
+                                </a>
+
+                                {% if user.role != "superadmin" %}
+
+                                <form method="post" action="{% url 'delete_user' user.id %}">
+
+                                    {% csrf_token %}
+
+                                    <button type="submit" class="delete-btn"
+                                        onclick="return confirm('Delete this user?')">
+
+                                        Delete
+
+                                    </button>
+
+                                </form>
+
+                                {% endif %}
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="7" class="empty-row">
+                            No users found
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- PAGINATION -->
+
+        <div class="tbl-footer">
+
+            <div class="page-btns">
+
+                {% if page_obj.has_previous %}
+                <a class="pg-btn" href="?page={{ page_obj.previous_page_number }}">
+                    ‹
+                </a>
+                {% endif %}
+
+                <span class="pg-btn active">
+                    {{ page_obj.number }}
+                </span>
+
+                {% if page_obj.has_next %}
+
+                <a class="pg-btn" href="?page={{ page_obj.next_page_number }}">
+                    {{ page_obj.next_page_number }}
+                </a>
+
+                <a class="pg-btn" href="?page={{ page_obj.next_page_number }}">
+                    ›
+                </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
 <script>
 
-  let currentRole = "";
+    let currentRole = "";
 
-  function setRole(role, el) {
-    currentRole = role;
+    function setRole(role, el) {
 
-    document.querySelectorAll(".filter-btn").forEach(btn => {
-      btn.classList.remove("active");
-    });
+        currentRole = role;
 
-    el.classList.add("active");
+        document.querySelectorAll(".filter-btn").forEach(btn => {
+            btn.classList.remove("active");
+        });
 
-    applyFilters();
-  }
+        el.classList.add("active");
 
-  function applyFilters() {
-    const q = document.getElementById("searchInput").value.toLowerCase();
-    const selectedDate = document.getElementById("dateFilter").value;
+        applyFilters();
 
-    document.querySelectorAll(".user-row").forEach(row => {
+    }
 
-      const text = row.innerText.toLowerCase();
-      const role = row.querySelector(".role")?.innerText.toLowerCase();
-      const date = row.querySelector(".joined-date")?.dataset.date;
+    function applyFilters() {
 
-      let show = true;
+        const q = document
+            .getElementById("searchInput")
+            .value
+            .toLowerCase();
 
-      if (q && !text.includes(q)) show = false;
-      if (currentRole && !role.includes(currentRole)) show = false;
-      if (selectedDate && date !== selectedDate) show = false;
+        const selectedDate = document
+            .getElementById("dateFilter")
+            .value;
 
-      row.style.display = show ? "" : "none";
+        document.querySelectorAll(".user-row").forEach(row => {
 
-    });
-  }
+            const text = row.innerText.toLowerCase();
 
-  function viewUser(id) {
-    window.location.href = `/superadmin/user/${id}/`;
-  }
+            const role = row
+                .querySelector(".role")
+                ?.innerText.toLowerCase();
+
+            const date = row
+                .querySelector(".joined-date")
+                ?.dataset.date;
+
+            let show = true;
+
+            if (q && !text.includes(q)) {
+                show = false;
+            }
+
+            if (currentRole && !role.includes(currentRole)) {
+                show = false;
+            }
+
+            if (selectedDate && date !== selectedDate) {
+                show = false;
+            }
+
+            row.style.display = show ? "" : "none";
+
+        });
+
+    }
+
+    function getCSRFToken() {
+
+        let cookieValue = null;
+
+        let cookies = document.cookie.split(";");
+
+        for (let i = 0; i < cookies.length; i++) {
+
+            let cookie = cookies[i].trim();
+
+            if (cookie.startsWith("csrftoken=")) {
+                cookieValue = cookie.substring("csrftoken=".length);
+            }
+
+        }
+
+        return cookieValue;
+
+    }
+
+    function updateBehaviour(userId) {
+
+        let behaviour = document.getElementById(
+            "behaviour-" + userId
+        ).value;
+
+        fetch(window.location.href, {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken()
+            },
+
+            body: JSON.stringify({
+                user_id: userId,
+                behaviour: behaviour
+            })
+
+        })
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.error);
+                }
+
+            })
+
+            .catch(error => {
+
+                console.log(error);
+
+                alert("Something went wrong");
+
+            });
+
+    }
 
 </script>
 

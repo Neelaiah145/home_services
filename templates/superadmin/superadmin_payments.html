@@ -99,7 +99,88 @@ td{
   border-top:1px solid var(--border);
   font-size:14px;
 }
+/* =========================
+   PAGINATION
+========================= */
 
+.tbl-footer{
+    width:100%;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    padding:20px;
+    border-top:1px solid #eef2f7;
+    background:#fff;
+}
+
+/* BUTTON GROUP */
+
+.page-btns{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+/* BUTTON */
+
+.pg-btn{
+    min-width:40px;
+    height:40px;
+    padding:0 14px;
+    border-radius:12px;
+    border:1px solid #e5e7eb;
+    background:#fff;
+    color:#111827;
+    font-size:13px;
+    font-weight:700;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.2s ease;
+    box-shadow:0 1px 2px rgba(0,0,0,.03);
+}
+
+/* HOVER */
+
+.pg-btn:hover{
+    background:#f3f4f6;
+    border-color:#d1d5db;
+}
+
+/* ACTIVE */
+
+.pg-btn.active{
+    background:#2563eb;
+    color:#fff;
+    border-color:#2563eb;
+    box-shadow:0 4px 12px rgba(37,99,235,.25);
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .tbl-footer{
+        justify-content:center;
+        padding:16px;
+    }
+
+    .page-btns{
+        justify-content:center;
+        width:100%;
+    }
+
+    .pg-btn{
+        min-width:36px;
+        height:36px;
+        font-size:12px;
+        border-radius:10px;
+    }
+
+}
 tr:hover{ background:#fafafa; }
 
 .customer-name{ font-weight:600; }
@@ -365,8 +446,68 @@ tr:hover{ background:#fafafa; }
 </tbody>
 
 </table>
+<div class="tbl-footer">
+
+    <div class="page-btns">
+
+        <!-- PREVIOUS -->
+
+        {% if page_obj.has_previous %}
+
+        <a
+            class="pg-btn"
+            href="?page={{ page_obj.previous_page_number }}{% if request.GET.payment_status %}&payment_status={{ request.GET.payment_status }}{% endif %}"
+        >
+            ‹
+        </a>
+
+        {% endif %}
+
+        <!-- PAGE NUMBERS -->
+
+        {% for num in page_obj.paginator.page_range %}
+
+            {% if page_obj.number == num %}
+
+            <a
+                href="?page={{ num }}{% if request.GET.payment_status %}&payment_status={{ request.GET.payment_status }}{% endif %}"
+                class="pg-btn active"
+            >
+                {{ num }}
+            </a>
+
+            {% else %}
+
+            <a
+                href="?page={{ num }}{% if request.GET.payment_status %}&payment_status={{ request.GET.payment_status }}{% endif %}"
+                class="pg-btn"
+            >
+                {{ num }}
+            </a>
+
+            {% endif %}
+
+        {% endfor %}
+
+        <!-- NEXT -->
+
+        {% if page_obj.has_next %}
+
+        <a
+            class="pg-btn"
+            href="?page={{ page_obj.next_page_number }}{% if request.GET.payment_status %}&payment_status={{ request.GET.payment_status }}{% endif %}"
+        >
+            ›
+        </a>
+
+        {% endif %}
+
+    </div>
 
 </div>
+
+</div>
+
 
 </div>
 

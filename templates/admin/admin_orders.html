@@ -1,340 +1,1364 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-:root {
-  --bg:#f9fafb;
-  --card:#ffffff;
-  --border:#e5e7eb;
-  --text:#111827;
-  --sub:#6b7280;
-  --primary:#2563eb;
-  --success:#16a34a;
-  --purple:#7c3aed;
+<style>
+
+:root{
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --border:#e5e7eb;
+    --text:#111827;
+    --sub:#6b7280;
+    --primary:#2563eb;
 }
 
 body{
-  font-family:'DM Sans',sans-serif;
-  background:var(--bg);
+    background:var(--bg);
+
+}
+/* =========================
+   PAGINATION
+========================= */
+
+.tbl-footer{
+    width:100%;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    padding:20px 24px;
+    border-top:1px solid #eef2f7;
+    background:#fff;
 }
 
-.page-wrap{
-  max-width:1200px;
-  margin:auto;
-  padding:30px 20px;
+.page-btns{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
 }
 
-/* FILTER */
-.filter-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:18px;
-  margin-bottom:20px;
+.pg-btn{
+    min-width:40px;
+    height:40px;
+    padding:0 14px;
+    border-radius:12px;
+    border:1px solid #e5e7eb;
+    background:#fff;
+    color:#111827;
+    font-size:13px;
+    font-weight:700;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.2s ease;
 }
 
-.filter-grid{
-  display:flex;
-  flex-wrap:wrap;
-  gap:14px;
-  align-items:flex-end;
+.pg-btn:hover{
+    background:#f3f4f6;
+    border-color:#d1d5db;
+    color:#111827;
 }
 
-.field-group{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
+.pg-btn.active{
+    background:#2563eb;
+    color:#fff;
+    border-color:#2563eb;
+    box-shadow:0 4px 12px rgba(37,99,235,.18);
 }
 
-.field-label{
-  font-size:11px;
-  font-weight:600;
-  color:var(--sub);
+.dashboard-container{
+    max-width:1450px;
+    margin:auto;
+    padding:30px 20px;
 }
 
-.field-input{
-  height:38px;
-  border:1px solid var(--border);
-  border-radius:8px;
-  padding:0 12px;
-  font-size:13px;
+/* =========================
+   PAGE HEADER
+========================= */
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:24px;
+    gap:20px;
+    flex-wrap:wrap;
 }
 
-/* BUTTONS */
-.btn-primary{
-  height:38px;
-  background:var(--primary);
-  color:#fff;
-  border:none;
-  padding:0 18px;
-  border-radius:8px;
-  font-size:13px;
-  font-weight:600;
+.page-header h6{
+    font-size:24px;
+    font-weight:700;
+    color:var(--text);
+    margin:0;
 }
 
-.btn-reset{
-  height:38px;
-  border:1px solid var(--border);
-  background:#fff;
-  padding:0 16px;
-  border-radius:8px;
+.page-subtitle{
+    font-size:14px;
+    color:var(--sub);
+    margin-top:5px;
+    line-height:1.5;
 }
 
-/* TABLE */
+/* =========================
+   CARD
+========================= */
+
 .table-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:12px;
-  overflow:hidden;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:0 4px 20px #657fbc0a;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.card-header-flex{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    padding:22px;
+    border-bottom:1px solid var(--border);
+    background:#fcfcfd;
+    flex-wrap:wrap;
+}
+
+.card-title{
+    font-size:19px;
+    font-weight:700;
+    color:var(--text);
+}
+
+/* =========================
+   TOOLBAR
+========================= */
+
+.toolbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+/* =========================
+   FILTERS
+========================= */
+
+.custom-select,
+.search-input{
+    height:44px;
+    border:1px solid #dbe1ea;
+    border-radius:12px;
+    background:#fff;
+    padding:0 15px;
+    font-size:14px;
+    font-weight:500;
+    color:#111827;
+    font-family:'DM Sans',sans-serif;
+    outline:none;
+    transition:.2s ease;
+}
+
+.custom-select{
+    min-width:170px;
+    cursor:pointer;
+    text-align:left;
+}
+
+.search-input{
+    width:240px;
+}
+
+.custom-select:focus,
+.search-input:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 4px rgba(37,99,235,0.08);
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.btn-search{
+    height:44px;
+    border:none;
+    border-radius:12px;
+    background:#2563eb;
+    color:#fff;
+    padding:0 20px;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.2s ease;
+    font-family:'DM Sans',sans-serif;
+}
+
+.btn-search:hover{
+    background:#1d4ed8;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table-wrapper{
+    overflow-x:auto;
 }
 
 table{
-  width:100%;
-  border-collapse:collapse;
+    width:100%;
+    border-collapse:collapse;
 }
 
+thead{
+    background:#f8fafc;
+}
+/* =========================
+   FILTER TOGGLE
+========================= */
+
+.filter-toggle{
+    height:44px;
+    border:none;
+    border-radius:12px;
+    background:#4475dd;
+    color:#fff;
+    padding:0 18px;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.2s ease;
+    font-family:'DM Sans',sans-serif;
+}
+
+.filter-toggle:hover{
+    background:#5c69cf;
+}
+
+/* FILTER PANEL */
+
+.filters-panel{
+    display:none;
+    margin-top:18px;
+    padding:18px;
+    background:#f8fafc;
+    border:1px solid #eef2f7;
+    border-radius:16px;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.filters-panel.show{
+    display:flex;
+}
 thead th{
-  background:#f8fafc;
-  padding:16px;
-  font-size:11px;
-  text-transform:uppercase;
-  color:var(--sub);
+    padding:16px 15px;
+    text-align:left;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    color:#6b7280;
+    font-weight:700;
+    border-bottom:1px solid #e5e7eb;
+    white-space:nowrap;
 }
 
 tbody td{
-  padding:18px 16px;
-  border-top:1px solid var(--border);
+    padding:16px 15px;
+    border-bottom:1px solid #edf2f7;
+    vertical-align:middle;
+    font-size:14px;
+    color:#111827;
+}
+
+tbody tr{
+    transition:.2s ease;
 }
 
 tbody tr:hover{
-  background:#fafafa;
+    background:#fafcff;
 }
 
-.inline-actions{
-  display:flex;
-  align-items:center;
-  gap:10px;
+/* =========================
+   ORDER
+========================= */
+
+.order-id{
+    font-size:13px;
+    font-weight:700;
+    color:#2563eb;
 }
 
-.small-input{
-  height:36px;
+/* =========================
+   CUSTOMER
+========================= */
+
+.customer-name{
+    font-size:14px;
+    font-weight:700;
 }
 
-.btn-small{
-  height:36px;
-  padding:0 14px;
-  background:#111827;
-  color:#fff;
-  border:none;
-  border-radius:6px;
+.customer-phone{
+    margin-top:4px;
+    font-size:13px;
+    color:#6b7280;
 }
 
-/* STATUS */
-.status{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  height:28px;
-  padding:0 12px;
-  border-radius:20px;
-  font-size:11px;
-  font-weight:600;
+.city-badge{
+    margin-top:7px;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    background:#eef2ff;
+    color:#2563eb;
+    padding:4px 10px;
+    border-radius:30px;
+    font-size:11px;
+    font-weight:600;
 }
 
-.status.assigned{background:#eef1ff;color:#2563eb;}
-.status.in_progress{background:#f5f3ff;color:#7c3aed;}
-.status.completed{background:#e6f7ed;color:#16a34a;}
+/* =========================
+   SERVICE
+========================= */
+
+.service-name{
+    font-size:14px;
+    font-weight:700;
+}
+
+.service-cat{
+    margin-top:4px;
+    font-size:12px;
+    color:#6b7280;
+}
+
+/* =========================
+   VENDOR + STATUS
+========================= */
+
+.vendor-cell,
+.status-cell{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+/* BADGES */
+
+.vendor-assigned,
+.vendor-none,
+.status-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    width:fit-content;
+    padding:5px 10px;
+    border-radius:30px;
+    font-size:11px;
+    font-weight:700;
+    line-height:1.2;
+}
+
+.vendor-assigned{
+    background:#eef4ff;
+    color:#2563eb;
+}
+
+.vendor-none{
+    background:#f3f4f6;
+    color:#6b7280;
+}
+
+/* ACTION BOX */
+
+.vendor-row,
+.status-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    padding:5px;
+    width:100%;
+    max-width:220px;
+}
+
+/* SELECT */
+
+.vendor-select,
+.status-select{
+    flex:1;
+    min-width:0;
+    height:34px;
+    border:none;
+    outline:none;
+    background:#fff;
+    border-radius:8px;
+    padding:0 10px;
+    font-size:12px;
+    font-weight:500;
+    color:#111827;
+    font-family:'DM Sans',sans-serif;
+    appearance:none;
+    cursor:pointer;
+    text-align:left;
+}
+
+.vendor-select:focus,
+.status-select:focus{
+    box-shadow:0 0 0 3px rgba(37,99,235,0.08);
+}
+
+/* BUTTONS */
+
+.btn-assign,
+.btn-save{
+    height:34px;
+    border:none;
+    border-radius:8px;
+    padding:0 12px;
+    font-size:11px;
+    font-weight:700;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:.2s ease;
+    font-family:'DM Sans',sans-serif;
+}
+
+.btn-assign{
+    background:#2563eb;
+    color:#fff;
+}
+
+.btn-assign:hover{
+    background:#1d4ed8;
+}
+
+.btn-save{
+    background:#111827;
+    color:#fff;
+}
+
+.btn-save:hover{
+    background:#000;
+}
+
+/* =========================
+   STATUS COLORS
+========================= */
+
+.sdot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+}
+
+.pending{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.pending .sdot{
+    background:#f59e0b;
+}
+
+.assigned{
+    background:#ede9fe;
+    color:#5b21b6;
+}
+
+.assigned .sdot{
+    background:#7c3aed;
+}
+
+.accepted{
+    background:#d1fae5;
+    color:#065f46;
+}
+
+.accepted .sdot{
+    background:#10b981;
+}
+
+.in_progress{
+    background:#dbeafe;
+    color:#1e40af;
+}
+
+.in_progress .sdot{
+    background:#2563eb;
+}
+
+.completed{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.completed .sdot{
+    background:#22c55e;
+}
+
+.cancelled{
+    background:#ffe4e6;
+    color:#9f1239;
+}
+
+.cancelled .sdot{
+    background:#f43f5e;
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty-row{
+    text-align:center;
+    padding:60px !important;
+    color:#6b7280;
+    font-size:14px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:768px){
+
+    table{
+        min-width:1100px;
+    }
+
+    .card-header-flex{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .toolbar{
+        width:100%;
+    }
+
+    .custom-select,
+    .search-input,
+    .btn-search{
+        width:100%;
+    }
+}
 
 </style>
 
-<div class="page-wrap">
+<div class="dashboard-container">
 
-<header style="margin-bottom:25px;">
-<h6>Order Management</h6>
-<p>Manage service requests and vendor assignments</p>
-</header>
+    <div class="page-header">
 
-<!-- FILTER -->
-<div class="filter-card">
-<form method="GET" class="filter-grid">
+        <div>
 
-<div class="field-group">
-<label class="field-label">Search</label>
-<input type="text" name="q" class="field-input" value="{{ q }}">
-</div>
+            <h6 class="fw-semibold mb-0">
+                Admin Orders Management
+            </h6>
 
-<!-- CATEGORY -->
-<div class="field-group">
-<label class="field-label">Category</label>
-<select name="category" class="field-input" onchange="handleCategoryChange(this)">
-<option value="">All</option>
+            <div class="page-subtitle">
+                View and manage all customer service orders, bookings, and vendor assignments
+            </div>
 
-{% for c in categories %}
-<option value="{{ c.id }}" {% if selected_category == c.id|stringformat:"s" %}selected{% endif %}>
-{{ c.title }}
-</option>
-{% endfor %}
+        </div>
 
-</select>
-</div>
+    </div>
 
-<!-- SERVICE -->
-<div class="field-group">
-<label class="field-label">Service</label>
-<select name="service" class="field-input"
-{% if not selected_category %}disabled{% endif %}
-onchange="this.form.submit()">
+    <div class="table-card">
 
-<option value="">All</option>
+        <div class="card-header-flex">
 
-{% for s in services %}
-<option value="{{ s.id }}"
-{% if selected_service == s.id|stringformat:"s" %}selected{% endif %}>
-{{ s.s_title }}
-</option>
-{% endfor %}
+            <div class="card-title">
+                All Bookings
+            </div>
 
-</select>
-</div>
+          <form method="GET">
 
-<button class="btn-primary">Apply</button>
-<a href="?" class="btn-reset">Reset</a>
+    <div class="toolbar">
+
+        <!-- SEARCH -->
+
+        <input type="text"
+               name="q"
+               class="search-input"
+               placeholder="Search customer or phone..."
+               value="{{ q|default:'' }}">
+
+        <!-- FILTER BUTTON -->
+
+        <button type="button"
+                class="filter-toggle"
+                onclick="toggleFilters()">
+
+            ⚙ Filters
+
+        </button>
+
+        <!-- SEARCH BUTTON -->
+
+        <button type="submit"
+                class="btn-search">
+
+            Search
+
+        </button>
+
+    </div>
+
+    <!-- FILTER DROPDOWN -->
+
+    <div class="filters-panel"
+         id="filtersPanel">
+
+        <!-- CATEGORY -->
+
+        <select name="category"
+                class="custom-select">
+
+            <option value="">
+                All Categories
+            </option>
+
+            {% for c in categories %}
+
+            <option value="{{ c.id }}"
+                {% if selected_category == c.id|stringformat:"s" %}selected{% endif %}>
+
+                {{ c.title }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <!-- SERVICE -->
+
+        <select name="service"
+                class="custom-select">
+
+            <option value="">
+                All Services
+            </option>
+
+            {% for s in services %}
+
+            <option value="{{ s.id }}"
+                {% if selected_service == s.id|stringformat:"s" %}selected{% endif %}>
+
+                {{ s.s_title }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <!-- CITY -->
+
+        <select name="city"
+                class="custom-select">
+
+            <option value="">
+                All Cities
+            </option>
+
+            {% for c in cities %}
+
+            <option value="{{ c }}"
+                {% if selected_city == c %}selected{% endif %}>
+
+                {{ c }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <!-- POSTAL CODE -->
+
+        <input type="text"
+               name="postal_code"
+               class="custom-select"
+               placeholder="Postal Code"
+               value="{{ postal_code|default:'' }}">
+
+    </div>
 
 </form>
-</div>
 
-<!-- TABLE -->
-<div class="table-card">
-<table>
+        </div>
 
-<thead>
-<tr>
-<th>Order</th>
-<th>Customer</th>
-<th>Service</th>
-<th>Vendor</th>
-<th>Status</th>
-</tr>
-</thead>
+        <div class="table-wrapper">
 
-<tbody>
+            <table>
 
-{% for b in bookings %}
-<tr>
+                <thead>
 
-<td><b>{{ b.order_id }}</b></td>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Service</th>
+                        <th>Vendor</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for b in bookings %}
+
+                    <tr>
+
+                        <td>
+
+                            <div class="order-id">
+                                {{ b.order_id }}
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <div class="customer-name">
+                                {{ b.name }}
+                            </div>
+
+                            <div class="customer-phone">
+                                {{ b.phone }}
+                            </div>
+
+                            {% if b.city %}
+                            <div class="city-badge">
+                                📍 {{ b.city }}
+                            </div>
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <div class="service-name">
+                                {{ b.service.s_title }}
+                            </div>
+
+                            <div class="service-cat">
+                                {{ b.service.category.title|default:"" }}
+                            </div>
+
+                        </td>
+
+                        <!-- VENDOR -->
+
+                        <td>
+
+                            <div class="vendor-cell">
+
+                                {% if b.vendor %}
+                                <div class="vendor-assigned">
+                                    {{ b.vendor.first_name }}
+                                </div>
+                                {% else %}
+                                <div class="vendor-none">
+                                    No Vendor
+                                </div>
+                                {% endif %}
+
+                                <div class="vendor-row">
+
+                                    <select id="vendor-{{ b.id }}"
+                                            class="vendor-select">
+
+                                        <option value="">
+                                            Vendor
+                                        </option>
+
+                                        {% for v in vendors %}
+                                        <option value="{{ v.id }}"
+                                            {% if b.vendor and b.vendor.id == v.id %}selected{% endif %}>
+                                            {{ v.first_name }}
+                                        </option>
+                                        {% endfor %}
+
+                                    </select>
+
+                                    <button type="button"
+                                            class="btn-assign"
+                                            onclick="assignVendor('{{ b.id }}')">
+
+                                        {% if b.vendor %}
+                                            Reassign
+                                        {% else %}
+                                            Assign
+                                        {% endif %}
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            <div class="status-cell">
+
+                                <span class="status-badge {{ b.status }}">
+
+                                    <span class="sdot"></span>
+
+                                    {{ b.get_status_display }}
+
+                                </span>
+
+                                <div class="status-row">
+
+                                    <select id="status-{{ b.id }}"
+                                            class="status-select">
+
+                                        <option value="pending"
+                                            {% if b.status == "pending" %}selected{% endif %}>
+                                            Pending
+                                        </option>
+
+                                        <option value="assigned"
+                                            {% if b.status == "assigned" %}selected{% endif %}>
+                                            Assigned
+                                        </option>
+
+                                        <option value="accepted"
+                                            {% if b.status == "accepted" %}selected{% endif %}>
+                                            Accepted
+                                        </option>
+
+                                        <option value="in_progress"
+                                            {% if b.status == "in_progress" %}selected{% endif %}>
+                                            In Progress
+                                        </option>
+
+                                        <option value="completed"
+                                            {% if b.status == "completed" %}selected{% endif %}>
+                                            Completed
+                                        </option>
+
+                                        <option value="cancelled"
+                                            {% if b.status == "cancelled" %}selected{% endif %}>
+                                            Cancelled
+                                        </option>
+
+                                    </select>
+
+                                    <button type="button"
+                                            class="btn-save"
+                                            onclick="updateStatus('{{ b.id }}')">
+
+                                        Save
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        
 
 <td>
-{{ b.name }}<br>
-<small>{{ b.phone }}</small>
+
+    {% with payment=b.payment_set.first %}
+
+    <div style="
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+        min-width:240px;
+    ">
+
+        <!-- INPUT SECTION -->
+
+        <div style="
+            display:flex;
+            flex-direction:column;
+            gap:6px;
+        ">
+
+            <div style="
+                display:flex;
+                gap:8px;
+                align-items:center;
+                flex-wrap:wrap;
+            ">
+
+                <input type="number"
+                       id="amount-{{ b.id }}"
+                       value="{% if payment %}{{ payment.total_amount|floatformat:0 }}{% endif %}"
+                       placeholder="Enter Amount"
+                       style="
+                       width:140px;
+                       height:40px;
+                       border:2px solid {% if payment %}#16a34a{% else %}#dbe1ea{% endif %};
+                       border-radius:10px;
+                       padding:0 12px;
+                       font-size:13px;
+                       font-weight:700;
+                       color:#111827;
+                       background:{% if payment %}#f0fdf4{% else %}#fff{% endif %};
+                       ">
+
+                <button type="button"
+                        onclick="savePayment('{{ b.id }}')"
+                        style="
+                        height:40px;
+                        border:none;
+                        border-radius:10px;
+                        background:#2563eb;
+                        color:#fff;
+                        padding:0 16px;
+                        font-size:12px;
+                        font-weight:700;
+                        cursor:pointer;
+                        ">
+
+                    {% if payment %}
+                        Update
+                    {% else %}
+                        Save
+                    {% endif %}
+
+                </button>
+
+            </div>
+
+            {% if payment %}
+
+            <div style="
+                font-size:11px;
+                color:#16a34a;
+                font-weight:700;
+            ">
+
+                ✓ Uploaded Amount :
+                ₹{{ payment.total_amount|floatformat:0 }}
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        <!-- PAYMENT DETAILS -->
+
+        {% if payment %}
+
+        <div style="
+            background:#f8fafc;
+            border:1px solid #e5e7eb;
+            border-radius:12px;
+            padding:10px;
+            display:flex;
+            flex-direction:column;
+            gap:6px;
+        ">
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                font-size:12px;
+                font-weight:600;
+            ">
+
+                <span style="color:#6b7280;">
+                    Total
+                </span>
+
+                <span style="color:#111827;">
+                    ₹{{ payment.total_amount|floatformat:0 }}
+                </span>
+
+            </div>
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                font-size:12px;
+                font-weight:700;
+            ">
+
+                <span style="color:#16a34a;">
+                    Paid
+                </span>
+
+                <span style="color:#16a34a;">
+                    ₹{{ payment.paid_amount|floatformat:0 }}
+                </span>
+
+            </div>
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                font-size:12px;
+                font-weight:700;
+            ">
+
+                <span style="color:#dc2626;">
+                    Balance
+                </span>
+
+                <span style="color:#dc2626;">
+                    ₹{{ payment.remaining_amount|floatformat:0 }}
+                </span>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    {% endwith %}
+
 </td>
 
-<td>{{ b.service.s_title }}</td>
 
-<td>
-<div class="inline-actions">
 
-<select id="vendor-{{ b.id }}" class="field-input small-input">
-<option value="">Select</option>
+                    </tr>
 
-{% for v in vendors %}
-<option value="{{ v.id }}" {% if b.vendor.id == v.id %}selected{% endif %}>
-{{ v.first_name }}
-</option>
-{% endfor %}
+                    {% empty %}
 
-</select>
+                    <tr>
 
-<button class="btn-small" onclick="assignVendor({{ b.id }})">Assign</button>
+                        <td colspan="5" class="empty-row">
+                            No orders found
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- PAGINATION -->
+
+{% if page_obj %}
+
+<div class="tbl-footer">
+
+    <div class="page-btns">
+
+        <!-- PREVIOUS -->
+
+        {% if page_obj.has_previous %}
+
+        <a class="pg-btn"
+           href="?page={{ page_obj.previous_page_number }}">
+
+            ‹
+
+        </a>
+
+        {% endif %}
+
+        <!-- CURRENT PAGE -->
+
+        <span class="pg-btn active">
+
+            {{ page_obj.number }}
+
+        </span>
+
+        <!-- NEXT PAGE -->
+
+        {% if page_obj.has_next %}
+
+        <a class="pg-btn"
+           href="?page={{ page_obj.next_page_number }}">
+
+            {{ page_obj.next_page_number }}
+
+        </a>
+
+        <!-- NEXT -->
+
+        <a class="pg-btn"
+           href="?page={{ page_obj.next_page_number }}">
+
+            ›
+
+        </a>
+
+        {% endif %}
+
+    </div>
 
 </div>
-</td>
 
-<td>
-<div class="inline-actions">
+{% endif %}
 
-<span class="status {{ b.status }}">{{ b.status }}</span>
-
-<select id="status-{{ b.id }}" class="field-input small-input">
-<option value="in_progress">Progress</option>
-<option value="completed">Completed</option>
-</select>
-
-<button class="btn-small" onclick="updateStatus({{ b.id }})">Update</button>
-
-</div>
-</td>
-
-</tr>
-
-{% empty %}
-<tr>
-<td colspan="5" style="text-align:center;">No orders</td>
-</tr>
-{% endfor %}
-
-</tbody>
-
-</table>
-</div>
+    </div>
 
 </div>
 
 <script>
 
-// CATEGORY → RESET SERVICE
-function handleCategoryChange(select){
-    let form = select.form;
-    let service = form.querySelector('[name="service"]');
+function savePayment(id){
 
-    if(service){
-        service.value = "";
+    let total_amount = document.getElementById(
+        "amount-" + id
+    ).value;
+
+    if(!total_amount){
+
+        alert("Enter amount");
+
+        return;
     }
 
-    form.submit();
+    fetch(window.location.href, {
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json",
+            "X-CSRFToken":getCSRF()
+        },
+
+        body:JSON.stringify({
+
+            booking_id:id,
+            total_amount:total_amount
+
+        })
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if(data.success){
+
+            location.reload();
+
+        }else{
+
+            alert(data.error || "Something went wrong");
+
+        }
+
+    })
+
+    .catch(error => {
+
+        console.log(error);
+
+        alert("Server Error");
+
+    });
+
 }
 
-// CSRF
-function getCSRF(){
-return document.cookie.split('; ').find(r=>r.startsWith('csrftoken='))?.split('=')[1];
+function savePayment(bookingId) {
+
+    const amountInput = document.getElementById(
+        `amount-${bookingId}`
+    )
+
+    const total_amount = amountInput.value
+
+    fetch("", {
+
+        method: "POST",
+
+        headers: {
+
+            "Content-Type": "application/json",
+
+            "X-CSRFToken": "{{ csrf_token }}"
+
+        },
+
+        body: JSON.stringify({
+
+            booking_id: bookingId,
+
+            total_amount: total_amount
+
+        })
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if (data.success) {
+
+            // SHOW SAVED VALUE AGAIN
+
+            amountInput.value = total_amount
+
+            // GREEN STYLE
+
+            amountInput.style.border =
+                "2px solid #16a34a"
+
+            amountInput.style.background =
+                "#f0fdf4"
+
+            // BUTTON TEXT
+
+            alert("Payment Amount Saved")
+
+            // OPTIONAL AUTO RELOAD
+
+            setTimeout(() => {
+
+                location.reload()
+
+            }, 500)
+
+        }
+
+        else {
+
+            alert(data.error)
+
+        }
+
+    })
+
+}
+function getCSRF() {
+
+    let cookieValue = "";
+
+    document.cookie.split(";").forEach(function(cookie){
+
+        cookie = cookie.trim();
+
+        if(cookie.startsWith("csrftoken=")){
+            cookieValue = cookie.substring("csrftoken=".length);
+        }
+
+    });
+
+    return cookieValue;
 }
 
-// ASSIGN VENDOR
-async function assignVendor(id){
-let v=document.getElementById("vendor-"+id).value;
+function updateStatus(id){
 
-if(!v){ alert("Select vendor"); return; }
+    let status = document.getElementById("status-" + id).value;
 
-await fetch("/assign-vendor/",{
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-"X-CSRFToken":getCSRF()
-},
-body:JSON.stringify({booking_id:id,vendor_id:v})
-});
+    fetch(window.location.href,{
 
-location.reload();
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json",
+            "X-CSRFToken":getCSRF()
+        },
+
+        body:JSON.stringify({
+            booking_id:id,
+            status:status
+        })
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if(data.success){
+            location.reload();
+        }else{
+            alert(data.error || "Something went wrong");
+        }
+
+    })
+
+    .catch(error => {
+
+        console.log(error);
+        alert("Server Error");
+
+    });
+
 }
 
-// UPDATE STATUS
-async function updateStatus(id){
-let s=document.getElementById("status-"+id).value;
+function assignVendor(id){
 
-await fetch("/update-status/",{
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-"X-CSRFToken":getCSRF()
-},
-body:JSON.stringify({booking_id:id,status:s})
-});
+    let vendor = document.getElementById("vendor-" + id).value;
 
-location.reload();
+    if(!vendor){
+        alert("Please select a vendor");
+        return;
+    }
+
+    fetch("/assign-vendor/",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json",
+            "X-CSRFToken":getCSRF()
+        },
+
+        body:JSON.stringify({
+            booking_id:id,
+            vendor_id:vendor
+        })
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if(data.success){
+            location.reload();
+        }else{
+            alert(data.error || "Something went wrong");
+        }
+
+    })
+
+    .catch(error => {
+
+        console.log(error);
+        alert("Server Error");
+
+    });
+
 }
+function toggleFilters(){
 
+    document.getElementById(
+        "filtersPanel"
+    ).classList.toggle("show");
+
+}
 </script>
 
 {% endblock %}

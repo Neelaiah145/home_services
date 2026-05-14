@@ -3,76 +3,191 @@
 
 {% block content %}
 
-<div class="container mt-4">
 
-    <div class="card shadow-sm border-0 rounded-3">
 
-        <!-- Header -->
-        <div class="card-header bg-warning text-dark">
-            <h5 class="mb-0 text-white"> Update Banner</h5>
+<div class="banner-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h5 class="fw-bold mb-0">
+
+                Banner Management
+
+            </h5>
+
+            <p class="page-subtitle">
+
+                Update and manage homepage banner information
+
+            </p>
+
         </div>
 
-        <!-- Body -->
-        <div class="card-body">
+        <div class="header-right">
 
-            <form method="POST" enctype="multipart/form-data">
+            <div class="banner-badge">
+
+                Update Banner
+
+            </div>
+
+            <a href="{% url 'list.banner' %}"
+               class="list-btn">
+
+                <i class="bi bi-images"></i>
+
+                Banner List
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- CARD -->
+
+    <div class="banner-card">
+
+        <!-- TOP -->
+
+        <div class="card-top">
+
+            <div>
+
+                <h5 class="card-title">
+
+                    Update Banner Information
+
+                </h5>
+
+                <p class="card-desc">
+
+                    Edit and update banner details and images
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="card-body-custom">
+
+            <form method="POST"
+                  enctype="multipart/form-data">
+
                 {% csrf_token %}
 
-                <div class="row">
+                <div class="row g-4">
 
-                    <!--  Image Upload -->
-                    <div class="col-md-4 text-center">
-                        <label class="form-label fw-semibold">Upload Image</label>
+                    <!-- IMAGE -->
 
-                        <div class="border rounded p-3 mb-3"
-                             style="height:200px; display:flex; align-items:center; justify-content:center;">
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+
+                            Upload Image
+
+                        </label>
+
+                        <div class="image-box">
 
                             {% if banner.image %}
-                                <img id="preview" src="{{ banner.image.url }}"
-                                     style="max-height:100%; max-width:100%; object-fit:cover;">
+
+                            <img id="preview"
+                                 src="{{ banner.image.url }}">
+
                             {% else %}
-                                <img id="preview" src=""
-                                     style="max-height:100%; max-width:100%; object-fit:cover;">
+
+                            <img id="preview"
+                                 src="">
+
                             {% endif %}
 
                         </div>
 
-                        <input type="file" name="image" class="form-control" onchange="previewImage(event)">
-                        <small class="text-muted">Leave empty to keep old image</small>
+                        <input type="file"
+                               name="image"
+                               class="file-input"
+                               onchange="previewImage(event)">
+
+                        <small class="small-text">
+
+                            Leave empty to keep old image
+
+                        </small>
+
                     </div>
 
-                    <!--  Content Fields -->
+                    <!-- CONTENT -->
+
                     <div class="col-md-8">
 
-                        <!-- Heading -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Heading</label>
-                            <input type="text" name="heading" class="form-control"
+                        <!-- HEADING -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Heading
+
+                            </label>
+
+                            <input type="text"
+                                   name="heading"
+                                   class="form-control-custom"
                                    value="{{ banner.heading }}"
-                                   placeholder="Enter main heading..." required>
+                                   placeholder="Enter main heading..."
+                                   required>
+
                         </div>
 
-                        <!-- Sub Heading -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Sub Heading</label>
-                            <input type="text" name="sub_heading" class="form-control"
+                        <!-- SUB HEADING -->
+
+                        <div>
+
+                            <label class="form-label">
+
+                                Sub Heading
+
+                            </label>
+
+                            <input type="text"
+                                   name="sub_heading"
+                                   class="form-control-custom"
                                    value="{{ banner.sub_heading }}"
-                                   placeholder="Enter sub heading..." required>
+                                   placeholder="Enter sub heading..."
+                                   required>
+
                         </div>
 
                     </div>
 
                 </div>
 
-                <!-- Buttons -->
-                <div class="d-flex justify-content-between mt-3">
-                    <a href="" class="btn btn-outline-success">
+                <!-- BUTTONS -->
+
+                <div class="form-actions">
+
+                    <a href="{% url 'list.banner' %}"
+                       class="back-btn">
+
                         Back
+
                     </a>
 
-                    <button type="submit" class="btn btn-warning px-4">
-                        Update
+                    <button type="submit"
+                            class="update-btn">
+
+                        Update Banner
+
                     </button>
+
                 </div>
 
             </form>
@@ -83,15 +198,28 @@
 
 </div>
 
-<!--  Image Preview Script -->
+<!-- IMAGE PREVIEW -->
+
 <script>
-    function previewImage(event) {
-        const reader = new FileReader();
-        reader.onload = function () {
-            document.getElementById('preview').src = reader.result;
-        }
-        reader.readAsDataURL(event.target.files[0]);
+
+function previewImage(event){
+
+    const reader = new FileReader();
+
+    reader.onload = function(){
+
+        document.getElementById(
+            "preview"
+        ).src = reader.result;
+
     }
+
+    reader.readAsDataURL(
+        event.target.files[0]
+    );
+
+}
+
 </script>
 
 {% endblock %}

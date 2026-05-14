@@ -2,404 +2,983 @@
 {% load static %}
 {% block content %}
 
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-    
-/* ── PREMIUM THEME VARIABLES ── */
-:root {
-    --white: #ffffff;
-    --gh-bg: #f9fafb;
-    --gh-blue: #0070eb;
-    --gh-text-dark: #111827;
-    --gh-text-muted: #6b7280;
-    --gh-border: #e5e7eb;
-    --font-main: 'DM Sans', sans-serif;
-    
-    /* Status Colors */
-    --bg-pending: #fff7ed;   --text-pending: #c2410c;
-    --bg-assigned: #eef2ff;  --text-assigned: #4338ca;
-    --bg-completed: #f0fdf4; --text-completed: #15803d;
-}
+    :root {
+        --bg: #f4f7fb;
+        --card: #ffffff;
+        --border: #e5e7eb;
+        --text: #111827;
+        --sub: #6b7280;
+        --primary: #2563eb;
+    }
 
-body { background: var(--gh-bg); }
+    body {
+        background: var(--bg);
 
-.page-wrap {
-    max-width: 1150px;
-    margin: 0 auto;
-    padding: 40px 20px;
-    font-family: var(--font-main);
-}
+    }
 
-/* ── HEADER & SUBTITLE ── */
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-}
+    /* =========================
+   PAGINATION
+========================= */
 
-.page-subtitle {
-    font-size: 14px;
-    color: var(--gh-text-muted);
-    margin-top: 4px;
-}
+    .tbl-footer {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 20px 24px;
+        border-top: 1px solid #eef2f7;
+        background: #fff;
+    }
 
-/* ── STAT TILES (FROM DIRECTORY STYLE) ── */
-.stat-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.25rem;
-    margin-bottom: 2rem;
-}
+    .page-btns {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
 
-.stat-card {
-   
-    padding: 1.25rem;
-    border-radius: 10px;
-    border: 1px solid var(--gh-border);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
+    .pg-btn {
+        min-width: 40px;
+        height: 40px;
+        padding: 0 14px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        background: #fff;
+        color: #111827;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: .2s ease;
+    }
 
-.stat-label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--gh-text-muted);
-    letter-spacing: 0.5px;
-}
+    .pg-btn:hover {
+        background: #f3f4f6;
+        border-color: #d1d5db;
+        color: #111827;
+    }
 
-.stat-value {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--gh-text-dark);
-}
+    .pg-btn.active {
+        background: #2563eb;
+        color: #fff;
+        border-color: #2563eb;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, .18);
+    }
 
-/* ── TOOLBAR: TABS + SEARCH ── */
-.content-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--white);
-    padding: 1rem 1.5rem;
-    border-radius: 12px 12px 0 0;
-    border: 1px solid var(--gh-border);
-    border-bottom: none;
-    gap: 20px;
-    flex-wrap: wrap;
-}
+    .orders-page {
+        max-width: 1450px;
+        margin: auto;
+        padding: 30px 20px;
+    }
 
-.filter-group {
-    display: flex;
-    background: #f1f5f9;
-    padding: 0.25rem;
-    border-radius: 8px;
-    gap: 0.125rem;
-}
+    /* HEADER */
 
-.filter-btn {
-    padding: 0.5rem 1.25rem;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    border: none;
-    background: transparent;
-    color: var(--gh-text-muted);
-    cursor: pointer;
-    transition: all 0.2s;
-}
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
 
-.filter-btn.active {
-    background: var(--white);
-    color: var(--gh-blue);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
+    .page-sub {
+        font-size: 14px;
+        color: var(--sub);
+        margin-top: 5px;
+    }
 
-.search-container {
-    position: relative;
-    min-width: 300px;
-}
+    /* ALERT */
 
-.search-icon {
-    position: absolute;
-    left: 0.875rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--gh-text-muted);
-    pointer-events: none;
-}
+    .renew-alert {
+        padding: 14px 18px;
+        border-radius: 14px;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        flex-wrap: wrap;
+        transition: .25s;
+    }
 
-.search-input {
-    width: 100%;
-    height: 40px;
-    padding-left: 2.5rem;
-    border: 1px solid var(--gh-border);
-    border-radius: 8px;
-    font-size: 14px;
-    outline: none;
-}
+    .success-alert {
+        background: #f0fdf4;
+        border: 1px solid #86efac;
+        color: #166534;
+    }
 
-/* ── ORDER CARDS CONTAINER ── */
-.orders-list {
-    background: var(--white);
-    border: 1px solid var(--gh-border);
-    border-radius: 0 0 12px 12px;
-    padding: 1rem;
-}
+    .warning-alert {
+        background: #fef3c7;
+        border: 1px solid #fcd34d;
+        color: #92400e;
+    }
 
-.order-card {
-    display: flex;
-    gap: 24px;
-    padding: 24px;
-    border-bottom: 1px solid #f3f4f6;
-    transition: background 0.2s;
-}
+    .renew-alert-text {
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.7;
+    }
 
-.order-card:last-child { border-bottom: none; }
-.order-card:hover { background: #fafafa; }
+    .close-btn {
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 50%;
+        background: #fee2e2;
+        color: #dc2626;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
 
-.brand-circle {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    border: 1.5px solid var(--gh-text-dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0;
-}
+    .renew-alert-btn {
+        height: 38px;
+        padding: 0 16px;
+        border-radius: 10px;
+        background: #d97706;
+        color: #fff;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+    }
 
-.brand-circle img { width: 100%; height: 100%; object-fit: cover; }
-.brand-initial { font-weight: 800; font-size: 22px; }
+    .renew-alert-btn:hover {
+        background: #b45309;
+        color: #fff;
+    }
 
-.order-details { flex: 1; }
+    /* TABLE CARD */
 
-.header-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 4px;
-}
+    .table-card {
+        background: #fff;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+    }
 
-.service-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--gh-blue);
-    text-decoration: none;
-}
+    /* TOOLBAR */
 
-.order-amount { font-size: 18px; font-weight: 700; }
+    .card-header-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        background: #fafafa;
+    }
 
-.meta-row {
-    font-size: 13px;
-    color: var(--gh-text-muted);
-    margin-bottom: 12px;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
+    .card-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+    }
 
-.status-pill {
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 10px;
-    text-transform: uppercase;
-}
+    .toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
 
-.status-pending { background: var(--bg-pending); color: var(--text-pending); }
-.status-assigned { background: var(--bg-assigned); color: var(--text-assigned); }
-.status-completed { background: var(--bg-completed); color: var(--text-completed); }
+    /* SEARCH */
 
-.item-summary {
-    font-size: 14px;
-    color: var(--gh-text-dark);
-    padding-top: 10px;
-    border-top: 1px dashed #eee;
-}
+    .search-container {
+        position: relative;
+    }
 
-.action-column {
-    width: 200px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
+    .search-container input {
+        padding-left: 32px;
+        height: 38px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 13px;
+        font-family: 'DM Sans', sans-serif;
+        color: var(--text);
+        background: #fff;
+        min-width: 180px;
+    }
 
-.gh-btn {
-    padding: 10px;
-    font-size: 13px;
-    font-weight: 700;
-    border-radius: 6px;
-    text-align: center;
-    text-decoration: none;
-    border: 1px solid var(--gh-blue);
-    cursor: pointer;
-}
+    .search-container input:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
 
-.gh-btn-fill { background: var(--gh-blue); color: var(--white); }
-.gh-btn-outline { background: var(--white); color: var(--gh-blue); }
-.gh-btn-cancel { border: none; color: #ef4444; font-size: 12px; }
+    .search-icon {
+        position: absolute;
+        left: 9px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 13px;
+    }
 
-@media (max-width: 768px) {
-    .content-toolbar { flex-direction: column; align-items: stretch; }
-    .order-card { flex-direction: column; gap: 16px; }
-    .action-column { width: 100%; }
-}
+    /* FILTER */
+
+    .filter-select {
+        height: 38px;
+        padding: 7px 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 13px;
+        color: var(--text);
+        background: #fff;
+        min-width: 150px;
+        text-align: center;
+    }
+
+    .filter-select:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+
+    /* BUTTON */
+
+    .filter-btn {
+        height: 38px;
+        padding: 0 16px;
+        border: none;
+        border-radius: 8px;
+        background: var(--primary);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: .15s;
+    }
+
+    .filter-btn:hover {
+        background: #1d4ed8;
+    }
+
+    /* TABLE */
+
+    .table-wrap {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background: #f9fafb;
+    }
+
+    thead th {
+        padding: 14px 16px;
+        text-align: left;
+        font-size: 11px;
+        color: var(--sub);
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: .5px;
+        white-space: nowrap;
+        border-bottom: 1px solid var(--border);
+    }
+
+    tbody td {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+        font-size: 14px;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    tbody tr:hover {
+        background: #f9fbff;
+    }
+
+    /* CELLS */
+
+    .order-id {
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 3px;
+    }
+
+    .small-text {
+        font-size: 12px;
+        color: var(--sub);
+        line-height: 1.6;
+    }
+
+    .service-title {
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 3px;
+    }
+
+    .category {
+        font-size: 12px;
+        color: var(--sub);
+    }
+
+    .vendor-name {
+        font-weight: 600;
+        margin-bottom: 3px;
+    }
+
+    .vendor-phone {
+        font-size: 12px;
+        color: var(--sub);
+    }
+
+    .address {
+        max-width: 200px;
+        font-size: 13px;
+        color: #4b5563;
+        line-height: 1.6;
+    }
+
+    /* SCHEDULE */
+
+    .schedule-box {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .schedule-date {
+        font-weight: 600;
+        color: #111827;
+        font-size: 13px;
+    }
+
+    .schedule-time {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        width: fit-content;
+        background: #f8fafc;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* STATUS */
+
+    .status-badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        display: inline-block;
+        text-transform: capitalize;
+        white-space: nowrap;
+    }
+
+    .status-pending {
+        background: #fff4e5;
+        color: #ea580c;
+    }
+
+    .status-assigned {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .status-accepted {
+        background: #ecfeff;
+        color: #0891b2;
+    }
+
+    .status-in_progress {
+        background: #f5f3ff;
+        color: #7c3aed;
+    }
+
+    .status-completed {
+        background: #ecfdf5;
+        color: #16a34a;
+    }
+
+    .status-cancelled {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    /* PAYMENT */
+
+    .payment-paid {
+        color: #15803d;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .payment-pending {
+        color: #dc2626;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    /* ACTIONS */
+
+    .action-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .action-btn {
+        height: 32px;
+        padding: 0 25px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 700;
+        transition: .15s;
+    }
+
+    .view-btn {
+        background: #ecfdf5;
+        color: #15803d;
+    }
+
+    .view-btn:hover {
+        background: #15803d;
+        color: #fff;
+    }
+
+    .renew-btn {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .renew-btn:hover {
+        background: #d97706;
+        color: #fff;
+    }
+
+    /* EMPTY */
+
+    .empty-box {
+        padding: 60px 20px;
+        text-align: center;
+        color: var(--sub);
+        font-size: 14px;
+    }
+
+    /* MOBILE */
+
+    @media(max-width:768px) {
+
+        .orders-page {
+            padding: 15px;
+        }
+
+        .card-header-flex {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .toolbar {
+            flex-direction: column;
+        }
+
+        .search-container input,
+        .filter-select,
+        .filter-btn {
+            width: 100%;
+        }
+
+        table {
+            min-width: 1400px;
+        }
+
+    }
 </style>
 
-<div class="page-wrap">
+<div class="orders-page">
 
     <div class="page-header">
+
         <div>
-           <h6 class="fw-semibold mb-0"> Booking History</h6>
-            <div class="page-subtitle">Track and manage your professional service orders</div>
-        </div>
-     
-    </div>
 
-    <div class="stat-row">
-        <div class="stat-card">
-            <span class="stat-label">Total Spend</span>
-            <span class="stat-value" id="statTotal">₹0</span>
-        </div>
-        <div class="stat-card" style="border-left: 4px solid #ea580c;">
-            <span class="stat-label">Pending</span>
-            <span class="stat-value" id="statPending">0</span>
-        </div>
-        <div class="stat-card" style="border-left: 4px solid #4338ca;">
-            <span class="stat-label">Assigned</span>
-            <span class="stat-value" id="statAssigned">0</span>
-        </div>
-        <div class="stat-card" style="border-left: 4px solid #16a34a;">
-            <span class="stat-label">Completed</span>
-            <span class="stat-value" id="statCompleted">0</span>
-        </div>
-    </div>
+            <h6 class="fw-semibold mb-0">
+                My Bookings
+            </h6>
 
-    <div class="content-toolbar">
-        <div class="filter-group">
-            <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
-            <button class="filter-btn" onclick="setFilter('pending', this)">Pending</button>
-            <button class="filter-btn" onclick="setFilter('assigned', this)">Assigned</button>
-            <button class="filter-btn" onclick="setFilter('completed', this)">Completed</button>
-        </div>
-
-        <div class="search-container">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" class="search-input" placeholder="Search service name or ID..." onkeyup="applyFilter()">
-        </div>
-    </div>
-
-    <div class="orders-list" id="ordersContainer">
-        {% for b in bookings %}
-        <div class="order-card order-box" data-status="{{ b.status|lower }}" data-amount="{{ b.amount }}">
-            <div class="brand-circle">
-                {% if b.service.image %}
-                    <img src="{{ b.service.image.url }}" alt="Logo">
-                {% else %}
-                    <span class="brand-initial">{{ b.service.s_title|upper }}</span>
-                {% endif %}
+            <div class="page-sub">
+                View all your booked services and booking details
             </div>
 
-            <div class="order-details">
-                <div class="header-row">
-                    <a href="" onclick="trackOrder('{{ b.id }}')" class="service-title">{{ b.service.s_title }}</a>
-                    <span class="order-amount">₹{{ b.amount }}</span>
+        </div>
+
+    </div>
+
+    <!-- NOTIFICATIONS -->
+
+    {% for booking in bookings %}
+
+    <!-- SUCCESS MESSAGE -->
+
+    {% if booking.is_renewed %}
+
+    <div class="renew-alert success-alert success-renew-alert" id="success-alert-{{ booking.id }}"
+        data-id="{{ booking.id }}">
+
+        <div class="renew-alert-text">
+
+            ✅ Your renewal request for
+
+            <strong>
+                {{ booking.service.s_title }}
+            </strong>
+
+            has been accepted by
+
+            <strong>
+                {{ booking.vendor.first_name }}
+            </strong>
+
+            successfully.
+
+        </div>
+
+        <button class="close-btn" onclick="closeRenewMessage('{{ booking.id }}')">
+
+            ✕
+
+        </button>
+
+    </div>
+
+    {% endif %}
+
+    <!-- RENEW WARNING -->
+
+    {% if booking.show_renew_button %}
+
+    <div class="renew-alert warning-alert" id="renew-warning-{{ booking.id }}">
+
+        <div class="renew-alert-text">
+
+            🔔 Your service
+
+            <strong>
+                {{ booking.service.s_title }}
+            </strong>
+
+            is ending soon.
+
+            Please renew your booking.
+
+        </div>
+
+        <a href="{% url 'renew_booking_page' booking.id %}" class="renew-alert-btn">
+
+            Renew Service
+
+        </a>
+
+    </div>
+
+    {% endif %}
+
+    {% endfor %}
+
+    <div class="table-card">
+
+        <form method="GET">
+
+            <div class="card-header-flex">
+
+                <div class="card-title">
+                    Bookings
                 </div>
 
-                <div class="meta-row">
-                    <span>{{ b.created_at|date:"M d, Y" }}</span>
-                    <span>•</span>
-                    <span class="status-pill status-{{ b.status|lower }}">{{ b.status|title }}</span>
+                <div class="toolbar">
+
+                    <div class="search-container">
+
+                        <span class="search-icon">
+                            🔍
+                        </span>
+
+                        <input type="text" name="search" value="{{ request.GET.search }}"
+                            placeholder="Search order or service…">
+
+                    </div>
+
+                    <select name="status" class="filter-select">
+
+                        <option value="">All Status</option>
+
+                        <option value="pending">Pending</option>
+                        <option value="assigned">Assigned</option>
+                        <option value="accepted">Accepted</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+
+                    </select>
+
+                    <button type="submit" class="filter-btn">
+
+                        Apply
+
+                    </button>
+
                 </div>
 
-                <div class="item-summary">
-                    Order #{{ b.order_id }} • 1 Service Professional
-                </div>
             </div>
 
-            <div class="action-column">
-                {% if b.status == "completed" %}
-                    <a href="javascript:void(0)" onclick="bookAgain('{{ b.service.id }}')" class="gh-btn gh-btn-fill">Book again</a>
-                    <a href="#" class="gh-btn gh-btn-outline">Review</a>
-                {% else %}
-                    <a href="javascript:void(0)" onclick="trackOrder('{{ b.id }}')" class="gh-btn gh-btn-outline">Track order</a>
-                    {% if b.status == "pending" %}
-                        <button class="gh-btn-cancel" onclick="cancelOrder('{{ b.id }}', this)">Cancel Booking</button>
+        </form>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Order</th>
+                        <th>Service</th>
+                        <th>Vendor</th>
+                        <th>Schedule</th>
+                        <th>Address</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for booking in bookings %}
+
+                    <tr>
+
+                        <td>
+
+                            <div class="order-id">
+                                {{ booking.order_id }}
+                            </div>
+
+                            <div class="small-text">
+                                {{ booking.created_at|date:"d M Y" }}
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <div class="service-title">
+                                {{ booking.service.s_title }}
+                            </div>
+
+                            <div class="category">
+                                {{ booking.category }}
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            {% if booking.vendor %}
+
+                            <div class="vendor-name">
+                                {{ booking.vendor.first_name }}
+                            </div>
+
+                            <div class="vendor-phone">
+                                {{ booking.vendor.phone }}
+                            </div>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <div class="schedule-box">
+
+                                {% if booking.scheduled_date %}
+
+                                <div class="schedule-date">
+                                    📅 {{ booking.scheduled_date }}
+                                </div>
+
+                                <div class="schedule-time">
+                                    ⏰ {{ booking.scheduled_time }}
+                                </div>
+
+                                {% else %}
+
+                                <div class="schedule-date">
+                                    📅 {{ booking.start_date }} → {{ booking.end_date }}
+                                </div>
+
+                                <div class="schedule-time">
+                                    ⏳ {{ booking.total_days }} Days
+                                </div>
+
+                                {% endif %}
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <div class="address">
+                                {{ booking.city|truncatechars:50 }}
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <span class="status-badge status-{{ booking.status|lower }}">
+                                {{ booking.get_status_display }}
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            {% with payment=booking.payments.first %}
+
+                            {% if payment %}
+
+                            <div class="payment-paid">
+                                Completed
+                            </div>
+
+                            {% else %}
+
+                            <div class="payment-pending">
+                                Pending
+                            </div>
+
+                            {% endif %}
+
+                            {% endwith %}
+
+                        </td>
+
+                        <td>
+
+                            <div class="action-group">
+
+                                <a href="{% url 'customer_order_detail' booking.id %}" class="action-btn view-btn">
+
+                                    Details
+
+                                </a>
+
+                                {% if booking.show_renew_button %}
+
+                                <a href="{% url 'renew_booking_page' booking.id %}" class="action-btn renew-btn">
+
+                                    Renew
+
+                                </a>
+
+                                {% endif %}
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="8">
+
+                            <div class="empty-box">
+                                No bookings found
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+            <!-- PAGINATION -->
+
+            {% if page_obj %}
+
+            <div class="tbl-footer">
+
+                <div class="page-btns">
+
+                    <!-- PREVIOUS -->
+
+                    {% if page_obj.has_previous %}
+
+                    <a class="pg-btn" href="?page={{ page_obj.previous_page_number }}">
+
+                        ‹
+
+                    </a>
+
                     {% endif %}
-                {% endif %}
+
+                    <!-- CURRENT PAGE -->
+
+                    <span class="pg-btn active">
+
+                        {{ page_obj.number }}
+
+                    </span>
+
+                    <!-- NEXT PAGE -->
+
+                    {% if page_obj.has_next %}
+
+                    <a class="pg-btn" href="?page={{ page_obj.next_page_number }}">
+
+                        {{ page_obj.next_page_number }}
+
+                    </a>
+
+                    <!-- NEXT -->
+
+                    <a class="pg-btn" href="?page={{ page_obj.next_page_number }}">
+
+                        ›
+
+                    </a>
+
+                    {% endif %}
+
+                </div>
+
             </div>
+
+            {% endif %}
+
+
+
+
+
+
+
         </div>
-        {% empty %}
-        <div style="padding: 60px; text-align: center; color: var(--gh-text-muted);">
-            No bookings found.
-        </div>
-        {% endfor %}
+
     </div>
 
 </div>
 
 <script>
-let currentFilter = "all";
 
-function setFilter(filter, el) {
-    currentFilter = filter;
-    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-    el.classList.add("active");
-    applyFilter();
-}
+    window.onload = function () {
 
-function applyFilter() {
-    let search = document.getElementById("searchInput").value.toLowerCase();
-    document.querySelectorAll(".order-box").forEach(el => {
-        let status = el.dataset.status;
-        let text = el.innerText.toLowerCase();
-        let matchStatus = (currentFilter === "all" || status === currentFilter);
-        let matchSearch = text.includes(search);
-        el.style.display = (matchStatus && matchSearch) ? "flex" : "none";
-    });
-}
+        const successAlerts = document.querySelectorAll(
+            ".success-renew-alert"
+        );
 
-function updateStats() {
-    let totalSpend = 0;
-    let counts = { pending: 0, assigned: 0, completed: 0 };
-    
-    document.querySelectorAll(".order-box").forEach(el => {
-        let status = el.dataset.status;
-        let amt = parseFloat(el.dataset.amount) || 0;
-        totalSpend += amt;
-        if(counts.hasOwnProperty(status)) counts[status]++;
-    });
+        successAlerts.forEach(function (alert) {
 
-    document.getElementById("statTotal").textContent = "₹" + totalSpend.toLocaleString();
-    document.getElementById("statPending").textContent = counts.pending;
-    document.getElementById("statAssigned").textContent = counts.assigned;
-    document.getElementById("statCompleted").textContent = counts.completed;
-}
+            const bookingId = alert.dataset.id;
 
-function trackOrder(id) { window.location.href = `/order-history/${id}/`; }
-function bookAgain(id) { window.location.href = `/book-service/${id}/`; }
+            // SUCCESS CLOSED
 
-function cancelOrder(id, btn) {
-    if (!confirm("Are you sure?")) return;
-    fetch(`/cancel-booking/${id}/`, {
-        method: "POST",
-        headers: { "X-CSRFToken": "{{ csrf_token }}" }
-    }).then(res => res.json()).then(data => {
-        if (data.status === "success") {
-            btn.innerText = "Cancelled";
-            btn.disabled = true;
-            btn.closest(".order-card").style.opacity = "0.5";
-            updateStats();
+            if (
+                localStorage.getItem(
+                    "renew_closed_" + bookingId
+                ) === "true"
+            ) {
+
+                alert.style.display = "none";
+
+            }
+
+            // SUCCESS SHOWING
+
+            else {
+
+                const warningBox = document.getElementById(
+                    "renew-warning-" + bookingId
+                );
+
+                if (warningBox) {
+
+                    warningBox.style.display = "none";
+
+                }
+
+            }
+
+        });
+
+    }
+
+    // CLOSE SUCCESS ALERT
+
+    function closeRenewMessage(id) {
+
+        const successBox = document.getElementById(
+            "success-alert-" + id
+        );
+
+        if (successBox) {
+
+            successBox.style.opacity = "0";
+
+            successBox.style.transform = "translateY(-10px)";
+
+            setTimeout(function () {
+
+                successBox.style.display = "none";
+
+                // SAVE CLOSED STATUS
+
+                localStorage.setItem(
+                    "renew_closed_" + id,
+                    "true"
+                );
+
+                // SHOW WARNING AGAIN
+
+                const warningBox = document.getElementById(
+                    "renew-warning-" + id
+                );
+
+                if (warningBox) {
+
+                    warningBox.style.display = "flex";
+
+                }
+
+            }, 250);
+
         }
-    });
-}
 
-// Initialize stats on load
-window.onload = updateStats;
+    }
+
 </script>
 
 {% endblock %}

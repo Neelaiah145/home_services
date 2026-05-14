@@ -221,8 +221,6 @@ class Footer(models.Model):
     instagram = models.URLField(blank=True, null=True)
     whatsapp = models.URLField(blank=True, null=True)
     twitter=models.URLField(blank=True,null=True)
-    
-
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

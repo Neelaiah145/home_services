@@ -1,8 +1,14 @@
-from django.shortcuts import render, get_object_or_404,redirect
+from django.views.generic import ListView
+from decimal import Decimal
+from .utils import paginate_queryset
+from datetime import datetime, timedelta
+from django.utils import timezone
+from django.db.models import Count
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from core.models import Category, CategoryService
 from django.views import View
-from django.contrib.auth import get_user_model,authenticate, login, logout as auth_logout
+from django.contrib.auth import get_user_model, authenticate, login, logout as auth_logout
 from django.http import JsonResponse, HttpResponse
 from .models import User
 import random
@@ -37,30 +43,43 @@ class LoginView(View):
 
     def post(self, request):
         data = json.loads(request.body)
-
         phone = data.get("phone", "").replace("+91", "").strip()
         otp = data.get("otp")
         next_url = data.get("next")
 
         if not phone.isdigit() or len(phone) != 10:
-            return JsonResponse({"error": "Enter valid 10 digit phone number"})
 
-        # ===== VERIFY OTP =====
+            return JsonResponse({
+                "error": "Enter valid 10 digit phone number"
+            })
+
         if otp:
+
             if otp != request.session.get("otp") or phone != request.session.get("phone"):
-                return JsonResponse({"error": "Invalid OTP"})
 
-            user = User.objects.filter(phone__endswith=phone).first()
-
+                return JsonResponse({
+                    "error": "Invalid OTP"
+                })
+            user = User.objects.filter(
+                phone__endswith=phone
+            ).first()
+            # USER NOT FOUND
             if not user:
                 return JsonResponse({
-                    "error": "User not found",
+                    "error": "User not found Please Register",
                     "redirect": f"/register/?phone={phone}"
                 })
+            # VENDOR NOT APPROVED
+            if user.role == "vendor" and not user.is_active:
+                return JsonResponse({
 
+                    "error": "Your account is not approved yet. Please wait for admin approval."
+                })
+
+            # LOGIN
             login(request, user)
-
-            #  ROLE BASED REDIRECT
+            print("LOGGED IN USER ROLE:", user.role)
+            # REDIRECT
             if next_url:
                 redirect_url = next_url
             else:
@@ -70,28 +89,44 @@ class LoginView(View):
                     redirect_url = "/admin-dashboard/"
                 elif user.role == "vendor":
                     redirect_url = "/vendor-dashboard/"
-                else:
+                elif user.role == "customer":
                     redirect_url = "/customer-dashboard/"
+                else:
+                    redirect_url = "/"
 
             return JsonResponse({
                 "success": True,
                 "redirect": redirect_url
             })
 
-        # ===== SEND OTP =====
-        user = User.objects.filter(phone__endswith=phone).first()
+        user = User.objects.filter(
+            phone__endswith=phone
+        ).first()
+
+        # USER NOT FOUND
 
         if not user:
             return JsonResponse({
-                "error": "User not found",
+                "error": "User not found Please Register",
                 "redirect": f"/register/?phone={phone}"
+
             })
 
-        otp = str(random.randint(1000, 9999))
+        # VENDOR NOT APPROVED
 
+        if user.role == "vendor" and not user.is_active:
+
+            return JsonResponse({
+
+                "error": "Your account is not approved yet. Please wait for admin approval."
+
+            })
+
+        # GENERATE OTP
+
+        otp = str(random.randint(1000, 9999))
         request.session["otp"] = otp
         request.session["phone"] = phone
-
         print("OTP:", otp)
 
         return JsonResponse({
@@ -103,82 +138,214 @@ class LoginView(View):
 
 
 class RegisterView(View):
-
     def get(self, request):
-        return render(request, "customer/register.html")
+
+        category_id = request.GET.get("category")
+
+        categories = Category.objects.all()
+        services = CategoryService.objects.all()
+
+        if category_id:
+            services = services.filter(category_id=category_id)
+
+        return render(request, "customer/register.html", {
+            "categories": categories,
+            "services": services,
+            "selected_category": category_id
+        })
 
     def post(self, request):
-        data = json.loads(request.body)
+
+        try:
+            data = json.loads(request.body)
+        except:
+            return JsonResponse({"error": "Invalid data"}, status=400)
+
+        action = data.get("action")
 
         phone = data.get("phone")
         otp = data.get("otp")
-        create_user = data.get("create_user")
+        name = data.get("name")
+        email = data.get("email")
+        role = data.get("role", "customer")
 
-        if phone and not otp and not create_user:
+        category_id = data.get("category")
+        service_id = data.get("service")
+
+        if action == "send_otp":
+
+            if not phone or len(phone) != 10:
+                return JsonResponse({"error": "Enter valid phone number"})
 
             if User.objects.filter(phone=phone).exists():
                 return JsonResponse({
-                    "error": "User already exists, please login",
+                    "error": "User already exists. Please login.",
                     "redirect": "/login/"
                 })
 
             otp_code = str(random.randint(1000, 9999))
 
-            request.session['otp'] = otp_code
-            request.session['phone'] = phone
-            request.session['otp_verified'] = False
+            request.session["otp"] = otp_code
+            request.session["phone"] = phone
+            request.session["role"] = role
 
             print("OTP:", otp_code)
 
-            return JsonResponse({
-                "success": True,
-                "message": "OTP sent"
-            })
+            return JsonResponse({"success": True})
 
-        if otp and not create_user:
+        if action == "verify_otp":
 
-            if (
-                otp == request.session.get("otp") and
-                phone == request.session.get("phone")
-            ):
-                request.session['otp_verified'] = True
+            if otp != request.session.get("otp") or phone != request.session.get("phone"):
+                return JsonResponse({"error": "Invalid or expired OTP"})
 
+            if User.objects.filter(email=email).exists():
                 return JsonResponse({
-                    "success": True,
-                    "otp_verified": True
-                })
-
-            return JsonResponse({"error": "Invalid OTP"})
-
-        if create_user:
-
-            if not request.session.get("otp_verified"):
-                return JsonResponse({"error": "OTP not verified"})
-
-            if User.objects.filter(phone=phone).exists():
-                return JsonResponse({
-                    "error": "User already exists",
+                    "error": "Email already registered. Please login.",
                     "redirect": "/login/"
                 })
 
-            user = User.objects.create_user(
-                email=data.get("email"),
-                password=None,
-                role="customer"
-            )
+            try:
 
-            user.first_name = data.get("name")
-            user.phone = phone
-            user.save()
+                user = User.objects.create_user(
+                    email=email,
+                    password=None
+                )
 
-            request.session.flush()
+                user.phone = phone
+                user.first_name = name
+                user.role = role
+
+                user.is_active = False if role == "vendor" else True
+
+                user.save()
+
+                if role == "vendor":
+
+                    if not category_id:
+                        user.delete()
+                        return JsonResponse({"error": "Please select category"})
+
+                    # Check services exist for category
+                    services_qs = CategoryService.objects.filter(
+                        category_id=category_id)
+
+                    if not services_qs.exists():
+                        user.delete()
+                        return JsonResponse({
+                            "error": "No services available for selected category"
+                        })
+
+                    if not service_id:
+                        user.delete()
+                        return JsonResponse({
+                            "error": "Please select a service"
+                        })
+
+                    # Validate correct service
+                    ser_obj = CategoryService.objects.filter(
+                        id=service_id,
+                        category_id=category_id
+                    ).first()
+
+                    if not ser_obj:
+                        user.delete()
+                        return JsonResponse({"error": "Invalid service selected"})
+
+                    cat_obj = get_object_or_404(Category, id=category_id)
+
+                    profile = VendorProfile.objects.create(
+                        user=user,
+                        category=cat_obj,
+                        experience=0,
+                        locality="Default",
+                        street="Default",
+                        city="Default",
+                        postal_code="000000"
+                    )
+
+                    profile.services.add(ser_obj)
+
+                request.session.flush()
+
+                return JsonResponse({
+                    "success": True,
+                    "redirect": "/login/"
+                })
+
+            except Exception as e:
+                print("REGISTER ERROR:", e)
+                try:
+                    user.delete()
+                except:
+                    pass
+
+                return JsonResponse({
+                    "error": "Something went wrong. Please try again."
+                }, status=500)
+
+        return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+def get_services(request):
+    category_id = request.GET.get("category_id")
+
+    if not category_id:
+        return JsonResponse({"services": []})
+
+    services = CategoryService.objects.filter(category_id=category_id)
+
+    data = [
+        {
+            "id": s.id,
+            "title": s.title
+        }
+        for s in services
+    ]
+
+    return JsonResponse({"services": data})
+
+# ================= SERVICES API =================
+
+
+def get_services(request):
+    category_id = request.GET.get("category_id")
+
+    if not category_id:
+        return JsonResponse({"services": []})
+
+    services = CategoryService.objects.filter(category_id=category_id)
+
+    return JsonResponse({
+        "services": [
+            {"id": s.id, "s_title": s.s_title}
+            for s in services
+        ]
+    })
+
+
+# optional
+class GetServicesView(View):
+    """
+    Independent API endpoint to fetch services based on category selection.
+    """
+
+    def get(self, request):
+        category_id = request.GET.get("category_id")
+
+        if not category_id:
+            return JsonResponse({"services": []})
+
+        try:
+
+            services = CategoryService.objects.filter(
+                category_id=category_id
+            ).values("id", "s_title")
 
             return JsonResponse({
-                "success": True,
-                "redirect": "/login/"
+                "services": list(services)
             })
-
-        return JsonResponse({"error": "Invalid request"})
+        except Exception as e:
+            return JsonResponse({"error": str(e), "services": []}, status=500)
 
 
 class SendOTPView(View):
@@ -186,7 +353,7 @@ class SendOTPView(View):
         otp = str(random.randint(1000, 9999))
         request.session['otp'] = otp
 
-        print("OTP:", otp)  # replace with API
+        print("OTP:", otp)
         return JsonResponse({"status": "sent"})
 
 
@@ -211,11 +378,197 @@ class LogoutView(LoginRequiredMixin, View):
 
 # super admin -- dashboard page
 
+
 class SuperDashboardView(LoginRequiredMixin, RoleRequiredMixin, View):
+
     allowed_roles = ['superadmin']
 
     def get(self, request):
-        return render(request, "superadmin/dashboard.html", {'page_title': 'Dashboard'})
+
+        # TOTAL USERS
+
+        total_customers = User.objects.filter(
+            role="customer"
+        ).count()
+
+        total_vendors = User.objects.filter(
+            role="vendor"
+        ).count()
+
+        total_admins = User.objects.filter(
+            role="admin"
+        ).count()
+
+        total_bookings = Booking.objects.count()
+
+        # BOOKING STATUS COUNTS
+
+        total_pending = Booking.objects.filter(
+            status="pending"
+        ).count()
+
+        total_assigned = Booking.objects.filter(
+            status="assigned"
+        ).count()
+
+        total_accepted = Booking.objects.filter(
+            status="accepted"
+        ).count()
+
+        total_in_progress = Booking.objects.filter(
+            status="in_progress"
+        ).count()
+
+        total_completed = Booking.objects.filter(
+            status="completed"
+        ).count()
+
+        total_cancelled = Booking.objects.filter(
+            status="cancelled"
+        ).count()
+
+        # MONTHLY LEADS
+
+        monthly_data = []
+
+        month_labels = []
+
+        current_year = timezone.now().year
+
+        for month in range(1, 13):
+
+            total = Booking.objects.filter(
+                created_at__year=current_year,
+                created_at__month=month
+            ).count()
+
+            month_name = datetime(
+                current_year,
+                month,
+                1
+            ).strftime("%b")
+
+            month_labels.append(month_name)
+
+            monthly_data.append(total)
+        # CATEGORY DROPDOWN
+
+        categories = Category.objects.all()
+
+        selected_category = request.GET.get("category")
+
+        # SERVICES QUERY
+
+        services = CategoryService.objects.all()
+
+        # FILTER CATEGORY
+
+        if selected_category:
+
+            services = services.filter(
+                category_id=selected_category
+            )
+
+        # SERVICE CHART DATA
+
+        service_labels = []
+
+        service_data = []
+
+        for service in services:
+
+            total = Booking.objects.filter(
+                service=service
+            ).count()
+
+            service_labels.append(
+                service.s_title
+            )
+
+            service_data.append(
+                total
+            )
+        context = {
+
+            'page_title': 'Dashboard',
+
+            'total_customers': total_customers,
+            'total_vendors': total_vendors,
+            'total_admins': total_admins,
+            'total_bookings': total_bookings,
+
+            'total_pending': total_pending,
+            'total_assigned': total_assigned,
+            'total_accepted': total_accepted,
+            'total_in_progress': total_in_progress,
+            'total_completed': total_completed,
+            'total_cancelled': total_cancelled,
+
+            'month_labels': month_labels,
+            'monthly_data': monthly_data,
+
+            'categories': categories,
+
+            'selected_category': selected_category,
+
+            'service_labels': json.dumps(service_labels),
+
+            'service_data': json.dumps(service_data),
+        }
+
+        return render(
+            request,
+            "superadmin/dashboard.html",
+            context
+        )
+
+
+# user profile views code
+class UserProfileView(LoginRequiredMixin, View):
+
+    def get(self, request, id):
+
+        # ONLY ADMIN & SUPERADMIN
+
+        if request.user.role not in ["admin", "superadmin"]:
+            return redirect("login")
+
+        user_obj = get_object_or_404(
+            User,
+            id=id
+        )
+
+        # ADMIN CANNOT SEE SUPERADMIN
+
+        if (
+            request.user.role == "admin"
+            and
+            user_obj.role == "superadmin"
+        ):
+            return redirect("login")
+
+        # BACK URL
+
+        if request.user.role == "superadmin":
+
+            back_url = "superadmin_dashboard"
+
+        else:
+
+            back_url = "admin_dashboard"
+
+        context = {
+
+            "user_obj": user_obj,
+            "back_url": back_url,
+
+        }
+
+        return render(
+            request,
+            "admin/user_profile.html",
+            context
+        )
 
 
 # super admin -- create admin(create admin page)
@@ -225,13 +578,11 @@ class CreateAdminView(LoginRequiredMixin, View):
 
     def get(self, request):
         admins = User.objects.filter(role="admin").order_by("-id")
-
-        paginator = Paginator(admins, 10)
-        page_number = request.GET.get("page")
-        admins = paginator.get_page(page_number)
+        page_obj = paginate_queryset(request, admins, 10)
 
         return render(request, "superadmin/create_admin.html", {
-            "admins": admins,
+            "admins": page_obj,
+            "page_obj": page_obj,
             "page_title": "Create_Admins"
         })
 
@@ -288,13 +639,124 @@ class CreateAdminView(LoginRequiredMixin, View):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
 
+# admin al users
+
+
+class AdminUsersView(LoginRequiredMixin, View):
+
+    def get(self, request):
+
+        if request.user.role not in [
+            "admin"
+        ]:
+            return redirect("login")
+
+        role = request.GET.get("role")
+
+        search = request.GET.get("search")
+
+        users = User.objects.filter(
+            role__in=[
+                "customer",
+                "vendor"
+            ]
+        ).order_by("-id")
+
+        if role:
+
+            users = users.filter(
+                role=role
+            )
+
+        if search:
+
+            users = users.filter(
+
+                Q(first_name__icontains=search) |
+                Q(last_name__icontains=search) |
+                Q(username__icontains=search) |
+                Q(email__icontains=search)
+
+            )
+
+        customer_count = User.objects.filter(
+            role="customer"
+        ).count()
+
+        vendor_count = User.objects.filter(
+            role="vendor"
+        ).count()
+
+        total_users = User.objects.filter(
+            role__in=[
+                "customer",
+                "vendor"
+            ]
+        ).count()
+
+        page_obj = paginate_queryset(request, users, 10)
+        return render(
+            request,
+            "admin/all_users.html",
+            {
+                "page_obj": page_obj,
+                "users": page_obj,
+                "customer_count": customer_count,
+                "vendor_count": vendor_count,
+                "total_users": total_users,
+                "active_page": "admin_all_users",
+            }
+        )
+
+    def post(self, request):
+
+        if request.user.role != "admin":
+            return JsonResponse({
+                "success": False,
+                "error": "Access Denied"
+            })
+
+        try:
+
+            data = json.loads(request.body)
+
+            user_id = data.get("user_id")
+
+            behaviour = data.get("behaviour")
+
+            user = User.objects.get(
+                id=user_id
+            )
+
+            user.behaviour = behaviour
+
+            user.save()
+
+            return JsonResponse({
+                "success": True
+            })
+
+        except Exception as e:
+
+            return JsonResponse({
+                "success": False,
+                "error": str(e)
+            })
+
+# all users form the admin
+
 
 # super admin see all admins/vendors/customers
+
+
 class AllUsersView(LoginRequiredMixin, View):
 
     def get(self, request):
 
-        if request.user.role not in ["superadmin", "admin"]:
+        if request.user.role not in [
+            "superadmin",
+            "admin"
+        ]:
             return redirect("login")
 
         #  BASE QUERY (EXCLUDE SELF)
@@ -316,13 +778,18 @@ class AllUsersView(LoginRequiredMixin, View):
 
         #  COUNTS (EXCLUDE SELF ALSO)
         if request.user.role == "admin":
-            customer_count = User.objects.filter(role="customer").exclude(id=request.user.id).count()
+            customer_count = User.objects.filter(
+                role="customer").exclude(id=request.user.id).count()
             admin_count = 0
-            vendor_count = User.objects.filter(role="vendor").exclude(id=request.user.id).count()
+            vendor_count = User.objects.filter(
+                role="vendor").exclude(id=request.user.id).count()
         else:
-            customer_count = User.objects.filter(role="customer").exclude(id=request.user.id).count()
-            admin_count = User.objects.filter(role="admin").exclude(id=request.user.id).count()
-            vendor_count = User.objects.filter(role="vendor").exclude(id=request.user.id).count()
+            customer_count = User.objects.filter(
+                role="customer").exclude(id=request.user.id).count()
+            admin_count = User.objects.filter(
+                role="admin").exclude(id=request.user.id).count()
+            vendor_count = User.objects.filter(
+                role="vendor").exclude(id=request.user.id).count()
 
         return render(request, "superadmin/all_users.html", {
             "page_obj": page_obj,
@@ -331,6 +798,77 @@ class AllUsersView(LoginRequiredMixin, View):
             "admin_count": admin_count,
             "vendor_count": vendor_count,
         })
+
+        users = User.objects.filter(
+            role__in=[
+                "customer",
+                "vendor",
+                "admin"
+            ]
+        ).order_by("-id")
+
+        page_obj = paginate_queryset(
+            request,
+            users,
+            10
+        )
+
+        customer_count = User.objects.filter(
+            role="customer"
+        ).count()
+
+        admin_count = User.objects.filter(
+            role="admin"
+        ).count()
+
+        vendor_count = User.objects.filter(
+            role="vendor"
+        ).count()
+
+        return render(
+            request,
+            "superadmin/all_users.html",
+            {
+                "page_obj": page_obj,
+                "active_page": "all_users",
+                "users": users,
+                "customer_count": customer_count,
+                "admin_count": admin_count,
+                "vendor_count": vendor_count,
+            }
+        )
+
+    def post(self, request):
+
+        if request.user.role not in [
+            "superadmin",
+            "admin"
+        ]:
+
+            return JsonResponse({
+                "success": False,
+                "error": "Access denied"
+            })
+
+        try:
+
+            data = json.loads(request.body)
+            user_id = data.get("user_id")
+            behaviour = data.get("behaviour")
+            user = User.objects.get(id=user_id)
+            user.behaviour = behaviour
+            user.save()
+            return JsonResponse({
+                "success": True
+            })
+
+        except Exception as e:
+
+            return JsonResponse({
+                "success": False,
+                "error": str(e)
+            })
+
 # ===== API (SEARCH + FILTER) =====
 
 
@@ -464,44 +1002,206 @@ class DeleteServiceView(View):
 # ======================================================================================================
 
 # admin dashboard page
+
+
 class AdminDashboardView(LoginRequiredMixin, RoleRequiredMixin, View):
-    allowed_roles = ['admin']
+
+    allowed_roles = ["admin"]
 
     def get(self, request):
 
+        # =========================
         # USERS
-        total_customers = User.objects.filter(role="customer").count()
-        total_vendors = User.objects.filter(role="vendor").count()
+        # =========================
 
+        total_customers = User.objects.filter(
+            role="customer"
+        ).count()
+
+        total_vendors = User.objects.filter(
+            role="vendor"
+        ).count()
+
+        # =========================
         # BOOKINGS
+        # =========================
+
         total_bookings = Booking.objects.count()
-        active_bookings = Booking.objects.filter(status="active").count()
-        completed_bookings = Booking.objects.filter(status="completed").count()
 
+        total_pending = Booking.objects.filter(
+            status="pending"
+        ).count()
+
+        total_assigned = Booking.objects.filter(
+            status="assigned"
+        ).count()
+
+        total_accepted = Booking.objects.filter(
+            status="accepted"
+        ).count()
+
+        total_in_progress = Booking.objects.filter(
+            status="in_progress"
+        ).count()
+
+        total_completed = Booking.objects.filter(
+            status="completed"
+        ).count()
+
+        total_cancelled = Booking.objects.filter(
+            status="cancelled"
+        ).count()
+
+        active_bookings = Booking.objects.filter(
+            status="active"
+        ).count()
+
+        completed_bookings = Booking.objects.filter(
+            status="completed"
+        ).count()
+
+        # =========================
         # PAYMENTS
-        pending_payments = Payment.objects.filter(status="pending").count()
-        completed_payments = Payment.objects.filter(status="completed").count()
+        # =========================
 
+        pending_payments = Payment.objects.filter(
+            status="pending"
+        ).count()
+
+        completed_payments = Payment.objects.filter(
+            status="completed"
+        ).count()
+
+        # =========================
         # COMPLAINTS
+        # =========================
+
         complaints = CustomerRemark.objects.count()
 
+        # =========================
         # RECENT BOOKINGS
+        # =========================
+
         recent_bookings = Booking.objects.select_related(
-            "user", "vendor", "service"
+            "user",
+            "vendor",
+            "service"
         ).order_by("-id")[:5]
 
-        return render(request, "admin/dashboard.html", {
+        # =========================
+        # MONTHLY BOOKINGS CHART
+        # =========================
+
+        monthly_data = []
+
+        month_labels = []
+
+        current_year = timezone.now().year
+
+        for month in range(1, 13):
+
+            total = Booking.objects.filter(
+                created_at__year=current_year,
+                created_at__month=month
+            ).count()
+
+            month_name = datetime(
+                current_year,
+                month,
+                1
+            ).strftime("%b")
+
+            month_labels.append(month_name)
+
+            monthly_data.append(total)
+
+        # =========================
+        # CATEGORY FILTER
+        # =========================
+
+        categories = Category.objects.all()
+
+        selected_category = request.GET.get("category")
+
+        services = CategoryService.objects.all()
+
+        if selected_category:
+
+            services = services.filter(
+                category_id=selected_category
+            )
+
+        # =========================
+        # SERVICE CHART
+        # =========================
+
+        service_labels = []
+
+        service_data = []
+
+        for service in services:
+
+            total = Booking.objects.filter(
+                service=service
+            ).count()
+
+            service_labels.append(
+                service.s_title
+            )
+
+            service_data.append(total)
+
+        # =========================
+        # CONTEXT
+        # =========================
+
+        context = {
+
+            "page_title": "Dashboard",
+
+            # USERS
             "total_customers": total_customers,
             "total_vendors": total_vendors,
+
+            # BOOKINGS
             "total_bookings": total_bookings,
+            "total_pending": total_pending,
+            "total_assigned": total_assigned,
+            "total_accepted": total_accepted,
+            "total_in_progress": total_in_progress,
+            "total_completed": total_completed,
+            "total_cancelled": total_cancelled,
             "active_bookings": active_bookings,
             "completed_bookings": completed_bookings,
+
+            # PAYMENTS
             "pending_payments": pending_payments,
             "completed_payments": completed_payments,
-            "complaints": complaints,
-            "recent_bookings": recent_bookings,
-        })
 
+            # COMPLAINTS
+            "complaints": complaints,
+
+            # RECENT BOOKINGS
+            "recent_bookings": recent_bookings,
+
+            # MONTHLY CHART
+            "month_labels": json.dumps(month_labels),
+            "monthly_data": json.dumps(monthly_data),
+
+            # CATEGORY
+            "categories": categories,
+            "selected_category": selected_category,
+
+            # SERVICE CHART
+            "service_labels": json.dumps(service_labels),
+            "service_data": json.dumps(service_data),
+        }
+
+        return render(
+            request,
+            "admin/dashboard.html",
+            context
+        )
 
 # admin create vendor
 
@@ -633,7 +1333,7 @@ def get_services(request):
 
     try:
         category_id = int(category_id)
-    except Exception  as e:
+    except Exception as e:
         return JsonResponse({"services": []})
 
     services = CategoryService.objects.filter(
@@ -683,10 +1383,10 @@ class VendorDashboardView(LoginRequiredMixin, RoleRequiredMixin, View):
         # bookings = Booking.objects.filter(vendor=request.user)
         return render(request, "vendor/dashboard.html")
 
-from django.db.models import Count
 
 class CustomerDashboardView(LoginRequiredMixin, RoleRequiredMixin, View):
-    allowed_roles = ['customer']
+    login_url = "/login/"
+    allowed_roles = ["customer"]
 
     def get(self, request):
 
@@ -726,6 +1426,10 @@ class CustomerDashboardView(LoginRequiredMixin, RoleRequiredMixin, View):
         }
 
         return render(request, "customer/dashboard.html", context)
+
+        return render(request, "customer/dashboard.html", {
+            "user": request.user
+        })
 
 
 # ===================================================================================
@@ -794,107 +1498,219 @@ def verify_booking_otp(request):
 User = get_user_model()
 
 
-class SetUserStatusView(View):
+class SetUserStatusView(LoginRequiredMixin, View):
 
     def get(self, request, user_id, status):
-        user = get_object_or_404(User, id=user_id)
 
-        if user.role == "superadmin":
-            return redirect('all_users')
+        if request.user.role not in ["admin", "superadmin"]:
+            return redirect("login")
 
+        user = get_object_or_404(
+            User,
+            id=user_id
+        )
         if status == "active":
+
             user.is_active = True
+
         elif status == "inactive":
+
             user.is_active = False
 
         user.save()
-        return redirect('all_users')
+
+        if request.user.role == "superadmin":
+
+            return redirect("all_users")
+
+        return redirect("admin_all_users")
 
 
 # booking functionality
 
 
 class BookServiceView(LoginRequiredMixin, View):
+
     login_url = "/login/"
 
     def get(self, request):
-        categories = Category.objects.filter(is_active=True)
-        return render(request, "service/book.html", {
-            "categories": categories
-        })
+
+        categories = Category.objects.filter(
+            is_active=True
+        )
+
+        return render(
+            request,
+            "service/book.html",
+            {
+                "categories": categories
+            }
+        )
 
     def post(self, request):
-        data = json.loads(request.body)
-        step = data.get("step")
 
-        if step == "phone":
+        try:
+
+            data = json.loads(request.body)
+
+            name = data.get("name")
             phone = data.get("phone")
 
-            user = User.objects.filter(phone=phone).first()
-            if not user:
-                return JsonResponse({"error": "Register first"})
+            category_id = data.get("category_id")
+            service_id = data.get("service_id")
 
-            otp_code = str(random.randint(1000, 9999))
+            booking_type = data.get("booking_type")
 
-            request.session["phone"] = phone
-            request.session["otp"] = otp_code
-            request.session["otp_verified"] = False
+            # VALIDATION
 
-            print("OTP:", otp_code)
+            if not name or not phone:
 
-            return JsonResponse({"success": True})
+                return JsonResponse({
+                    "error": "Enter name and phone"
+                })
 
-        if step == "otp":
-            otp = data.get("otp")
+            if not category_id or not service_id:
 
-            if otp != request.session.get("otp"):
-                return JsonResponse({"error": "Invalid OTP"})
+                return JsonResponse({
+                    "error": "Select category and service"
+                })
 
-            request.session["otp_verified"] = True
-            return JsonResponse({"success": True})
+            # CATEGORY
 
-        if step == "details":
+            category = Category.objects.get(
+                id=category_id
+            )
 
-            if not request.session.get("otp_verified"):
-                return JsonResponse({"error": "OTP not verified"})
+            # SERVICE
 
-            user = User.objects.filter(
-                phone=request.session.get("phone")
-            ).first()
+            service = CategoryService.objects.get(
+                id=service_id
+            )
 
-            category = Category.objects.get(id=data.get("category_id"))
-            service = CategoryService.objects.get(id=data.get("service_id"))
+            # FIND VENDOR
 
-            admin_user = User.objects.filter(role="admin").first()
-
-            vendor_user = User.objects.filter(
+            vendor = User.objects.filter(
                 role="vendor",
                 services=service
             ).first()
 
-            assigned_user = vendor_user if vendor_user else None
+            # SINGLE SERVICE
 
-            booking = Booking.objects.create(
-                user=user,
-                category=category,
-                service=service,
-                vendor=assigned_user,   # will be None if no vendor
-                name=user.first_name,
-                phone=user.phone,
-                address=data.get("address"),
-                problem=data.get("problem"),
-                scheduled_date=data.get("date"),
-                scheduled_time=data.get("time"),
-                status="pending"  # better default
-            )
-            request.session.flush()
+            if booking_type == "single":
+
+                booking_date = data.get("date")
+                time_value = data.get("time")
+
+                if not booking_date:
+
+                    return JsonResponse({
+                        "error": "Select booking date"
+                    })
+
+                time_slots = {
+
+                    "09-11": "09 AM - 11 AM",
+                    "11-1": "11 AM - 01 PM",
+                    "1-3": "01 PM - 03 PM",
+                    "3-5": "03 PM - 05 PM"
+
+                }
+
+                formatted_time = time_slots.get(
+                    time_value,
+                    ""
+                )
+
+                Booking.objects.create(
+
+                    user=request.user,
+
+                    category=category,
+
+                    service=service,
+
+                    vendor=vendor,
+
+                    name=name,
+
+                    phone=phone,
+
+                    city=data.get("city"),
+
+                    address=data.get("address"),
+
+                    problem=data.get("problem"),
+
+                    scheduled_date=booking_date,
+
+                    scheduled_time=formatted_time,
+
+                    start_date=None,
+
+                    end_date=None,
+
+                    status="pending"
+
+                )
+
+            # MULTIPLE SERVICE
+
+            else:
+
+                start_date = data.get("start_date")
+                end_date = data.get("end_date")
+
+                if not start_date or not end_date:
+
+                    return JsonResponse({
+                        "error": "Select start date and end date"
+                    })
+
+                Booking.objects.create(
+
+                    user=request.user,
+
+                    category=category,
+
+                    service=service,
+
+                    vendor=vendor,
+
+                    name=name,
+
+                    phone=phone,
+
+                    city=data.get("city"),
+
+                    address=data.get("address"),
+
+                    problem=data.get("problem"),
+
+                    scheduled_date=None,
+
+                    scheduled_time=None,
+
+                    start_date=start_date,
+
+                    end_date=end_date,
+
+                    status="pending"
+
+                )
 
             return JsonResponse({
+
                 "success": True,
-                "redirect": "/"
+                "message": "Service booked successfully",
+                "redirect": "/customer-dashboard/"
+
             })
 
-        return JsonResponse({"error": "Invalid request"})
+        except Exception as e:
+
+            return JsonResponse({
+                "error": str(e)
+            })
 
 
 class GetServicesView(View):
@@ -936,8 +1752,44 @@ class BookingSuccessView(View):
 class CustomerOrdersView(LoginRequiredMixin, View):
 
     def get(self, request):
-        bookings = Booking.objects.filter(user=request.user)
-        return render(request, "customer/customer_orders.html", {"bookings": bookings})
+
+        bookings = Booking.objects.filter(
+            user=request.user
+        ).select_related(
+            "service",
+            "vendor",
+            "category"
+        ).prefetch_related(
+            "payments"
+        ).order_by("-id")
+
+        # FILTERS
+
+        status = request.GET.get("status")
+        search = request.GET.get("search")
+
+        if status:
+            bookings = bookings.filter(status=status)
+
+        if search:
+
+            bookings = bookings.filter(
+
+                Q(order_id__icontains=search) |
+                Q(service__s_title__icontains=search)
+
+            )
+
+        page_obj = paginate_queryset(request, bookings, 10)
+        return render(
+            request,
+            "customer/customer_orders.html",
+            {
+                "bookings": bookings,
+                "bookings": page_obj,
+                "page_obj": page_obj,
+            }
+        )
 
 
 class CustomerOrderDetailView(LoginRequiredMixin, View):
@@ -953,7 +1805,377 @@ class CustomerOrderDetailView(LoginRequiredMixin, View):
         })
 
 
-# admij can assign the lead to vendor
+# renew the service in customer
+class RenewBookingPageView(LoginRequiredMixin, View):
+
+    login_url = "/login/"
+
+    def get(self, request, booking_id):
+
+        booking = Booking.objects.get(
+            id=booking_id,
+            user=request.user
+        )
+
+        return render(
+            request,
+            "service/renew_booking.html",
+            {
+                "booking": booking
+            }
+        )
+
+    def post(self, request, booking_id):
+
+        booking = Booking.objects.get(
+            id=booking_id,
+            user=request.user
+        )
+
+        booking.end_date = request.POST.get(
+            "end_date"
+        )
+        booking.renewal_requested = True
+        booking.status = "pending"
+
+        booking.save()
+
+        return redirect(
+            "customer_orders"
+        )
+
+
+# admin track the leads and renews tracks
+# views.py
+
+class AdminLeadsView(LoginRequiredMixin, View):
+
+    login_url = "/login/"
+
+    def get(self, request):
+
+        if request.user.role != "admin":
+            return HttpResponse(
+                "Not allowed"
+            )
+
+        bookings = Booking.objects.select_related(
+
+            "user",
+            "vendor",
+            "service",
+            "category"
+
+        ).prefetch_related(
+
+            "payments"
+
+        ).order_by("-id")
+
+        # FILTERS
+
+        status = request.GET.get(
+            "status"
+        )
+
+        search = request.GET.get(
+            "search"
+        )
+
+        if status:
+
+            bookings = bookings.filter(
+                status=status
+            )
+
+        if search:
+
+            bookings = bookings.filter(
+
+                Q(order_id__icontains=search) |
+
+                Q(service__s_title__icontains=search) |
+
+                Q(user__first_name__icontains=search) |
+
+                Q(vendor__first_name__icontains=search)
+
+            )
+
+        return render(
+
+            request,
+
+            "admin/admin_leads.html",
+
+            {
+                "bookings": bookings
+            }
+
+        )
+
+    def post(self, request):
+
+        try:
+
+            data = json.loads(
+                request.body
+            )
+
+            booking_id = data.get(
+                "booking_id"
+            )
+
+            action = data.get(
+                "action"
+            )
+
+            booking = get_object_or_404(
+
+                Booking,
+
+                id=booking_id
+
+            )
+
+            # ACCEPT RENEWAL
+
+            if action == "accept_renewal":
+
+                booking.renewal_requested = False
+
+                booking.is_renewed = True
+
+                booking.status = "accepted"
+
+                booking.save()
+
+                BookingHistory.objects.create(
+
+                    booking=booking,
+
+                    status="Renewal Accepted",
+
+                    updated_by=request.user
+
+                )
+
+                return JsonResponse({
+                    "success": True
+                })
+
+            # EDIT SLOT
+
+            if action == "edit_slot":
+
+                booking.scheduled_date = data.get(
+                    "scheduled_date"
+                )
+
+                booking.scheduled_time = data.get(
+                    "scheduled_time"
+                )
+
+                booking.start_date = data.get(
+                    "start_date"
+                )
+
+                booking.end_date = data.get(
+                    "end_date"
+                )
+
+                booking.save()
+
+                BookingHistory.objects.create(
+
+                    booking=booking,
+
+                    status="Booking Updated",
+
+                    updated_by=request.user
+
+                )
+
+                return JsonResponse({
+                    "success": True
+                })
+
+            # STATUS UPDATE
+
+            status = data.get(
+                "status"
+            )
+
+            booking.status = status
+
+            booking.save()
+
+            BookingHistory.objects.create(
+
+                booking=booking,
+
+                status=status,
+
+                updated_by=request.user
+
+            )
+
+            return JsonResponse({
+                "success": True
+            })
+
+        except Exception as e:
+
+            return JsonResponse({
+                "error": str(e)
+            })
+
+
+# track renewals
+# views.py
+
+# views.py
+
+class AdminRenewalDashboardView(LoginRequiredMixin, View):
+
+    login_url = "/login/"
+
+    # PAGE LOAD
+
+    def get(self, request):
+
+        if request.user.role not in ["admin", "superadmin"]:
+
+            return HttpResponse(
+                "Not allowed"
+            )
+
+        bookings = Booking.objects.select_related(
+
+            "user",
+            "vendor",
+            "service",
+            "category"
+
+        ).order_by("-id")
+
+        customer = request.GET.get(
+            "customer"
+        )
+
+        vendor = request.GET.get(
+            "vendor"
+        )
+
+        renewal_status = request.GET.get(
+            "renewal_status"
+        )
+
+        if customer:
+
+            bookings = bookings.filter(
+                user__first_name__icontains=customer
+            )
+
+        if vendor:
+
+            bookings = bookings.filter(
+                vendor__first_name__icontains=vendor
+            )
+
+        if renewal_status == "renewed":
+
+            bookings = bookings.filter(
+                is_renewed=True
+            )
+
+        if renewal_status == "pending":
+
+            bookings = bookings.filter(renewal_requested=True)
+
+        total_renewals = bookings.filter(is_renewed=True).count()
+        active_services = bookings.filter(status="accepted").count()
+        completed_services = bookings.filter(status="completed").count()
+        total_service_days = sum(
+            [
+                booking.total_days or 0
+                for booking in bookings
+            ]
+        )
+        page_obj = paginate_queryset(request, bookings, 10)
+        context = {
+
+            "bookings": bookings,
+            "bookings": page_obj,
+            "page_obj": page_obj,
+            "total_renewals": total_renewals,
+            "active_services": active_services,
+            "completed_services": completed_services,
+            "total_service_days": total_service_days
+
+        }
+        return render(request, "admin/admin_renewal_dashboard.html", context)
+
+    def post(self, request):
+
+        if request.user.role != "admin":
+
+            return HttpResponse(
+                "Not allowed"
+            )
+
+        booking_id = request.POST.get(
+            "booking_id"
+        )
+
+        booking = Booking.objects.get(
+            id=booking_id
+        )
+
+        # MULTIPLE DAYS UPDATE
+
+        start_date = request.POST.get(
+            "start_date"
+        )
+
+        end_date = request.POST.get(
+            "end_date"
+        )
+
+        if start_date:
+
+            booking.start_date = start_date
+
+        if end_date:
+
+            booking.end_date = end_date
+
+        # SINGLE DAY UPDATE
+
+        scheduled_date = request.POST.get(
+            "scheduled_date"
+        )
+
+        scheduled_time = request.POST.get(
+            "scheduled_time"
+        )
+
+        if scheduled_date:
+
+            booking.scheduled_date = scheduled_date
+
+        if scheduled_time:
+
+            booking.scheduled_time = scheduled_time
+
+        booking.save()
+
+        return redirect(
+            "admin_renewal_dashboard"
+        )
+
+
+# admin can assign the lead to vendor
 class AssignVendorView(LoginRequiredMixin, View):
 
     def post(self, request):
@@ -1032,135 +2254,514 @@ class VendorOrdersView(LoginRequiredMixin, View):
 
         bookings = Booking.objects.filter(
             vendor=request.user
-        ).select_related("service").order_by("-id")
+        ).select_related(
+            "service",
+            "user",
+            "category"
+        ).prefetch_related(
+            "payments"
+        ).order_by("-id")
 
-        return render(request, "vendor/vendor_orders.html", {
-            "bookings": bookings
-        })
+        status = request.GET.get("status")
+        date = request.GET.get("date")
+
+        if status:
+            bookings = bookings.filter(status=status)
+
+        if date:
+            bookings = bookings.filter(created_at__date=date)
+
+        page_obj = paginate_queryset(request, bookings, 10)
+        return render(
+            request,
+            "vendor/vendor_orders.html",
+            {
+                "bookings": bookings,
+                "bookings": page_obj,
+                "page_obj": page_obj,
+            }
+        )
 
     def post(self, request):
+
+        # PAYMENT UPLOAD
+
         if "screenshot" in request.FILES:
 
             booking_id = request.POST.get("booking_id")
             txn = request.POST.get("transaction_id")
             file = request.FILES["screenshot"]
 
-            print("FILE RECEIVED:", file)
-
-            booking = get_object_or_404(Booking, id=booking_id)
+            booking = get_object_or_404(
+                Booking,
+                id=booking_id
+            )
 
             if booking.vendor != request.user:
-                return JsonResponse({"error": "Not allowed"}, status=403)
+
+                return JsonResponse({
+                    "error": "Not allowed"
+                }, status=403)
 
             if booking.status != "completed":
-                return JsonResponse({"error": "Complete order first"}, status=400)
+
+                return JsonResponse({
+                    "error": "Complete order first"
+                }, status=400)
 
             payment, created = Payment.objects.get_or_create(
+
                 booking=booking,
+
                 defaults={
+
                     "vendor": request.user,
+
                     "service": booking.service,
+
                 }
+
             )
 
             if not created and payment.status == "paid":
-                return JsonResponse({"error": "Payment already submitted"}, status=400)
+
+                return JsonResponse({
+                    "error": "Payment already submitted"
+                }, status=400)
 
             payment.transaction_id = txn
             payment.screenshot = file
             payment.status = "paid"
             payment.vendor = request.user
+
             payment.save()
 
-            print("SAVED PATH:", payment.screenshot.path)
+            return JsonResponse({
+                "success": True
+            })
 
-            return JsonResponse({"success": True})
+        # STATUS UPDATE
 
         try:
+
             data = json.loads(request.body)
 
             booking_id = data.get("booking_id")
+
+            renew_accept = data.get("renew_accept")
+
+            # ACCEPT RENEWAL
+
+            if renew_accept:
+
+                booking = get_object_or_404(
+                    Booking,
+                    id=booking_id
+                )
+
+                if booking.vendor != request.user:
+
+                    return JsonResponse({
+                        "error": "Not allowed"
+                    }, status=403)
+
+                booking.renewal_requested = False
+
+                booking.is_renewed = True
+
+                booking.status = "accepted"
+
+                booking.save()
+
+                BookingHistory.objects.create(
+
+                    booking=booking,
+
+                    status="accepted",
+
+                    updated_by=request.user
+
+                )
+
+                return JsonResponse({
+                    "success": True
+                })
+
             status = data.get("status")
 
-            allowed_status = ["assigned", "progress", "completed"]
+            allowed_status = [
+
+                "pending",
+
+                "accepted",
+
+                "in_progress",
+
+                "completed",
+
+                "cancelled"
+
+            ]
 
             if status not in allowed_status:
-                return JsonResponse({"error": "Invalid status"}, status=400)
 
-            booking = get_object_or_404(Booking, id=booking_id)
+                return JsonResponse({
+                    "error": "Invalid status"
+                }, status=400)
+
+            booking = get_object_or_404(
+                Booking,
+                id=booking_id
+            )
 
             if booking.vendor != request.user:
-                return JsonResponse({"error": "Not allowed"}, status=403)
+
+                return JsonResponse({
+                    "error": "Not allowed"
+                }, status=403)
 
             booking.status = status
+
             booking.save()
 
             BookingHistory.objects.create(
+
                 booking=booking,
+
                 status=status,
+
                 updated_by=request.user
+
             )
 
-            return JsonResponse({"success": True})
+            return JsonResponse({
+                "success": True
+            })
 
         except Exception as e:
-            print("ERROR:", e)
-            return JsonResponse({"error": str(e)}, status=400)
 
+            return JsonResponse({
+                "error": str(e)
+            }, status=400)
 
 # admin can assigned the lead in vendor
+
+
 class AdminOrdersView(LoginRequiredMixin, View):
 
     def get(self, request):
 
         category_id = request.GET.get("category")
+
         service_id = request.GET.get("service")
+
+        city = request.GET.get("city")
+
         q = request.GET.get("q")
 
-        bookings = Booking.objects.select_related("service", "vendor")
+        postal_code = request.GET.get("postal_code")
+
+        # BOOKINGS
+
+        bookings = Booking.objects.select_related(
+            "service",
+            "vendor"
+        ).order_by("-id")
+
+        # CATEGORY FILTER
 
         if category_id:
-            bookings = bookings.filter(service__category_id=category_id)
+
+            bookings = bookings.filter(
+                service__category_id=category_id
+            )
+
+        # SERVICE FILTER
 
         if service_id:
-            bookings = bookings.filter(service_id=service_id)
+
+            bookings = bookings.filter(
+                service_id=service_id
+            )
+
+        # CITY FILTER
+
+        if city:
+
+            bookings = bookings.filter(
+                city__icontains=city
+            )
+
+        # SEARCH
 
         if q:
-            bookings = bookings.filter(name__icontains=q)
+
+            bookings = bookings.filter(
+
+                Q(name__icontains=q) |
+
+                Q(phone__icontains=q) |
+
+                Q(city__icontains=q) |
+
+                Q(order_id__icontains=q)
+
+            )
+
+        # POSTAL CODE FILTER
+
+        if postal_code:
+
+            bookings = bookings.filter(
+
+                vendor__vendor_profile__postal_code__icontains=postal_code
+
+            )
+
+        # CATEGORIES
 
         categories = Category.objects.all()
 
+        # SERVICES
+
         services = CategoryService.objects.all()
+
         if category_id:
-            services = services.filter(category_id=category_id)
+
+            services = services.filter(
+                category_id=category_id
+            )
+
+        # CITIES
+
+        cities = Booking.objects.exclude(
+            city__isnull=True
+        ).exclude(
+            city=""
+        ).values_list(
+            "city",
+            flat=True
+        ).distinct()
+
+        # VENDORS
 
         vendors = User.objects.filter(
-            role="vendor").prefetch_related("services")
+            role="vendor"
+        ).select_related(
+            "vendor_profile"
+        ).prefetch_related(
+            "vendor_profile__services"
+        )
 
         if service_id:
-            vendors = vendors.filter(services__id=service_id)
+
+            vendors = vendors.filter(
+                vendor_profile__services__id=service_id
+            )
 
         elif category_id:
-            vendors = vendors.filter(services__category_id=category_id)
+
+            vendors = vendors.filter(
+                vendor_profile__category_id=category_id
+            )
+
+        if city:
+
+            vendors = vendors.filter(
+                city__icontains=city
+            )
+
+        # POSTAL CODE FILTER
+
+        if postal_code:
+
+            vendors = vendors.filter(
+
+                vendor_profile__postal_code__icontains=postal_code
+
+            )
 
         vendors = vendors.distinct()
 
-        return render(request, "admin/admin_orders.html", {
-            "bookings": bookings,
-            "vendors": vendors,
-            "categories": categories,
-            "services": services,
-            "selected_category": category_id,
-            "selected_service": service_id,
-            "q": q
-        })
+        # PAGINATION
+
+        page_obj = paginate_queryset(
+            request,
+            bookings,
+            10
+        )
+
+        return render(
+            request,
+            "admin/admin_orders.html",
+            {
+
+                "bookings": page_obj,
+
+                "page_obj": page_obj,
+
+                "vendors": vendors,
+
+                "categories": categories,
+
+                "services": services,
+
+                "cities": cities,
+
+                "selected_category": category_id,
+
+                "selected_service": service_id,
+
+                "selected_city": city,
+
+                "q": q,
+
+                "postal_code": postal_code,
+
+            }
+        )
+
+    def post(self, request):
+
+        try:
+
+            data = json.loads(request.body)
+
+            booking_id = data.get("booking_id")
+
+            status = data.get("status")
+
+            total_amount = data.get("total_amount")
+
+            allowed_status = [
+
+                "pending",
+
+                "assigned",
+
+                "accepted",
+
+                "in_progress",
+
+                "completed",
+
+                "cancelled"
+
+            ]
+
+            # BOOKING
+
+            booking = get_object_or_404(
+                Booking,
+                id=booking_id
+            )
+
+            # PAYMENT SAVE
+
+            if total_amount:
+
+                total_amount = Decimal(total_amount)
+
+                payment = Payment.objects.filter(
+                    booking=booking
+                ).first()
+
+                # UPDATE
+
+                if payment:
+
+                    payment.total_amount = total_amount
+
+                    payment.remaining_amount = (
+
+                        total_amount
+                        -
+                        payment.paid_amount
+
+                    )
+
+                    payment.save()
+
+                # CREATE
+
+                else:
+
+                    payment = Payment.objects.create(
+
+                        booking=booking,
+
+                        vendor=booking.vendor,
+
+                        service=booking.service,
+
+                        total_amount=total_amount,
+
+                        paid_amount=Decimal("0"),
+
+                        remaining_amount=total_amount
+
+                    )
+
+                return JsonResponse({
+
+                    "success": True,
+
+                    "total_amount": str(payment.total_amount)
+
+                })
+
+            # STATUS UPDATE
+
+            if status:
+
+                if status not in allowed_status:
+
+                    return JsonResponse({
+
+                        "error": "Invalid status"
+
+                    }, status=400)
+
+                booking.status = status
+
+                booking.save()
+
+                BookingHistory.objects.create(
+
+                    booking=booking,
+
+                    status=status,
+
+                    updated_by=request.user
+
+                )
+
+            return JsonResponse({
+
+                "success": True
+
+            })
+
+        except Exception as e:
+
+            print("ERROR:", e)
+
+            return JsonResponse({
+
+                "error": str(e)
+
+            }, status=400)
 
 
 # super-admin orders
 class SuperAdminOrdersView(LoginRequiredMixin, View):
+
     def get(self, request):
-        bookings = Booking.objects.all().select_related(
-            'user', 'service', 'vendor').prefetch_related("history").order_by('-created_at')
+
+        bookings = Booking.objects.select_related(
+            'user', 'service', 'vendor'
+        ).prefetch_related("history").order_by('-created_at')
+
         services = CategoryService.objects.all()
         vendors = User.objects.filter(role="vendor")
 
@@ -1187,54 +2788,59 @@ class SuperAdminOrdersView(LoginRequiredMixin, View):
         start_date = request.GET.get('start_date')
         end_date = request.GET.get('end_date')
         if start_date and end_date:
-            bookings = bookings.filter(created_at__date__range=[
-                                       start_date, end_date])
-        paginator = Paginator(bookings, 10)  # 10 orders per page
-        page_number = request.GET.get("page")
-        page_obj = paginator.get_page(page_number)
+            bookings = bookings.filter(
+                created_at__date__range=[start_date, end_date]
+            )
+
+        total_count = bookings.count()
+        pending_count = bookings.filter(status="pending").count()
+        progress_count = bookings.filter(status="progress").count()
+        completed_count = bookings.filter(status="completed").count()
+        page_obj = paginate_queryset(request, bookings, 10)
 
         context = {
-            "bookings": bookings,
+            "bookings": page_obj,
             "services": services,
             "vendors": vendors,
             "page_obj": page_obj,
+            "total_count": total_count,
+            "pending_count": pending_count,
+            "progress_count": progress_count,
+            "completed_count": completed_count,
         }
+
         return render(request, "superadmin/superadmin_orders.html", context)
 
 
 # order history
+
+
 class OrderHistoryView(LoginRequiredMixin, View):
 
     def get(self, request, id):
 
-        if request.user.role == "customer":
-            booking = get_object_or_404(
-                Booking.objects.select_related("service", "vendor"),
-                id=id,
-                user=request.user
-            )
-
-        elif request.user.role == "vendor":
-            booking = get_object_or_404(
-                Booking.objects.select_related("service", "vendor"),
-                id=id,
-                vendor=request.user
-            )
-
-        else:
-            booking = get_object_or_404(
-                Booking.objects.select_related("service", "vendor"),
-                id=id
-            )
+        booking = get_object_or_404(
+            Booking.objects.select_related("user", "service", "vendor"),
+            id=id
+        )
 
         history = booking.history.all().order_by("-created_at")
 
-        vendor = booking.vendor if booking.vendor and booking.vendor.role == "vendor" else None
+        total_services = 1
+
+        total_amount = getattr(booking, "total_amount", 0)
+        paid_amount = getattr(booking, "paid_amount", 0)
+
+        due_amount = total_amount - paid_amount
 
         return render(request, "superadmin/order_history.html", {
             "booking": booking,
             "history": history,
-            "vendor": vendor
+
+            "total_services": total_services,
+            "total_amount": total_amount,
+            "paid_amount": paid_amount,
+            "due_amount": due_amount,
         })
 
 # profile page
@@ -1242,48 +2848,384 @@ class OrderHistoryView(LoginRequiredMixin, View):
 
 class ProfileView(LoginRequiredMixin, View):
 
+    login_url = "/login/"
+
     def get(self, request):
-        return render(request, "profile/profile.html")
+
+        return render(
+            request,
+            "profile/profile.html"
+        )
 
     def post(self, request):
+
         user = request.user
 
         email = request.POST.get("email")
         address = request.POST.get("address")
         city = request.POST.get("city")
 
+        # EMAIL VALIDATION
+
         if not email:
-            messages.error(request, "Email is required")
+
+            messages.error(
+                request,
+                "Email is required"
+            )
+
             return redirect("profile")
+
+        # UPDATE USER
 
         user.email = email
         user.address = address
         user.city = city
 
+        # PROFILE IMAGE
+
+        if request.FILES.get("profile_image"):
+
+            user.profile_image = request.FILES.get(
+                "profile_image"
+            )
+
         user.save()
 
-        messages.success(request, "Profile updated successfully")
+        messages.success(
+            request,
+            "Profile updated successfully"
+        )
+
         return redirect("profile")
 
 
 class AdminPaymentsView(LoginRequiredMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
+
         if request.user.role not in ["admin", "superadmin"]:
+
             return redirect("dashboard")
+
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
+
         payments = Payment.objects.select_related(
             "booking",
-            "booking__user",      # customer
+            "booking__user",
+            "vendor",
+            "service",
+            "service__category"
+        ).order_by("-id")
+
+        payment_status = request.GET.get(
+            "payment_status"
+        )
+
+        if payment_status:
+
+            payments = payments.filter(
+                status=payment_status
+            )
+
+        for p in payments:
+
+            if not p.payment_method:
+
+                p.payment_method = "Cash"
+
+        page_obj = paginate_queryset(
+            request,
+            payments,
+            10
+        )
+
+        return render(
+            request,
+            "admin/admin_payments.html",
+            {
+                "payments": page_obj,
+                "page_obj": page_obj,
+            }
+        )
+
+    def post(self, request):
+
+        payment_id = request.POST.get(
+            "payment_id"
+        )
+
+        if payment_id:
+
+            payment = get_object_or_404(
+                Payment,
+                id=payment_id
+            )
+
+            # PAYMENT METHOD
+
+            payment_method = request.POST.get(
+                "payment_method"
+            )
+
+            if payment_method:
+
+                payment.payment_method = payment_method
+
+            # DUE DATE
+
+            due_date = request.POST.get(
+                "due_date"
+            )
+
+            if due_date:
+
+                payment.due_date = due_date
+
+            # CUSTOMER REQUEST
+
+            payment_request = request.POST.get(
+                "payment_request"
+            )
+
+            if payment_request:
+
+                payment.payment_request = payment_request
+
+            # PAID AMOUNT
+
+            paid_amount = request.POST.get(
+                "paid_amount"
+            )
+
+            if paid_amount:
+
+                paid_amount_decimal = Decimal(
+                    paid_amount
+                )
+
+                payment.paid_amount = paid_amount_decimal
+
+                total_amount = Decimal(
+                    payment.total_amount or 0
+                )
+
+                remaining = (
+                    total_amount - paid_amount_decimal
+                )
+
+                payment.remaining_amount = remaining
+
+                # STATUS UPDATE
+
+                if remaining <= 0:
+
+                    payment.status = "paid"
+
+                elif paid_amount_decimal > 0:
+
+                    payment.status = "partial_paid"
+
+                else:
+
+                    payment.status = "pending"
+
+            if not payment.payment_method:
+
+                payment.payment_method = "Cash"
+
+            payment.save()
+
+        return redirect(
+            "admin_payments"
+        )
+
+
+# superadmin
+class SuperAdminPaymentsView(LoginRequiredMixin, View):
+
+    def dispatch(self, request, *args, **kwargs):
+
+        if request.user.role not in ["admin", "superadmin"]:
+            return redirect("dashboard")
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+
+        payments = Payment.objects.select_related(
+            "booking",
+            "booking__user",
             "vendor",
             "service"
-        ).order_by("-created_at")
+        ).order_by("-id")
 
-        return render(request, "superadmin/admin_payments.html", {
-            "payments": payments
-        })
+        payment_status = request.GET.get("payment_status")
+        page_obj = paginate_queryset(request, payments, 10)
+
+        if payment_status:
+            payments = payments.filter(status=payment_status)
+
+        return render(
+            request,
+            "superadmin/superadmin_payments.html",
+            {
+                "payments": payments,
+                "payments": page_obj,
+                "page_obj": page_obj
+            }
+        )
+
+
+# vendor payment show view
+
+
+class VendorPaymentsShowView(LoginRequiredMixin, View):
+
+    def get(self, request):
+
+        if request.user.role != "vendor":
+            return redirect("login")
+
+        bookings = Booking.objects.filter(
+            vendor=request.user,
+            status__in=[
+                "accepted",
+                "in_progress",
+                "completed"
+            ]
+        ).select_related(
+            "user",
+            "service"
+        ).prefetch_related(
+            "payments"
+        ).order_by("-id")
+        payment_status = request.GET.get("payment_status")
+
+        if payment_status == "paid":
+
+            bookings = [
+
+                b for b in bookings
+
+                if (
+                    b.payments.first()
+                    and
+                    b.payments.first().status == "paid"
+                )
+            ]
+
+        elif payment_status == "partial_paid":
+
+            bookings = [
+
+                b for b in bookings
+
+                if (
+                    b.payments.first()
+                    and
+                    b.payments.first().status == "partial_paid"
+                )
+            ]
+
+        elif payment_status == "pending":
+
+            bookings = [
+
+                b for b in bookings
+
+                if (
+                    not b.payments.first()
+                    or
+                    b.payments.first().status == "pending"
+                )
+            ]
+
+        for b in bookings:
+
+            payment = b.payments.first()
+
+            if payment:
+
+                b.total_amount_value = payment.total_amount or 0
+
+                b.paid_amount_value = payment.paid_amount or 0
+
+                b.remaining_amount_value = payment.remaining_amount or 0
+
+                b.transaction_id_value = payment.transaction_id
+
+            else:
+
+                b.total_amount_value = 0
+
+                b.paid_amount_value = 0
+
+                b.remaining_amount_value = 0
+
+                b.transaction_id_value = ""
+                b.due_date_value = None
+
+        page_obj = paginate_queryset(request, bookings, 10)
+
+        return render(
+            request,
+            "vendor/vendor_payment_show.html",
+            {
+                "bookings": page_obj,
+                "page_obj": page_obj,
+            }
+        )
+
+    def post(self, request):
+
+        if request.user.role != "vendor":
+            return redirect("login")
+
+        booking_id = request.POST.get("booking_id")
+
+        paid_amount = request.POST.get("paid_amount")
+
+        booking = get_object_or_404(
+            Booking,
+            id=booking_id,
+            vendor=request.user
+        )
+
+        payment = booking.payments.first()
+
+        if payment:
+
+            paid_amount_decimal = Decimal(paid_amount)
+
+            payment.paid_amount = paid_amount_decimal
+
+            remaining = payment.total_amount - paid_amount_decimal
+
+            if remaining < 0:
+                remaining = Decimal("0")
+
+            payment.remaining_amount = remaining
+
+            # AUTO STATUS
+
+            if paid_amount_decimal >= payment.total_amount:
+
+                payment.status = "paid"
+
+            elif paid_amount_decimal > 0:
+
+                payment.status = "partial_paid"
+
+            else:
+
+                payment.status = "pending"
+
+            payment.save()
+
+        return redirect("vendor_payment_show")
 
 
 # vendor payment view
@@ -1293,22 +3235,182 @@ class VendorPaymentsView(LoginRequiredMixin, View):
     def get(self, request):
 
         if request.user.role != "vendor":
+
             return redirect("login")
 
-        payments = Payment.objects.filter(
-            vendor=request.user
-        ).order_by('-id')
+        bookings = Booking.objects.filter(
 
-        return render(request, "vendor/vendor_payments.html", {
-            "payments": payments
-        })
+            vendor=request.user,
 
+            status__in=[
+                "accepted",
+                "in_progress",
+                "completed"
+            ]
+
+        ).select_related(
+
+            "user",
+            "service"
+
+        ).prefetch_related(
+
+            "payments"
+
+        ).order_by("-id")
+
+        # PAYMENT STATUS FILTER
+
+        payment_status = request.GET.get(
+            "payment_status"
+        )
+
+        if payment_status == "paid":
+
+            bookings = [
+
+                b for b in bookings
+
+                if (
+                    b.payments.first()
+                    and
+                    b.payments.first().status == "paid"
+                )
+            ]
+
+        elif payment_status == "partial_paid":
+
+            bookings = [
+
+                b for b in bookings
+
+                if (
+                    b.payments.first()
+                    and
+                    b.payments.first().status == "partial_paid"
+                )
+            ]
+
+        elif payment_status == "pending":
+
+            bookings = [
+
+                b for b in bookings
+
+                if (
+                    not b.payments.first()
+                    or
+                    b.payments.first().status == "pending"
+                )
+            ]
+
+        # DUE DATE VALUES
+
+        for b in bookings:
+
+            payment = b.payments.first()
+
+            if payment:
+
+                b.due_date_value = (
+                    str(payment.due_date)
+                    if payment.due_date
+                    else ""
+                )
+
+            else:
+
+                b.due_date_value = ""
+
+        # PAGINATION
+
+        page_obj = paginate_queryset(
+            request,
+            bookings,
+            10
+        )
+
+        return render(
+
+            request,
+
+            "vendor/vendor_payments.html",
+
+            {
+                "bookings": page_obj,
+                "page_obj": page_obj,
+            }
+
+        )
 
 # invoice number
+
+
 class PaymentInvoiceView(View):
     def get(self, request, pk):
         payment = get_object_or_404(Payment, id=pk)
         return render(request, "service/invoice.html", {"p": payment})
+
+
+# customer invoice
+class CustomerInvoiceView(LoginRequiredMixin, View):
+
+    login_url = "/login/"
+
+    def get(self, request, booking_id):
+
+        booking = get_object_or_404(
+
+            Booking,
+
+            id=booking_id,
+
+            user=request.user
+
+        )
+
+        payment = booking.payments.first()
+
+        # PAYMENT VALUES
+
+        total_amount = 0
+        paid_amount = 0
+        remaining_amount = 0
+        payment_method = "Cash"
+
+        if payment:
+
+            total_amount = payment.total_amount or 0
+
+            paid_amount = payment.paid_amount or 0
+
+            remaining_amount = (
+                payment.remaining_amount or 0
+            )
+
+            payment_method = (
+                payment.payment_method or "Cash"
+            )
+
+        return render(
+
+            request,
+
+            "customer/customer_invoice.html",
+
+            {
+
+                "booking": booking,
+                "payment": payment,
+
+                "total_amount": total_amount,
+                "paid_amount": paid_amount,
+                "remaining_amount": remaining_amount,
+                "payment_method": payment_method,
+
+            }
+
+        )
 
 
 class VendorBookingDetailView(LoginRequiredMixin, View):
@@ -1328,9 +3430,11 @@ class MyBookingsView(View):
             .select_related("vendor", "service") \
             .prefetch_related("remarks") \
             .order_by("-id")
-
+        page_obj = paginate_queryset(request, bookings, 10)
         return render(request, "customer/my_bookings.html", {
-            "bookings": bookings
+            "bookings": bookings,
+            "bookings": page_obj,
+            "page_obj": page_obj,
         })
 
 
@@ -1390,13 +3494,23 @@ class ComplaintListView(View):
 
     def get(self, request):
 
-        if request.user.is_superuser:
-            complaints = CustomerRemark.objects.all().order_by("-created_at")
-        else:
-            complaints = CustomerRemark.objects.filter(
-                user=request.user).order_by("-created_at")
+        if request.user.role in ["admin", "superadmin"]:
 
-        return render(request, "complaints/list.html", {"complaints": complaints})
+            complaints = CustomerRemark.objects.all().order_by("-created_at")
+
+        else:
+
+            complaints = CustomerRemark.objects.filter(
+                user=request.user
+            ).order_by("-created_at")
+
+        return render(
+            request,
+            "complaints/list.html",
+            {
+                "complaints": complaints
+            }
+        )
 
 
 class ComplaintDetailView(View):
@@ -1501,6 +3615,7 @@ class UpdatePrivacyPolicyView(View):
         messages.success(request, "Privacy Policy updated successfully")
         return redirect("privacy_list")
 
+
 class DeletePrivacyPolicyView(View):
 
     def get(self, request, id):
@@ -1509,3 +3624,572 @@ class DeletePrivacyPolicyView(View):
 
         messages.success(request, "Privacy Policy deleted successfully")
         return redirect("privacy_list")
+
+
+class VendorPaymentPageView(LoginRequiredMixin, View):
+
+    def get(self, request, booking_id):
+
+        booking = get_object_or_404(
+            Booking,
+            id=booking_id,
+            vendor=request.user
+        )
+
+        payment = Payment.objects.filter(
+            booking=booking
+        ).first()
+
+        context = {
+            "booking": booking,
+            "payment": payment
+        }
+
+        return render(
+            request,
+            "vendor/payment_page.html",
+            context
+        )
+
+    def post(self, request, booking_id):
+
+        booking = get_object_or_404(
+            Booking,
+            id=booking_id,
+            vendor=request.user
+        )
+
+        transaction_id = request.POST.get("transaction_id")
+        status = request.POST.get("status")
+        screenshot = request.FILES.get("screenshot")
+        payment, created = Payment.objects.get_or_create(
+
+            booking=booking,
+
+            defaults={
+
+                "vendor": request.user,
+                "service": booking.service,
+                "total_amount": 0,
+                "status": "pending"
+            }
+        )
+
+        if status:
+            payment.status = status
+        if transaction_id:
+            payment.transaction_id = transaction_id
+        if screenshot:
+            payment.screenshot = screenshot
+
+        payment.vendor = request.user
+        payment.save()
+        messages.success(
+            request,
+            "Payment Updated Successfully"
+        )
+
+        return redirect("vendor_payments")
+
+
+# admin can approve vendor
+
+class AdminVendorApprovalView(LoginRequiredMixin, View):
+
+    def get(self, request):
+
+        if request.user.role != "admin":
+            return JsonResponse({"error": "Unauthorized"}, status=403)
+
+        vendors = User.objects.filter(role="vendor")\
+            .select_related("vendor_profile")\
+            .prefetch_related("vendor_profile__services")\
+            .order_by("-id")
+
+        q = request.GET.get("q")
+        status = request.GET.get("status")
+
+        if q:
+            vendors = vendors.filter(first_name__icontains=q)
+
+        if status == "active":
+            vendors = vendors.filter(is_active=True)
+        elif status == "pending":
+            vendors = vendors.filter(is_active=False)
+        page_obj = paginate_queryset(request, vendors, 10)
+        categories = Category.objects.all()
+
+        return render(request, "admin/admin_approve_vendor.html", {
+            "vendors": vendors,
+            "vendors": page_obj,
+            "page_obj": page_obj,
+            "categories": categories,
+            "q": q,
+            "status": status
+        })
+
+
+class VendorActionView(LoginRequiredMixin, View):
+
+    def post(self, request):
+        try:
+
+            if request.user.role != "admin":
+                return JsonResponse({
+                    "error": "Unauthorized access"
+                }, status=403)
+
+            user_id = request.POST.get("user_id")
+            action = request.POST.get("action")
+
+            if not user_id or not action:
+                return JsonResponse({
+                    "error": "Missing required data"
+                }, status=400)
+
+            user = get_object_or_404(User, id=user_id, role="vendor")
+
+            if action == "approve":
+                user.is_active = True
+                user.save()
+
+                return JsonResponse({
+                    "success": True,
+                    "msg": "Vendor approved successfully"
+                })
+
+            elif action == "deactivate":
+                user.is_active = False
+                user.save()
+
+                return JsonResponse({
+                    "success": True,
+                    "msg": "Vendor deactivated successfully"
+                })
+
+            elif action == "delete":
+                user.delete()
+
+                return JsonResponse({
+                    "success": True,
+                    "msg": "Vendor deleted successfully"
+                })
+
+            else:
+                return JsonResponse({
+                    "error": "Invalid action type"
+                }, status=400)
+
+        except Exception as e:
+            return JsonResponse({
+                "error": f"Server error: {str(e)}"
+            }, status=500)
+
+
+# admin vendor profile page
+class AdminVendorVerifyView(LoginRequiredMixin, View):
+
+    login_url = "/login/"
+
+    def get(self, request, id):
+
+        if request.user.role != "admin":
+            return HttpResponse("Not allowed")
+
+        vendor = get_object_or_404(
+            User,
+            id=id,
+            role="vendor"
+        )
+
+        profile = vendor.vendor_profile
+
+        context = {
+
+            "vendor": vendor,
+            "profile": profile
+
+        }
+
+        return render(
+            request,
+            "admin/vendor_verify.html",
+            context
+        )
+
+    def post(self, request, id):
+
+        if request.user.role != "admin":
+            return HttpResponse("Not allowed")
+
+        vendor = get_object_or_404(
+            User,
+            id=id,
+            role="vendor"
+        )
+
+        profile = vendor.vendor_profile
+
+        # TOGGLE VERIFICATION
+
+        if "verify_status" in request.POST:
+
+            profile.is_verified = True
+
+        else:
+
+            profile.is_verified = False
+
+        profile.save()
+
+        return redirect(
+            "admin_vendor_verify",
+            id=vendor.id
+        )
+
+
+# admin can edit or change the payemnt method
+
+class AdminBookingEditView(View):
+
+    def get(self, request, booking_id):
+
+        if request.user.role != "admin":
+            return redirect("/")
+
+        booking = get_object_or_404(Booking, id=booking_id)
+        payment = booking.payments.first()
+
+        return render(request, "admin/change_payment.html", {
+            "booking": booking,
+            "payment": payment
+        })
+
+    def post(self, request, booking_id):
+
+        if request.user.role != "admin":
+            return redirect("/")
+
+        booking = get_object_or_404(Booking, id=booking_id)
+        payment = booking.payments.first()
+
+        booking.service_days = request.POST.get("service_days")
+        booking.expiry_date = request.POST.get("expiry_date")
+        booking.save()
+
+        if payment:
+            payment.total_amount = request.POST.get("total_amount")
+            payment.paid_amount = request.POST.get("paid_amount")
+            payment.status = request.POST.get("status")
+            payment.save()
+
+        messages.success(request, "Updated successfully")
+
+        return redirect("admin_booking_edit", booking_id=booking.id)
+
+
+def renew_service(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+
+    # extend 30 days (or your logic)
+    booking.expiry_date = booking.expiry_date + timedelta(days=30)
+    booking.save()
+
+    messages.success(request, "Service renewed successfully")
+
+    return redirect("my_orders")   # your pa
+
+
+# vendor profile
+class VendorProfileView(LoginRequiredMixin, View):
+
+    def get(self, request, id):
+
+        if request.user.role != "vendor":
+
+            return redirect("login")
+
+        vendor = get_object_or_404(User, id=id, role="vendor")
+
+        profile, created = VendorProfile.objects.get_or_create(user=vendor)
+
+        categories = Category.objects.all()
+
+        services = CategoryService.objects.filter(
+
+            category=profile.category
+
+        ) if profile.category else CategoryService.objects.none()
+
+        return render(
+
+            request,
+
+            "vendor/vendor_profile.html",
+
+            {
+
+                "vendor": vendor,
+                "profile": profile,
+                "categories": categories,
+                "services": services
+            }
+        )
+
+    def post(self, request, id):
+
+        if request.user.role != "vendor":
+
+            return redirect("login")
+
+        vendor = get_object_or_404(User, id=id, role="vendor")
+
+        profile, created = VendorProfile.objects.get_or_create(user=vendor)
+        category_id = request.POST.get("category")
+        vendor.first_name = request.POST.get("first_name")
+        vendor.last_name = request.POST.get("last_name")
+        vendor.email = request.POST.get("email")
+        vendor.save()
+        profile.experience = request.POST.get("experience")
+        profile.locality = request.POST.get("locality")
+        profile.street = request.POST.get("street")
+        profile.city = request.POST.get("city")
+        profile.postal_code = request.POST.get("postal_code")
+        profile.company_name = request.POST.get("company_name")
+        profile.company_address = request.POST.get("company_address")
+        profile.pan_number = request.POST.get("pan_number")
+        profile.license_number = request.POST.get("license_number")
+
+        if request.FILES.get("pan_card"):
+
+            profile.pan_card = request.FILES.get(
+                "pan_card"
+            )
+
+        if request.FILES.get("license_file"):
+
+            profile.license_file = request.FILES.get(
+                "license_file"
+            )
+
+        if category_id:
+            profile.category = Category.objects.get(
+                id=category_id
+            )
+
+        profile.save()
+        service_ids = request.POST.getlist(
+            "services"
+        )
+
+        if service_ids:
+            profile.services.set(
+                service_ids
+            )
+        return redirect(
+            "vendor_profile",
+            id=vendor.id
+        )
+# admin see the vendor profiles
+
+
+# cutomer track the order
+
+class CustomerTrackingView(LoginRequiredMixin, View):
+
+    def get(self, request):
+
+        bookings = Booking.objects.filter(
+            user=request.user
+        ).select_related(
+            "service",
+            "vendor"
+        ).order_by("-id")
+
+        status = request.GET.get("status")
+        search = request.GET.get("search")
+
+        if status:
+            bookings = bookings.filter(status=status)
+
+        if search:
+
+            bookings = bookings.filter(
+
+                Q(order_id__icontains=search) |
+                Q(service__s_title__icontains=search)
+
+            )
+        page_obj = paginate_queryset(request, bookings, 10)
+        return render(
+            request,
+            "customer/customer_tracking.html",
+            {
+                "bookings": bookings,
+                "bookings": page_obj,
+                "page_obj": page_obj,
+            }
+        )
+
+
+class CustomerTrackingDetailView(LoginRequiredMixin, View):
+
+    def get(self, request, id):
+
+        booking = get_object_or_404(
+
+            Booking.objects.select_related(
+                "service",
+                "vendor"
+            ),
+
+            id=id,
+            user=request.user
+
+        )
+
+        history = BookingHistory.objects.filter(
+            booking=booking
+        ).order_by("created_at")
+
+        return render(
+            request,
+            "customer/tracking_detail.html",
+            {
+                "booking": booking,
+                "history": history
+            }
+        )
+
+
+# payments
+class CustomerPaymentsView(LoginRequiredMixin, View):
+
+    def get(self, request):
+
+        bookings = (
+            Booking.objects.filter(
+                user=request.user
+            )
+            .select_related(
+                "service",
+                "vendor",
+                "category"
+            )
+            .prefetch_related(
+                "payments"
+            )
+            .order_by("-id")
+        )
+
+        payment_status = request.GET.get("payment_status")
+        search = request.GET.get("search")
+
+        booking_data = []
+
+        for booking in bookings:
+
+            payment = booking.payments.first()
+            if payment_status == "paid":
+
+                if not payment or payment.status != "paid":
+                    continue
+
+            elif payment_status == "pending":
+
+                if payment and payment.status == "paid":
+                    continue
+
+            if search:
+
+                search_value = search.lower()
+
+                order_match = (
+                    search_value in str(booking.order_id).lower()
+                )
+
+                service_match = (
+                    booking.service and
+                    search_value in booking.service.s_title.lower()
+                )
+
+                transaction_match = (
+                    payment and
+                    payment.transaction_id and
+                    search_value in payment.transaction_id.lower()
+                )
+
+                if not (
+                    order_match or
+                    service_match or
+                    transaction_match
+                ):
+                    continue
+
+            booking_data.append({
+                "booking": booking,
+                "payment": payment
+            })
+        page_obj = paginate_queryset(request, bookings, 10)
+        context = {
+            "booking_data": booking_data,
+            "bookings": page_obj,
+            "page_obj": page_obj,
+
+        }
+
+        return render(request, "customer/customer_payments.html", context)
+
+    def post(self, request):
+
+        payment_id = request.POST.get("payment_id")
+
+        payment_request = request.POST.get(
+            "payment_request"
+        )
+
+        payment = get_object_or_404(
+            Payment,
+            id=payment_id
+        )
+
+        payment.payment_request = payment_request
+
+        payment.save()
+
+        return redirect("customer_payments")
+
+
+# render the servcies in customer dashboard
+
+
+class ServicesListingView(ListView):
+    model = CategoryService
+    template_name = "customer/get_all_service.html"
+    context_object_name = "category_servicess"
+    paginate_by = 6
+
+    def get_queryset(self):
+
+        queryset = CategoryService.objects.all().order_by("-created_at")
+
+        service_id = self.request.GET.get("service_page")
+        search = self.request.GET.get("search")
+
+        # Filter by service
+        if service_id:
+            queryset = queryset.filter(id=service_id)
+
+        # Search by title
+        if search:
+            queryset = queryset.filter(s_title__icontains=search)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # For dropdown
+        context["category_services"] = CategoryService.objects.all()
+
+        return context

@@ -3,503 +3,568 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Responsive Secure Login</title>
-  <style>
-    :root {
-      --primary: #6c5ce7;
-      --primary-light: #f4f3ff;
-      --text: #2d3436;
-      --border: #dfe6e9;
-      --error: #ff7675;
-      --success: #00b894;
-      --gray: #636e72;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Back | SriDixitha Home Services</title>
 
-    * {
-      box-sizing: border-box;
-    }
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    /*  BACKGROUND BASE */
-    body {
-      font-family: 'Inter', -apple-system, sans-serif;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-      overflow: hidden;
+    <style>
+        :root {
+            --primary: #005eff;
+            --primary-hover: #004ecc;
+            --text-dark: #111827;
+            --text-gray: #6b7280;
+            --border: #e5e7eb;
+            --bg-body: #f3f4f6;
+            --white: #ffffff;
+            --error: #ef4444;
+            --success: #10b981;
+        }
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-      background: linear-gradient(rgba(15, 32, 39, 0.75), rgba(44, 83, 100, 0.75)),
-      url("{% static 'assets/images/bg/login_bg.webp' %}");
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(rgba(15, 32, 39, 0.65), rgba(44, 83, 100, 0.65)),
+            url("{% static 'assets/images/bg/login_bg.webp' %}") no-repeat center center;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: 300% 300%;
-      animation: aurora 10s ease infinite;
-    }
+        .main-wrapper {
+            width: 100%;
+            max-width: 1050px;
+            min-height: 620px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        }
 
+        .form-side {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 60px;
+            display: flex;
+            align-items: center;
+        }
 
+        .content-container {
+            width: 100%;
+            max-width: 400px;
+            margin: auto;
+        }
 
-    @keyframes float {
-      0% {
-        transform: translateY(0px) translateX(0px);
-      }
+        .logo-container {
+            margin-bottom: 30px;
+        }
 
-      50% {
-        transform: translateY(40px) translateX(30px);
-      }
+        .logo-container img {
+            height: 55px;
+            object-fit: contain;
+        }
 
-      100% {
-        transform: translateY(0px) translateX(0px);
-      }
-    }
+        h2 {
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
 
-    /*  GLASS CARD */
-    .card {
-      position: relative;
-      z-index: 1;
+        .subtitle {
+            color: var(--text-gray);
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
 
-      width: 100%;
-      max-width: 400px;
+        .msg {
+            text-align: center;
+            margin-bottom: 16px;
+            font-size: 14px;
+            font-weight: 600;
+        }
 
-      padding: 35px;
+        .input-group {
+            margin-bottom: 20px;
+        }
 
-      border-radius: 24px;
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
 
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+        .phone-box {
+            display: flex;
+            align-items: center;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: 0.2s;
+            background: var(--white);
+        }
 
-      border: 1px solid rgba(255, 255, 255, 0.2);
+        .phone-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 94, 255, 0.1);
+        }
 
-      box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.2),
-        inset 0 0 10px rgba(255, 255, 255, 0.1);
+        .country-prefix {
+            padding: 0 16px;
+            background: #f9fafb;
+            border-right: 2px solid var(--border);
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            height: 52px;
+        }
 
-      transition: 0.3s ease;
-    }
+        #phone {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 14px 16px;
+            font-size: 16px;
+            font-family: inherit;
+        }
 
-    /*  HOVER LIFT */
-    .card:hover {
-      transform: translateY(-5px) scale(1.01);
-    }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+            margin-bottom: 25px;
+        }
 
-    /* 🧾 TEXT */
-    h2 {
-      color: #fff;
-      text-align: center;
-    }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 114, 255, 0.35);
+        }
 
-    .subtitle {
-      color: #dfe6e9;
-    }
+        .otp-wrap {
+            display: none;
+            margin-bottom: 25px;
+            animation: fadeIn 0.3s ease;
+        }
 
-    /*  INPUT */
-    .phone-container,
-    input,
-    .otp-box {
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #fff;
-    }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
 
-    input::placeholder {
-      color: rgba(0, 0, 0, 0.7);
-    }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    /*  BUTTON */
-    #btn {
-      width: 100%;
-      padding: 16px;
+        .otp-grid {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
 
-      background: linear-gradient(135deg, #00c6ff, #0072ff);
-      color: #fff;
+        .otp-box {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            outline: none;
+            transition: 0.2s;
+        }
 
-      border: none;
-      border-radius: 14px;
+        .otp-box:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 94, 255, 0.1);
+        }
 
-      font-size: 16px;
-      font-weight: 600;
+        .links-area {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-gray);
+        }
 
-      cursor: pointer;
+        .links-area a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+        }
 
-      box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4);
-      transition: 0.3s;
-    }
+        .vendor-link {
+            margin: 20px 0;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
 
-    #btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(0, 114, 255, 0.6);
-    }
+        .image-side {
+            flex: 1;
+            background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.55)),
+            url("{% static 'assets/images/bg/login_image.jpg' %}") no-repeat center center;
+            background-size: cover;
+            display: flex;
+            align-items: flex-end;
+            padding: 40px;
+        }
 
+        .image-card {
+            max-width: 400px;
+        }
 
-    h2 {
-      text-align: center;
-      margin: 0 0 10px;
-      color: black;
-      font-size: clamp(20px, 5vw, 24px);
-    }
+        .image-card h3 {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
 
-    p.subtitle {
-      text-align: center;
-      color: #ffffff;
-      margin-bottom: 30px;
-      font-size: 14px;
-    }
+        .image-card p {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
 
-    /* Input Labels */
-    .input-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: #ffffff;
-      margin-bottom: 8px;
-      display: block;
-    }
+        @media (max-width: 900px) {
+            .image-side {
+                display: none;
+            }
 
-    /* Phone Input Group */
-    .phone-container {
-      display: flex;
-      align-items: center;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      position: relative;
-      background: #fff;
-      margin-bottom: 25px;
-      /* Spacing between Phone and OTP */
-    }
+            .form-side {
+                padding: 35px 24px;
+            }
 
-    .phone-container:focus-within {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
-    }
-
-    .selected-country {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px;
-      cursor: pointer;
-      border-right: 1px solid var(--border);
-      min-width: 85px;
-      justify-content: center;
-    }
-
-    .flag-img {
-      width: 20px;
-      height: 14px;
-      border-radius: 2px;
-      object-fit: cover;
-    }
-
-    /* Dropdown Menu */
-    .country-dropdown {
-      position: absolute;
-      top: 55px;
-      left: 0;
-      width: 100%;
-      max-width: 250px;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      z-index: 100;
-      max-height: 200px;
-      overflow-y: auto;
-      display: none;
-    }
-
-    .country-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 15px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .country-item:hover {
-      background: var(--primary-light);
-    }
-
-    input#phone {
-      flex: 1;
-      border: none;
-      padding: 12px;
-      font-size: 16px;
-      outline: none;
-      background: transparent;
-      width: 100%;
-      color: black !important;
-    }
-
-    /* OTP Section */
-    .otp-wrap {
-      display: none;
-      margin-top: 10px;
-      padding-top: 20px;
-      border-top: 1px dashed var(--border);
-      animation: fadeIn 0.4s ease;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
-    }
-
-    .otp-grid {
-      display: flex;
-      gap: clamp(8px, 2vw, 12px);
-      justify-content: center;
-      margin: 20px 0;
-    }
-
-    .otp-box {
-      width: clamp(45px, 12vw, 52px);
-      height: 60px;
-      text-align: center;
-      font-size: 24px;
-      font-weight: 700;
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      outline: none;
-    }
-
-    .otp-box:focus {
-      border-color: var(--primary);
-      background: orange;
-    }
-
-    /* Actions */
-    .timer-row {
-      font-size: 13px;
-      color: var(--gray);
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    #resendBtn {
-      background: none;
-      border: none;
-      color: var(--primary);
-      font-weight: 700;
-      cursor: pointer;
-      display: none;
-    }
-
-    #btn {
-      width: 100%;
-      padding: 16px;
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      border-radius: 14px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 25px;
-      padding-top: 20px;
-      border-top: 1px solid #f3f4f6;
-      font-size: 14px;
-      color: var(--gray);
-    }
-
-    .footer a {
-      color: black;
-      text-decoration: none;
-      font-weight: 700;
-    }
-
-    /* Tab & Mobile Responsiveness */
-    @media (max-width: 480px) {
-      .card {
-        padding: 25px 20px;
-      }
-
-      .selected-country {
-        min-width: 75px;
-        padding: 10px;
-      }
-    }
-  </style>
+            .main-wrapper {
+                max-width: 450px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-  <div class="card">
-    <form method="POST" style="display:none;">
-      {% csrf_token %}
-    </form>
-    <h2>Sign In</h2>
-    <p class="subtitle">Access your account securely</p>
+    <div class="main-wrapper">
 
-    <p id="msg" class="msg" style="font-weight: 700"></p>
+        <div class="form-side">
 
-    <label class="input-label">Mobile Number</label>
-    <div class="phone-container">
-      <div class="selected-country" id="dropdownTrigger">
-        <img src="/static/assets/images/india_flg.webp" class="flag-img" id="mainFlag">
-        <span id="mainCode " style="color: black;">+91</span>
-      </div>
+            <div class="content-container">
 
-      <div class="country-dropdown" id="countryMenu">
-        <div class="country-item" onclick="selectCountry('in', '+91')"><img src="" class="flag-img"> India (+91)</div>
-        <div class="country-item" onclick="selectCountry('us', '+1')"><img src="" class="flag-img"> USA (+1)</div>
-        <div class="country-item" onclick="selectCountry('gb', '+44')"><img src="" class="flag-img"> UK (+44)</div>
-      </div>
+                <div class="logo-container">
+                    <img src="{% static 'assets/images/logo/sridixitha_logo.gif' %}" alt="Logo">
+                </div>
 
-      <input id="phone" type="tel" placeholder="10 Digit Number" maxlength="10">
+                <div id="step1-header">
+                    <h2>Welcome Back</h2>
+                    <p class="subtitle">
+                        Your home, cared for. Log in to schedule your next service.
+                    </p>
+                </div>
+
+                <div id="step2-header" style="display:none;">
+                    <h2>Verify Code</h2>
+
+                    <p class="subtitle">
+                        We've sent a 4-digit code to
+                        <br>
+                        <strong id="displayPhone"></strong>
+
+                        <a href="#" onclick="location.reload()" style="font-size:12px; margin-left:8px;">
+                            Edit Number
+                        </a>
+                    </p>
+                </div>
+
+                {% csrf_token %}
+
+                <p id="msg" class="msg"></p>
+
+                <!-- Phone Input -->
+                <div class="input-group" id="phoneGroup">
+
+                    <label class="input-label">Mobile Number</label>
+
+                    <div class="phone-box">
+                        <div class="country-prefix">+91</div>
+
+                        <input id="phone" type="tel" maxlength="10" placeholder="Enter 10 digits">
+                    </div>
+
+                </div>
+
+                <!-- OTP Section -->
+                <div class="otp-wrap" id="otpWrap">
+
+                    <label class="input-label" style="text-align:center;">
+                        Enter Code
+                    </label>
+
+                    <div class="otp-grid">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric">
+                    </div>
+
+                    <p style="text-align:center; margin-top:20px; font-size:13px;">
+                        Didn't get it?
+                        <a href="#" style="font-weight:700;">
+                            Resend OTP
+                        </a>
+                    </p>
+
+                </div>
+
+                <button class="btn" id="btn">
+                    Continue
+                </button>
+
+                <div class="links-area">
+
+                    <p>
+                        Don't have an account?
+                        <a href="/register/">Sign Up</a>
+                    </p>
+
+                    <div class="vendor-link">
+                        <p>
+                            Are you a service professional?
+                            <a href="/register/">Join as a Vendor</a>
+                        </p>
+                    </div>
+
+                    <p style="font-size:11px; opacity:0.6; margin-top:20px;">
+                        By signing in, you agree to our
+                        <a href="#">Terms</a> &
+                        <a href="#">Privacy</a>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Right Side -->
+        <div class="image-side">
+
+            <div class="image-card">
+                <h3>Your Home, Handled by Experts.</h3>
+
+                <p>
+                    Book trusted professionals for cleaning, repairs,
+                    and maintenance—all in one place.
+                </p>
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="otp-wrap" id="otpWrap">
-      <label class="input-label" style="text-align: center;">Verification Code</label>
-      <div class="otp-grid">
-        <input class="otp-box" type="text" maxlength="1" inputmode="numeric">
-        <input class="otp-box" type="text" maxlength="1" inputmode="numeric">
-        <input class="otp-box" type="text" maxlength="1" inputmode="numeric">
-        <input class="otp-box" type="text" maxlength="1" inputmode="numeric">
-      </div>
-      <div class="timer-row">
-        <span id="tText">Resend in <b id="timer">30</b>s</span>
-        <button id="resendBtn" type="button">Resend Code</button>
-      </div>
-    </div>
+    <script>
 
-    <button id="btn">Send OTP</button>
+        const NEXT_URL = "{{ next|default:'' }}";
 
-    <div class="footer">
-      <span style="color: #fff;">New here? </span><a href="/register/">Create Account</a>
-    </div>
-  </div>
+        let step = 1;
 
+        const btn = document.getElementById("btn");
+        const phoneInput = document.getElementById("phone");
+        const otpWrap = document.getElementById("otpWrap");
+        const phoneGroup = document.getElementById("phoneGroup");
+        const boxes = document.querySelectorAll(".otp-box");
+        const msg = document.getElementById("msg");
+        const step1H = document.getElementById("step1-header");
+        const step2H = document.getElementById("step2-header");
 
-  <script>
-
-    const NEXT_URL = "{{ next|default:'' }}";
-
-    let step = 1;
-
-    const btn = document.getElementById("btn");
-    const phoneInput = document.getElementById("phone");
-    const otpWrap = document.getElementById("otpWrap");
-    const boxes = document.querySelectorAll(".otp-box");
-    const msg = document.getElementById("msg");
-
-    function getCSRF() {
-      return document.cookie.split('; ')
-        .find(r => r.startsWith('csrftoken='))?.split('=')[1];
-    }
-
-    function showMsg(text, type) {
-      msg.innerText = text;
-      msg.style.color = type === "error" ? "red" : "green";
-    }
-
-    // ✅ AUTO MOVE OTP
-    boxes.forEach((box, index) => {
-
-      box.addEventListener("input", function () {
-
-        this.value = this.value.replace(/[^0-9]/g, "");
-
-        if (this.value && index < boxes.length - 1) {
-          boxes[index + 1].focus();
-        }
-      });
-
-      box.addEventListener("keydown", function (e) {
-        if (e.key === "Backspace" && !this.value && index > 0) {
-          boxes[index - 1].focus();
-        }
-      });
-
-    });
-
-    btn.onclick = async function () {
-
-      let otp = "";
-      boxes.forEach(b => otp += b.value);
-
-      // STEP 1
-      if (step === 1) {
-
-        if (phoneInput.value.length !== 10) {
-          return showMsg("Enter valid phone", "error");
+        function getCSRF() {
+            return document.cookie
+                .split("; ")
+                .find(row => row.startsWith("csrftoken="))
+                ?.split("=")[1];
         }
 
-        const res = await fetch("/login/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCSRF()
-          },
-          body: JSON.stringify({
-            phone: phoneInput.value,
-            next: NEXT_URL
-          })
+        function showMsg(text, type) {
+            msg.innerText = text;
+            msg.style.color =
+                type === "error"
+                    ? "var(--error)"
+                    : "var(--success)";
+        }
+
+        // OTP Auto Focus
+        boxes.forEach((box, index) => {
+
+            box.addEventListener("input", function () {
+
+                this.value = this.value.replace(/[^0-9]/g, "");
+
+                if (this.value && index < boxes.length - 1) {
+                    boxes[index + 1].focus();
+                }
+
+            });
+
+            box.addEventListener("keydown", function (e) {
+
+                if (
+                    e.key === "Backspace" &&
+                    !this.value &&
+                    index > 0
+                ) {
+                    boxes[index - 1].focus();
+                }
+
+            });
+
         });
 
-        const data = await res.json();
+        btn.onclick = async function () {
 
-        if (data.error) {
-          if (data.redirect) {
-            window.location.href = data.redirect;
-          } else {
-            showMsg(data.error, "error");
-          }
-        } else {
-          showMsg("OTP sent", "success");
-          otpWrap.style.display = "block";
-          btn.innerText = "Verify OTP";
-          phoneInput.disabled = true;
-          step = 2;
-        }
-      }
+            // STEP 1 → SEND OTP
+            if (step === 1) {
 
-      // STEP 2
-      else {
+                if (phoneInput.value.length !== 10) {
+                    return showMsg(
+                        "Please enter a valid 10-digit number",
+                        "error"
+                    );
+                }
 
-        if (otp.length !== 4) {
-          return showMsg("Enter OTP", "error");
-        }
+                btn.innerText = "Processing...";
+                btn.disabled = true;
 
-        const res = await fetch("/login/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCSRF()
-          },
-          body: JSON.stringify({
-            phone: phoneInput.value,
-            otp: otp,
-            next: NEXT_URL
-          })
-        });
+                try {
 
-        const data = await res.json();
+                    const res = await fetch("/login/", {
+                        method: "POST",
 
-        if (data.error) {
-          showMsg(data.error, "error");
-        } else {
-          window.location.href = data.redirect;
-        }
-      }
-    };
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": getCSRF()
+                        },
 
-  </script>
+                        body: JSON.stringify({
+                            phone: phoneInput.value,
+                            next: NEXT_URL
+                        })
+                    });
+
+                    const data = await res.json();
+
+                    if (data.error) {
+
+                        showMsg(data.error, "error");
+
+                        btn.innerText = "Continue";
+                        btn.disabled = false;
+
+                    } else {
+
+                        showMsg(
+                            "Verification code sent!",
+                            "success"
+                        );
+
+                        phoneGroup.style.display = "none";
+                        step1H.style.display = "none";
+
+                        otpWrap.style.display = "block";
+                        step2H.style.display = "block";
+
+                        document.getElementById(
+                            "displayPhone"
+                        ).innerText = "+91 " + phoneInput.value;
+
+                        btn.innerText = "Verify & Login";
+                        btn.disabled = false;
+
+                        step = 2;
+
+                        boxes[0].focus();
+                    }
+
+                } catch (e) {
+
+                    showMsg(
+                        "Error connecting to server",
+                        "error"
+                    );
+
+                    btn.innerText = "Continue";
+                    btn.disabled = false;
+                }
+
+            }
+
+            // STEP 2 → VERIFY OTP
+            else {
+
+                let otp = "";
+
+                boxes.forEach(box => otp += box.value);
+
+                if (otp.length !== 4) {
+                    return showMsg(
+                        "Please enter the full code",
+                        "error"
+                    );
+                }
+
+                const res = await fetch("/login/", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCSRF()
+                    },
+
+                    body: JSON.stringify({
+                        phone: phoneInput.value,
+                        otp: otp,
+                        next: NEXT_URL
+                    })
+
+                });
+
+                const data = await res.json();
+
+                if (data.error) {
+                    showMsg(data.error, "error");
+                } else {
+                    window.location.href = data.redirect;
+                }
+
+            }
+
+        };
+
+    </script>
+
 </body>
 
 </html>

@@ -1,232 +1,576 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!--  CHART JS -->
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-    .dashboard-main-body {
-        padding: 25px;
-        background: #f5f7fb;
+    body {
+        background: #f4f7fb;
+        font-family: 'DM Sans', sans-serif;
     }
 
-    /* GRID */
-    .grid {
+    .dashboard-wrapper {
+        padding: 30px;
+    }
+
+    /* =========================
+   HEADER
+========================= */
+
+    .dashboard-header {
+        margin-bottom: 30px;
+    }
+
+    .dashboard-title {
+        font-size: 30px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 5px;
+    }
+
+    .dashboard-subtitle {
+        font-size: 14px;
+        color: #6b7280;
+    }
+
+    /* =========================
+   CARDS
+========================= */
+
+    .cards-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 18px;
-        margin-bottom: 25px;
+        margin-bottom: 28px;
     }
 
-    /* CARD */
-    .card {
+    .analytics-card {
         background: #fff;
-        padding: 18px;
-        border-radius: 14px;
-        transition: 0.3s;
-        border-left: 5px solid #2563eb;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        padding: 20px;
+        transition: .2s ease;
+        position: relative;
+        overflow: hidden;
     }
 
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    .analytics-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, .06);
     }
 
-    .stat {
-        font-size: 26px;
-        font-weight: bold;
+    .analytics-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: #2563eb;
     }
 
-    .label {
+    .card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+    }
+
+    .card-title {
         font-size: 13px;
-        color: gray;
+        font-weight: 600;
+        color: #6b7280;
     }
 
-    /* COLORS */
+    .card-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
     .blue {
-        border-color: #2563eb;
+        background: #dbeafe;
     }
 
     .green {
-        border-color: #10b981;
+        background: #dcfce7;
     }
 
     .orange {
-        border-color: #f59e0b;
+        background: #ffedd5;
     }
 
     .red {
-        border-color: #ef4444;
+        background: #fee2e2;
     }
 
-    /* TABLE */
-    table {
-        width: 100%;
-        border-collapse: collapse;
+    .card-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #111827;
+        line-height: 1;
+        margin-bottom: 8px;
     }
 
-    th,
-    td {
-        padding: 10px;
-        border-bottom: 1px solid #eee;
-    }
-
-    .status {
-        padding: 4px 10px;
-        border-radius: 20px;
+    .card-text {
         font-size: 12px;
+        color: #9ca3af;
     }
 
-    .active {
-        background: #e6f7ed;
-        color: #16a34a;
+    /* =========================
+   CHARTS
+========================= */
+
+    .chart-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
     }
 
-    .pending {
-        background: #fff4e5;
-        color: #f59e0b;
+    .chart-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+        padding: 24px;
     }
 
-    .completed {
-        background: #eef2ff;
-        color: #6366f1;
+    .chart-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 20px;
     }
 
-    canvas {
-        max-width: 100%;
+    .chart-box {
+        width: 100%;
+        height: 350px;
+    }
+
+    /* =========================
+   RESPONSIVE
+========================= */
+
+    @media(max-width:991px) {
+
+        .chart-grid {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    @media(max-width:768px) {
+
+        .dashboard-wrapper {
+            padding: 16px;
+        }
+
+        .dashboard-title {
+            font-size: 24px;
+        }
+
+        .cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .analytics-card {
+            padding: 16px;
+        }
+
+        .card-value {
+            font-size: 22px;
+        }
+
+        .card-icon {
+            width: 38px;
+            height: 38px;
+            font-size: 16px;
+        }
+
     }
 </style>
 
-<div class="dashboard-main-body">
+<div class="dashboard-wrapper">
 
-    <h4>Admin Dashboard</h4>
+    <!-- HEADER -->
 
-    <!--  STATS -->
-    <div class="grid">
-        <div class="card blue">
-            <div class="stat">{{ total_customers }}</div>
-            <div class="label">Customers</div>
+    <div class="dashboard-header">
+
+        <div class="dashboard-title">
+            Admin Dashboard
         </div>
 
-        <div class="card green">
-            <div class="stat">{{ total_vendors }}</div>
-            <div class="label">Vendors</div>
-        </div>
-
-        <div class="card orange">
-            <div class="stat">{{ total_bookings }}</div>
-            <div class="label">Bookings</div>
-        </div>
-
-        <div class="card red">
-            <div class="stat">{{ complaints }}</div>
-            <div class="label">Complaints</div>
-        </div>
-    </div>
-
-    <!--  SECOND ROW -->
-    <div class="grid">
-        <div class="card blue">
-            <div class="stat">{{ active_bookings }}</div>
-            <div class="label">Active</div>
-        </div>
-
-        <div class="card green">
-            <div class="stat">{{ completed_bookings }}</div>
-            <div class="label">Completed</div>
-        </div>
-
-        <div class="card orange">
-            <div class="stat">{{ pending_payments }}</div>
-            <div class="label">Pending Payments</div>
-        </div>
-
-        <div class="card green">
-            <div class="stat">{{ completed_payments }}</div>
-            <div class="label">Paid</div>
-        </div>
-    </div>
-
-    <!--  CHARTS -->
-    <div class="grid">
-
-        <div class="card">
-            <h5>Bookings Overview</h5>
-            <canvas id="bookingChart"></canvas>
-        </div>
-
-        <div class="card">
-            <h5>Users Distribution</h5>
-            <canvas id="userChart"></canvas>
+        <div class="dashboard-subtitle">
+            Monitor users, vendors, bookings and analytics
         </div>
 
     </div>
 
-    <!--  RECENT BOOKINGS -->
-    <div class="card">
-        <h5>Recent Bookings</h5>
+    <!-- STATS -->
 
-        <table>
-            <tr>
-                <th>Customer</th>
-                <th>Service</th>
-                <th>Vendor</th>
-                <th>Status</th>
-            </tr>
+    <div class="cards-grid">
 
-            {% for b in recent_bookings %}
-            <tr>
-                <td>{{ b.user.first_name }}</td>
-                <td>{{ b.service.s_title }}</td>
-                <td>{{ b.vendor.first_name }}</td>
-                <td>
-                    <span class="status {{ b.status }}">
-                        {{ b.status }}
-                    </span>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4">No data</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <div class="analytics-card">
+
+            <div class="card-top">
+
+                <div class="card-title">
+                    Total Customers
+                </div>
+
+                <div class="card-icon blue">
+                    👥
+                </div>
+
+            </div>
+
+            <div class="card-value">
+                {{ total_customers }}
+            </div>
+
+            <div class="card-text">
+                Registered customer accounts
+            </div>
+
+        </div>
+
+        <div class="analytics-card">
+
+            <div class="card-top">
+
+                <div class="card-title">
+                    Total Vendors
+                </div>
+
+                <div class="card-icon green">
+                    🧑‍💼
+                </div>
+
+            </div>
+
+            <div class="card-value">
+                {{ total_vendors }}
+            </div>
+
+            <div class="card-text">
+                Active vendors in platform
+            </div>
+
+        </div>
+
+        <div class="analytics-card">
+
+            <div class="card-top">
+
+                <div class="card-title">
+                    Total Bookings
+                </div>
+
+                <div class="card-icon orange">
+                    📦
+                </div>
+
+            </div>
+
+            <div class="card-value">
+                {{ total_bookings }}
+            </div>
+
+            <div class="card-text">
+                Overall booking requests
+            </div>
+
+        </div>
+
+        <div class="analytics-card">
+
+            <div class="card-top">
+
+                <div class="card-title">
+                    Complaints
+                </div>
+
+                <div class="card-icon red">
+                    ⚠️
+                </div>
+
+            </div>
+
+            <div class="card-value">
+                {{ complaints }}
+            </div>
+
+            <div class="card-text">
+                Total raised complaints
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CHARTS -->
+
+    <div class="chart-grid">
+
+        <!-- BOOKING STATUS -->
+
+        <div class="chart-card">
+
+            <div class="chart-title">
+                Booking Status
+            </div>
+
+            <div class="chart-box">
+                <canvas id="bookingChart"></canvas>
+            </div>
+
+        </div>
+
+        <!-- MONTHLY LEADS -->
+
+        <div class="chart-card">
+
+            <div class="chart-title">
+                Monthly Leads
+            </div>
+
+            <div class="chart-box">
+                <canvas id="monthlyChart"></canvas>
+            </div>
+
+        </div>
+
+        <!-- SERVICE ANALYTICS -->
+
+        <div class="chart-card">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div class="chart-title mb-0">
+                    Category Wise Service Leads
+                </div>
+
+                <form method="GET">
+
+                    <select name="category" class="form-select" onchange="this.form.submit()"
+                        style="min-width:220px;height:45px;border-radius:12px;">
+
+                        <option value="">
+                            All Categories
+                        </option>
+
+                        {% for category in categories %}
+
+                        <option value="{{ category.id }}" {% if selected_category==category.id|stringformat:"s" %}
+                            selected {% endif %}>
+
+                            {{ category.title }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </form>
+
+            </div>
+
+            <div class="chart-box">
+                <canvas id="serviceChart"></canvas>
+            </div>
+
+        </div>
+
+        <!-- USER DISTRIBUTION -->
+
+        <div class="chart-card">
+
+            <div class="chart-title">
+                User Distribution
+            </div>
+
+            <div class="chart-box">
+                <canvas id="userChart"></canvas>
+            </div>
+
+        </div>
 
     </div>
 
 </div>
 
-<!--  CHART SCRIPT -->
 <script>
 
-    new Chart(document.getElementById("bookingChart"), {
-        type: "pie",
+    /* COMMON CHART OPTIONS */
+
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false
+    };
+
+    /* BOOKING STATUS */
+
+    new Chart(document.getElementById('bookingChart'), {
+
+        type: 'doughnut',
+
         data: {
-            labels: ["Active", "Completed", "Pending"],
+            labels: [
+                'Pending',
+                'Assigned',
+                'Accepted',
+                'In Progress',
+                'Completed',
+                'Cancelled'
+            ],
+
             datasets: [{
                 data: [
-                    {{ active_bookings }},
-            {{ completed_bookings }},
-        {{ pending_payments }}
-      ],
-        backgroundColor: ["#10b981", "#6366f1", "#f59e0b"]
-    }]
-  }
+                    {{ total_pending }},
+            {{ total_assigned }},
+                {{ total_accepted }},
+        {{ total_in_progress }},
+        {{ total_completed }},
+        {{ total_cancelled }}
+            ],
+
+        backgroundColor: [
+        '#f59e0b',
+        '#3b82f6',
+        '#8b5cf6',
+        '#06b6d4',
+        '#16a34a',
+        '#ef4444'
+    ],
+
+        borderWidth: 0
+        }]
+    },
+
+        options: {
+        ...commonOptions,
+
+        cutout: '68%',
+
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    usePointStyle: true,
+                    padding: 18
+                }
+            }
+        }
+    }
+
 });
 
-    new Chart(document.getElementById("userChart"), {
-        type: "doughnut",
+    /* MONTHLY LEADS */
+
+    new Chart(document.getElementById('monthlyChart'), {
+
+        type: 'bar',
+
         data: {
-            labels: ["Customers", "Vendors"],
+            labels: {{ month_labels| safe }},
+
+        datasets: [{
+            label: 'Monthly Leads',
+            data: {{ monthly_data| safe }},
+        backgroundColor: '#2563eb',
+        borderRadius: 10,
+        barThickness: 28
+        }]
+    },
+
+        options: {
+        ...commonOptions,
+
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+
+});
+
+    /* SERVICE LEADS */
+
+    new Chart(document.getElementById('serviceChart'), {
+
+        type: 'bar',
+
+        data: {
+            labels: {{ service_labels| safe }},
+
+        datasets: [{
+            label: 'Service Leads',
+            data: {{ service_data| safe }},
+        backgroundColor: '#06b6d4',
+        borderRadius: 10,
+        barThickness: 28
+        }]
+    },
+
+        options: {
+        ...commonOptions,
+
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+
+});
+
+    /* USER DISTRIBUTION */
+
+    new Chart(document.getElementById('userChart'), {
+
+        type: 'pie',
+
+        data: {
+            labels: [
+                'Customers',
+                'Vendors'
+            ],
+
             datasets: [{
                 data: [
                     {{ total_customers }},
             {{ total_vendors }}
-      ],
-        backgroundColor: ["#2563eb", "#10b981"]
+            ],
+
+        backgroundColor: [
+            '#2563eb',
+            '#10b981'
+        ]
     }]
-  }
+    },
+
+        options: commonOptions
+
 });
 
 </script>

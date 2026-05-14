@@ -1,3 +1,4 @@
+from accounts.utils import paginate_queryset
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
@@ -91,19 +92,22 @@ class ServicesListView(View):
             'news': news,
         })
 
+
 class Joblisting(View):
-    def get(self,request):
+    def get(self, request):
         jobs = Job.objects.all().order_by('title')
         footer = Footer.objects.first()
         news = News.objects.all().order_by('id')
-        return render(request, 'joblisting.html', {'footer':footer,'news':news,'jobs':jobs})
-    
+        return render(request, 'joblisting.html', {'footer': footer, 'news': news, 'jobs': jobs})
+
+
 class CategoryListing(View):
-    def get(self,request):
+    def get(self, request):
         categories = Category.objects.all().order_by('title')
         footer = Footer.objects.first()
         news = News.objects.all().order_by('id')
-        return render(request, 'category_listing.html', {'footer':footer,'news':news,'categories':categories})
+        return render(request, 'category_listing.html', {'footer': footer, 'news': news, 'categories': categories})
+
 
 class ContactForm(View):
 
@@ -314,13 +318,13 @@ class DeleteFeedback(View):
         messages.success(request, "feedback deleted")
         return redirect('list.feedback')
 
-
-
 class NewsListView(View):
 
     def get(self, request):
 
         news = News.objects.all().order_by('-created_at')
+
+
 
         # Pagination
         paginator = Paginator(news, 5)   # 5 news per page
@@ -337,7 +341,17 @@ class NewsListView(View):
         return render(
             request,
             'pages/news/list_news.html',
-            context
+            context)
+        
+
+        page_obj=paginate_queryset(request, news, 10)
+
+        return render(request, 'pages/news/list_news.html',
+            {
+                'news': page_obj,
+                'page_obj': page_obj
+            }
+
         )
 
 
@@ -346,39 +360,39 @@ class CreateNews(View):
         return render(request, 'pages/news/create_news.html')
 
     def post(self, request):
-        news_headline = request.POST.get('news_headline')
+        news_headline=request.POST.get('news_headline')
 
-        news = News.objects.create(
+        news=News.objects.create(
             content=news_headline
 
         )
         news.save()
-        messages.success(request,"News created successfully")
+        messages.success(request, "News created successfully")
         return redirect('news.list')
 
 
 class UpdateNews(View):
 
     def get(self, request, pk):
-        news = get_object_or_404(News, pk=pk)
+        news=get_object_or_404(News, pk=pk)
         return render(request, 'pages/news/update_news.html', {'news': news})
 
     def post(self, request, pk):
-        news = get_object_or_404(News, pk=pk)
+        news=get_object_or_404(News, pk=pk)
 
-        news.content = request.POST.get('update_headline')
-        news.create_date = datetime.now()
+        news.content=request.POST.get('update_headline')
+        news.create_date=datetime.now()
         news.save()
-        messages.success(request,"News Updated successfully")
+        messages.success(request, "News Updated successfully")
 
         return redirect('news.list')
 
 
 class DeleteNews(View):
     def get(self, request, pk):
-        news = get_object_or_404(News, pk=pk)
+        news=get_object_or_404(News, pk=pk)
         news.delete()
-        messages.error(request,"News Deeleted ")
+        messages.error(request, "News Deeleted ")
         return redirect('news.list')
 
 
@@ -388,25 +402,27 @@ class ListBanner(View):
 
     def get(self, request):
 
-        banner = HeroBanner.objects.all().order_by('-created_at')
+        # Fetch banners
+        banner = HeroBanner.objects.all().order_by("-created_at")
 
         # Pagination
-        paginator = Paginator(banner, 5)   # 5 banners per page
+        paginator = Paginator(banner, 5)
 
-        page_number = request.GET.get('page')
+        page_number = request.GET.get("page")
 
         page_obj = paginator.get_page(page_number)
 
         context = {
-            'banner': page_obj,
-            'page_obj': page_obj
+            "banner": page_obj,
+            "page_obj": page_obj,
         }
 
         return render(
             request,
-            'pages/hero_section/list_banner.html',
+            "pages/hero_section/list_banner.html",
             context
         )
+        
 
 
 class CreateBanner(View):
@@ -414,16 +430,16 @@ class CreateBanner(View):
         return render(request, 'pages/hero_section/create_banner.html')
 
     def post(self, request):
-        image = request.FILES.get('image')
-        heading = request.POST.get('heading')
-        sub_heading = request.POST.get('sub_heading')
-        banner_save = HeroBanner.objects.create(
+        image=request.FILES.get('image')
+        heading=request.POST.get('heading')
+        sub_heading=request.POST.get('sub_heading')
+        banner_save=HeroBanner.objects.create(
             heading=heading,
             sub_heading=sub_heading,
             image=image
         )
         banner_save.save()
-        messages.success(request,"Created banner successfully")
+        messages.success(request, "Created banner successfully")
 
         return redirect("list.banner")
 
@@ -431,40 +447,40 @@ class CreateBanner(View):
 class UpdateBanner(View):
 
     def get(self, request, pk):
-        banner = get_object_or_404(HeroBanner, pk=pk)
+        banner=get_object_or_404(HeroBanner, pk=pk)
         return render(request, 'pages/hero_section/update_banner.html', {'banner': banner})
 
     def post(self, request, pk):
-        banner = get_object_or_404(HeroBanner, pk=pk)
+        banner=get_object_or_404(HeroBanner, pk=pk)
 
-        banner.heading = request.POST.get('heading')
-        banner.sub_heading = request.POST.get('sub_heading')
+        banner.heading=request.POST.get('heading')
+        banner.sub_heading=request.POST.get('sub_heading')
 
-        image = request.FILES.get('image')
+        image=request.FILES.get('image')
         if image:
-            banner.image = image
+            banner.image=image
 
         banner.save()
-        messages.error(request,"Updated banner successfully")
+        messages.error(request, "Updated banner successfully")
 
         return redirect('list.banner')
 
 
 class DeleteBanner(View):
     def get(self, request, pk):
-        banner = get_object_or_404(HeroBanner, pk=pk)
+        banner=get_object_or_404(HeroBanner, pk=pk)
         banner.delete()
-        messages.error(request,"deleted banner successfully")
+        messages.error(request, "deleted banner successfully")
         return redirect('list.banner')
 
 
 class ListCategory(View):
     def get(self, request):
-        categories = Category.objects.all().order_by('-created_at')
+        categories=Category.objects.all().order_by('-created_at')
 
-        paginator = Paginator(categories, 5)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
+        paginator=Paginator(categories, 5)
+        page_number=request.GET.get('page')
+        page_obj=paginator.get_page(page_number)
 
         return render(request, 'pages/categories/list.html', {
             'categories': page_obj,
@@ -477,14 +493,14 @@ class CreateCategory(View):
         return render(request, 'pages/categories/create.html')
 
     def post(self, request):
-        icon = request.FILES.get('icon')
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        badge = request.POST.get('badge')
-        tags = request.POST.get('tags')
-        category_about_des = request.POST.get('category_about_des')
-        banner_img = request.FILES.get('banner_image')
-        category_about_img = request.FILES.get('category_about_img')
+        icon=request.FILES.get('icon')
+        title=request.POST.get('title')
+        description=request.POST.get('description')
+        badge=request.POST.get('badge')
+        tags=request.POST.get('tags')
+        category_about_des=request.POST.get('category_about_des')
+        banner_img=request.FILES.get('banner_image')
+        category_about_img=request.FILES.get('category_about_img')
 
         Category.objects.create(
             icon=icon,
@@ -496,73 +512,73 @@ class CreateCategory(View):
             category_about_img=category_about_img,
             banner_image=banner_img,
         )
-        messages.success(request,"Created category successfully")
+        messages.success(request, "Created category successfully")
         return redirect('list.category')
 
 
 class UpdateCategory(View):
 
     def get(self, request, pk):
-        category = get_object_or_404(Category, pk=pk)
+        category=get_object_or_404(Category, pk=pk)
         return render(request, 'pages/categories/update.html', {
             'category': category
         })
 
     def post(self, request, pk):
-        category = get_object_or_404(Category, pk=pk)
+        category=get_object_or_404(Category, pk=pk)
 
         # Text fields
-        category.title = request.POST.get('title')
-        category.description = request.POST.get('description')
-        category.badge = request.POST.get('badge')
-        category.tags = request.POST.get('tags')
-        category.category_about_des = request.POST.get('category_about_des')
+        category.title=request.POST.get('title')
+        category.description=request.POST.get('description')
+        category.badge=request.POST.get('badge')
+        category.tags=request.POST.get('tags')
+        category.category_about_des=request.POST.get('category_about_des')
 
         # Image fields (ONLY update if new file uploaded)
         if request.FILES.get('icon'):
-            category.icon = request.FILES.get('icon')
+            category.icon=request.FILES.get('icon')
 
         if request.FILES.get('category_about_img'):
-            category.category_about_img = request.FILES.get(
+            category.category_about_img=request.FILES.get(
                 'category_about_img')
 
         if request.FILES.get('banner_image'):
-            category.banner_image = request.FILES.get('banner_image')
+            category.banner_image=request.FILES.get('banner_image')
 
         category.save()
-        messages.success(request,"Updated Category successfully")
+        messages.success(request, "Updated Category successfully")
 
         return redirect('list.category')
 
 
 class DeleteCaregory(View):
     def get(self, request, pk):
-        category = get_object_or_404(Category, pk=pk)
+        category=get_object_or_404(Category, pk=pk)
         category.delete()
-        messages.error(request,"Deleted Category")
+        messages.error(request, "Deleted Category")
         return redirect('list.category')
 
 
 class ListCategoryService(View):
     def get(self, request):
-        categories = Category.objects.all()
+        categories=Category.objects.all()
 
-        category_id = request.GET.get('category')
-        selected_category = None
-        services = CategoryService.objects.none()
+        category_id=request.GET.get('category')
+        selected_category=None
+        services=CategoryService.objects.none()
 
         # if category selected
         if category_id:
-            selected_category = Category.objects.filter(id=category_id).first()
+            selected_category=Category.objects.filter(id=category_id).first()
 
             if selected_category:
-                services = CategoryService.objects.filter(
+                services=CategoryService.objects.filter(
                     category=selected_category
                 ).order_by('-created_at')
 
-        paginator = Paginator(services, 5)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
+        paginator=Paginator(services, 5)
+        page_number=request.GET.get('page')
+        page_obj=paginator.get_page(page_number)
 
         return render(request, 'pages/categoryservice/list.html', {
             'categories': categories,
@@ -575,18 +591,18 @@ class ListCategoryService(View):
 class CreateCategoryService(View):
 
     def get(self, request):
-        categories = Category.objects.all()
+        categories=Category.objects.all()
         return render(request, 'pages/categoryservice/create.html', {
             'categories': categories
         })
 
     def post(self, request):
-        category_id = request.POST.get('category')
+        category_id=request.POST.get('category')
 
         if not category_id:
             return redirect('add.categories.service')
 
-        category = get_object_or_404(Category, id=category_id)
+        category=get_object_or_404(Category, id=category_id)
 
         CategoryService.objects.create(
             category=category,
@@ -595,7 +611,7 @@ class CreateCategoryService(View):
             s_desc=request.POST.get('s_desc'),
             image=request.FILES.get('image')
         )
-        messages.success(request,"Created Category Services successfully")
+        messages.success(request, "Created Category Services successfully")
 
         if 'save_add_more' in request.POST:
             return redirect('add.categories.service')
@@ -605,28 +621,28 @@ class CreateCategoryService(View):
 
 class UpdateCategoryService(View):
     def get(self, request, id):
-        services = get_object_or_404(CategoryService, id=id)
+        services=get_object_or_404(CategoryService, id=id)
         return render(request, 'pages/categoryservice/update.html', {'services': services})
 
     def post(self, request, id):
-        services = get_object_or_404(CategoryService, id=id)
+        services=get_object_or_404(CategoryService, id=id)
 
-        services.s_tag = request.POST.get('s_tag')
-        services.s_title = request.POST.get('s_title')
-        services.s_desc = request.POST.get('s_desc')
-        image = request.FILES.get('image')
+        services.s_tag=request.POST.get('s_tag')
+        services.s_title=request.POST.get('s_title')
+        services.s_desc=request.POST.get('s_desc')
+        image=request.FILES.get('image')
         if image:
-            services.image = image
+            services.image=image
         services.save()
-        messages.success(request,"Updated Category Services successfully")
+        messages.success(request, "Updated Category Services successfully")
         return redirect('list.category.services')
 
 
 class DeleteCategoryService(View):
     def get(self, request, id):
-        service = get_object_or_404(CategoryService, id=id)
+        service=get_object_or_404(CategoryService, id=id)
         service.delete()
-        messages.error(request,"Deleted Category Services")
+        messages.error(request, "Deleted Category Services")
         return redirect('list.category.services')
 
 
@@ -635,16 +651,16 @@ class ListServices(View):
 
     def get(self, request):
 
-        services = ServicesCards.objects.all().order_by('-created_at')
+        services=ServicesCards.objects.all().order_by('-created_at')
 
         # Pagination
-        paginator = Paginator(services, 5)   # 5 services per page
+        paginator=Paginator(services, 5)   # 5 services per page
 
-        page_number = request.GET.get('page')
+        page_number=request.GET.get('page')
 
-        page_obj = paginator.get_page(page_number)
+        page_obj=paginator.get_page(page_number)
 
-        context = {
+        context={
             'services': page_obj,
             'page_obj': page_obj
         }
@@ -657,46 +673,46 @@ class CreateService(View):
         return render(request, 'pages/services/create.html')
 
     def post(self, request):
-        servicename = request.POST.get('servicename')
-        serviceicon = request.FILES.get('serviceicon')
-        service_image = request.FILES.get('service_image')
+        servicename=request.POST.get('servicename')
+        serviceicon=request.FILES.get('serviceicon')
+        service_image=request.FILES.get('service_image')
 
         ServicesCards.objects.create(
             servicename=servicename,
             serviceicon=serviceicon,
             service_image=service_image,
         )
-        messages.success(request,"Created Service successfully")
+        messages.success(request, "Created Service successfully")
         if 'save_add_more' in request.POST:
             return redirect('add.services')
-        
+
 
         return redirect('services.list')
 
 
 class UpdateServices(View):
     def get(self, request, id):
-        services = get_object_or_404(ServicesCards, id=id)
+        services=get_object_or_404(ServicesCards, id=id)
         return render(request, 'pages/services/update.html', {'services': services})
 
     def post(self, request, id):
-        services = get_object_or_404(ServicesCards, id=id)
-        services.servicename = request.POST.get('servicename')
+        services=get_object_or_404(ServicesCards, id=id)
+        services.servicename=request.POST.get('servicename')
 
         if request.FILES.get('serviceicon'):
-            services.serviceicon = request.FILES.get('serviceicon')
+            services.serviceicon=request.FILES.get('serviceicon')
         if request.FILES.get('service_image'):
-            services.service_image = request.FILES.get('service_image')
+            services.service_image=request.FILES.get('service_image')
         services.save()
-        messages.success(request,"Updated Service successfully")
+        messages.success(request, "Updated Service successfully")
         return redirect('services.list')
 
 
 class DeleteServices(View):
     def get(self, request, id):
-        services = get_object_or_404(ServicesCards, id=id)
+        services=get_object_or_404(ServicesCards, id=id)
         services.delete()
-        messages.error(request,"Service Deleted")
+        messages.error(request, "Service Deleted")
         return redirect('services.list')
 
 
@@ -706,16 +722,16 @@ class ListJobs(View):
 
     def get(self, request):
 
-        jobs = Job.objects.all().order_by('-created_at')
+        jobs=Job.objects.all().order_by('-created_at')
 
         # Pagination
-        paginator = Paginator(jobs, 5)   # 5 jobs per page
+        paginator=Paginator(jobs, 5)   # 5 jobs per page
 
-        page_number = request.GET.get('page')
+        page_number=request.GET.get('page')
 
-        page_obj = paginator.get_page(page_number)
+        page_obj=paginator.get_page(page_number)
 
-        context = {
+        context={
             'jobs': page_obj,
             'page_obj': page_obj
         }
@@ -729,12 +745,12 @@ class CreateJob(View):
         return render(request, 'pages/jobs/create.html')
 
     def post(self, request):
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        status = request.POST.get('status')
-        job_type = request.POST.get('job_type')
-        work_mode = request.POST.get('work_mode')
-        icon = request.FILES.get('icon')
+        title=request.POST.get('title')
+        description=request.POST.get('description')
+        status=request.POST.get('status')
+        job_type=request.POST.get('job_type')
+        work_mode=request.POST.get('work_mode')
+        icon=request.FILES.get('icon')
 
         if not title or not description:
             messages.error(request, "Title and Description are required")
@@ -756,20 +772,20 @@ class CreateJob(View):
 
 class UpdateJob(View):
     def get(self, request, id):
-        job = get_object_or_404(Job, id=id)
+        job=get_object_or_404(Job, id=id)
         return render(request, 'pages/jobs/update.html', {'job': job})
 
     def post(self, request, id):
-        job = get_object_or_404(Job, id=id)
+        job=get_object_or_404(Job, id=id)
 
-        job.title = request.POST.get('title')
-        job.description = request.POST.get('description')
-        job.status = request.POST.get('status')
-        job.job_type = request.POST.get('job_type')
-        job.work_mode = request.POST.get('work_mode')
+        job.title=request.POST.get('title')
+        job.description=request.POST.get('description')
+        job.status=request.POST.get('status')
+        job.job_type=request.POST.get('job_type')
+        job.work_mode=request.POST.get('work_mode')
 
         if request.FILES.get('icon'):
-            job.icon = request.FILES.get('icon')
+            job.icon=request.FILES.get('icon')
 
         job.save()
         messages.success(request, "Job Updated successfully!")
@@ -779,7 +795,7 @@ class UpdateJob(View):
 
 class DeleteJob(View):
     def get(self, request, id):
-        job = get_object_or_404(Job, id=id)
+        job=get_object_or_404(Job, id=id)
         job.delete()
         messages.error(request, "Deleted Job!")
         return redirect('list.jobs')
@@ -787,64 +803,64 @@ class DeleteJob(View):
 class JobApplications(View):
 
     def get(self, request, job_id):
-        job = get_object_or_404(Job, id=job_id)
-        footer = Footer.objects.first()
-        news = News.objects.all().order_by('id')
-        return render(request, 'jobapply.html', {'job': job,'footer':footer,'news':news})
+        job=get_object_or_404(Job, id=job_id)
+        footer=Footer.objects.first()
+        news=News.objects.all().order_by('id')
+        return render(request, 'jobapply.html', {'job': job, 'footer': footer, 'news': news})
 
     def post(self, request, job_id):
-        job = get_object_or_404(Job, id=job_id)
-        footer = Footer.objects.first()
-        news = News.objects.all().order_by('id')
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        experience = request.POST.get('experience')
-        salary = request.POST.get('salary')
-        address = request.POST.get('address')
+        job=get_object_or_404(Job, id=job_id)
+        footer=Footer.objects.first()
+        news=News.objects.all().order_by('id')
+        name=request.POST.get('name')
+        email=request.POST.get('email')
+        phone=request.POST.get('phone')
+        experience=request.POST.get('experience')
+        salary=request.POST.get('salary')
+        address=request.POST.get('address')
 
-        resume = request.FILES.get('resume')
-        photo = request.FILES.get('photo')
+        resume=request.FILES.get('resume')
+        photo=request.FILES.get('photo')
 
-        errors = {}
+        errors={}
 
-       
+
         if not name:
-            errors['name'] = "Name is required"
+            errors['name']="Name is required"
 
         if not email or "@" not in email:
-            errors['email'] = "Valid email required"
+            errors['email']="Valid email required"
 
         if not phone or len(phone) < 10:
-            errors['phone'] = "Valid phone required"
+            errors['phone']="Valid phone required"
 
         if not experience:
-            errors['experience'] = "Experience required"
+            errors['experience']="Experience required"
 
         if not salary:
-            errors['salary'] = "Expected salary required"
+            errors['salary']="Expected salary required"
 
         if not address:
-            errors['address'] = "Address required"
+            errors['address']="Address required"
 
         if not photo:
-            errors['photo'] = "photo required"
+            errors['photo']="photo required"
 
         if resume and not resume.name.endswith(('.pdf', '.doc', '.docx')):
-            errors['resume'] = "Only PDF/DOC files allowed"
+            errors['resume']="Only PDF/DOC files allowed"
 
         if photo and not photo.name.lower().endswith(('.jpg', '.jpeg', '.png', '.webp')):
-            errors['photo'] = "Only image files allowed"
+            errors['photo']="Only image files allowed"
 
         if errors:
             return render(request, 'jobapply.html', {
                 'job': job,
-                'footer':footer,
-                'news':news,
+                'footer': footer,
+                'news': news,
                 'errors': errors
             })
 
-        
+
         JobApplication.objects.create(
             job=job,
             name=name,
@@ -864,16 +880,16 @@ class ListFooter(View):
 
     def get(self, request):
 
-        footers = Footer.objects.all().order_by('-id')
+        footers=Footer.objects.all().order_by('-id')
 
         # Pagination
-        paginator = Paginator(footers, 5)   # 5 footers per page
+        paginator=Paginator(footers, 5)   # 5 footers per page
 
-        page_number = request.GET.get('page')
+        page_number=request.GET.get('page')
 
-        page_obj = paginator.get_page(page_number)
+        page_obj=paginator.get_page(page_number)
 
-        context = {
+        context={
             'footers': page_obj,
             'page_obj': page_obj
         }
@@ -891,19 +907,19 @@ class CreateFooter(View):
         return render(request, 'pages/footer/create.html')
 
     def post(self, request):
-        logo_image = request.FILES.get('logo_image')
-        footer_description = request.POST.get('footer_description')
-        phone_num = request.POST.get('phone_num')
-        whatsapp_num = request.POST.get('whatsapp_num')
-        email = request.POST.get('email')
-        address = request.POST.get('address')
+        logo_image=request.FILES.get('logo_image')
+        footer_description=request.POST.get('footer_description')
+        phone_num=request.POST.get('phone_num')
+        whatsapp_num=request.POST.get('whatsapp_num')
+        email=request.POST.get('email')
+        address=request.POST.get('address')
 
-        facebook = request.POST.get('facebook')
-        instagram = request.POST.get('instagram')
-        twitter = request.POST.get('twitter')
-        whatsapp = request.POST.get('whatsapp')
+        facebook=request.POST.get('facebook')
+        instagram=request.POST.get('instagram')
+        twitter=request.POST.get('twitter')
+        whatsapp=request.POST.get('whatsapp')
 
-        errors = []
+        errors=[]
 
         if not footer_description:
             errors.append("Footer description is required")
@@ -950,25 +966,25 @@ class CreateFooter(View):
 class UpdateFooter(View):
 
     def get(self, request, id):
-        footer = get_object_or_404(Footer, id=id)
+        footer=get_object_or_404(Footer, id=id)
         return render(request, 'pages/footer/update.html', {'footer': footer})
 
     def post(self, request, id):
-        footer = get_object_or_404(Footer, id=id)
+        footer=get_object_or_404(Footer, id=id)
 
-        logo_image = request.FILES.get('logo_image')
-        footer_description = request.POST.get('footer_description')
-        phone_num = request.POST.get('phone_num')
-        whatsapp_num = request.POST.get('whatsapp_num')
-        email = request.POST.get('email')
-        address = request.POST.get('address')
+        logo_image=request.FILES.get('logo_image')
+        footer_description=request.POST.get('footer_description')
+        phone_num=request.POST.get('phone_num')
+        whatsapp_num=request.POST.get('whatsapp_num')
+        email=request.POST.get('email')
+        address=request.POST.get('address')
 
-        facebook = request.POST.get('facebook')
-        instagram = request.POST.get('instagram')
-        twitter = request.POST.get('twitter')
-        whatsapp = request.POST.get('whatsapp')
+        facebook=request.POST.get('facebook')
+        instagram=request.POST.get('instagram')
+        twitter=request.POST.get('twitter')
+        whatsapp=request.POST.get('whatsapp')
 
-        errors = []
+        errors=[]
 
         if not footer_description:
             errors.append("Footer description is required")
@@ -997,19 +1013,19 @@ class UpdateFooter(View):
 
             return render(request, 'pages/footer/update.html', {'footer': footer})
 
-        footer.footer_description = footer_description
-        footer.phone_num = phone_num
-        footer.whatsapp_num = whatsapp_num
-        footer.email = email
-        footer.address = address
+        footer.footer_description=footer_description
+        footer.phone_num=phone_num
+        footer.whatsapp_num=whatsapp_num
+        footer.email=email
+        footer.address=address
 
-        footer.facebook = facebook
-        footer.instagram = instagram
-        footer.twitter = twitter
-        footer.whatsapp = whatsapp
+        footer.facebook=facebook
+        footer.instagram=instagram
+        footer.twitter=twitter
+        footer.whatsapp=whatsapp
 
         if logo_image:
-            footer.logo_image = logo_image
+            footer.logo_image=logo_image
 
         footer.save()
 
@@ -1019,7 +1035,7 @@ class UpdateFooter(View):
 
 class DeleteFooter(View):
     def get(self, request, id):
-        footer = get_object_or_404(Footer, id=id)
+        footer=get_object_or_404(Footer, id=id)
         footer.delete()
         messages.success(request, 'footer item deleted successfully')
         return redirect('list.footer')

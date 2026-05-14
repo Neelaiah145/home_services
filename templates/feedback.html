@@ -252,6 +252,9 @@
   </div>
   {% endfor %}
   {% endif %}
+
+  {% if request.user.is_authenticated %}
+  =======
   {% if request.user.is_authenticated %}
   <div class="fb-wrapper">
     <div class="container">
@@ -330,6 +333,7 @@
     </div>
   </div>
 
+
   {% else %}
 
   <div class="text-center  mt-5" style="padding: 40px 0px; background: #ecedef7a;">
@@ -338,6 +342,15 @@
   </div>
 
   {% endif %}
+  {% else %}
+
+  <div class="text-center  mt-5" style="padding: 40px 0px; background: #ecedef7a;">
+    <h4>Please login to submit feedback</h4>
+    <a href="{% url 'login' %}" class="btn btn-primary mt-3">Login</a>
+  </div>
+
+  {% endif %}
+
   <footer class="footer-layout1 bg-body z-index-common" data-bg-src="assets/img/bg/">
     <!-- Cta Area -->
 
